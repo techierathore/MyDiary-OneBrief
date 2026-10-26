@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>Browse journal · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .nav-region { display: contents; }
+    .browse-stack { display: grid; gap: 16px; }
+    .filter-layout { display: grid; grid-template-columns: minmax(240px, 1.15fr) minmax(260px, 1fr); gap: 15px; align-items: end; }
+    .filter-layout .field + .field { margin-top: 0; }
+    .filter-bottom { display: flex; justify-content: space-between; align-items: end; gap: 14px; margin-top: 15px; }
+    .date-range { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .date-input-wrap { display: grid; gap: 5px; min-width: 0; }
+    .date-input-wrap .hint { font-size: 10px; }
+    .multi-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .filter-trigger { width: 100%; min-width: 0; justify-content: space-between; overflow: hidden; }
+    .filter-trigger span:first-child { overflow: hidden; text-overflow: ellipsis; }
+    .check-filters { display: flex; flex-wrap: wrap; gap: 14px; padding-bottom: 4px; }
+    .check-filters label { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; white-space: nowrap; }
+    .check-filters input { accent-color: var(--primary); }
+    .results-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .results-heading h2 { margin: 0; font-size: 14px; }
+    .browse-content { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(260px, .85fr); gap: 16px; align-items: start; }
+    .entry-timeline { margin: 0; }
+    .entry-timeline .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-link { display: block; }
+    .timeline-link:hover .timeline-title { color: var(--primary); }
+    .timeline-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .timeline-title { margin-top: 5px; font-size: 14px; }
+    .timeline-preview { max-width: 60ch; line-height: 1.55; }
+    .calendar-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .calendar-month { margin: 0; font-size: 13px; font-weight: 620; }
+    .calendar-cell.day-button { appearance: none; border: 0; background: transparent; color: var(--foreground); cursor: pointer; font: inherit; }
+    .calendar-cell.day-button.has-entry { background: var(--accent); color: var(--primary); font-weight: 650; }
+    .calendar-cell.day-button.selected { background: var(--primary); color: var(--primary-foreground); }
+    .calendar-legend { display: flex; gap: 12px; margin-top: 13px; color: var(--muted-foreground); font-size: 10px; }
+    .legend-mark { display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 50%; background: var(--accent); }
+    .empty-state { padding: 18px 12px; color: var(--muted-foreground); font-size: 11px; text-align: center; }
+    @media (max-width: 850px) {
+      .filter-layout { grid-template-columns: 1fr; }
+      .browse-content { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .filter-bottom { align-items: stretch; flex-direction: column; }
+      .multi-filter-grid { grid-template-columns: 1fr; }
+      .date-range { grid-template-columns: 1fr 1fr; }
+      .check-filters { justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="nav-region" data-testid="journal-nav" role="navigation" aria-label="MyDiary navigation">
+      <aside class="sidebar">
+        <a class="brand" href="home.html" aria-label="MyDiary home"><span class="brand-mark" aria-hidden="true">✦</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">Your private journal</span></span></a>
+        <div><div class="nav-group-label">Journal</div><nav class="nav-list" aria-label="Journal screens">
+          <a class="nav-link" href="home.html"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link current" href="journal-browse.html" aria-current="page"><span class="nav-icon" aria-hidden="true">▤</span>Browse journal</a>
+          <a class="nav-link" href="entry-details.html"><span class="nav-icon" aria-hidden="true">▧</span>Entry details</a>
+        </nav></div>
+        <div class="sidebar-bottom"><a class="nav-link" href="sign-in-and-account.html"><span class="nav-icon" aria-hidden="true">◉</span>Account &amp; sign in</a></div>
+      </aside>
+      <nav class="mobile-nav" aria-label="Journal screens"><a href="home.html">Home</a><a class="current" href="journal-browse.html" aria-current="page">Browse journal</a><a href="entry-details.html">Entry details</a><a href="sign-in-and-account.html">Account</a></nav>
+    </div>
+    <div class="workspace">
+      <header class="topbar"><span class="crumb">Your journal <span aria-hidden="true">/</span> Browse</span><div class="top-actions"><span class="badge" data-testid="journal-count" data-tf-sample>128 entries</span><a class="avatar" href="sign-in-and-account.html" aria-label="Account and sign in" data-testid="journal-account-avatar" data-tf-sample>JD</a></div></header>
+      <main class="main">
+        <div class="page-heading">
+          <div><h1>Your journal</h1><p>Find a moment by what you wrote, when it happened, or how you marked it.</p></div>
+          <div class="heading-actions"><a class="button button-secondary" href="home.html" data-testid="journal-back-home">← Home</a></div>
+        </div>
+
+        <div class="browse-stack">
+          <section class="card" aria-label="Search and filter your journal">
+            <div class="card-header"><div><h2 class="card-title">Search &amp; filters</h2><p class="card-description">Filters apply to your one private journal.</p></div></div>
+            <div class="card-content">
+              <div class="filter-layout">
+                <div class="field" data-testid="journal-search">
+                  <label class="label" for="journal-search-input">Search entries</label>
+                  <div class="input-group">
+                    <span class="input-addon" aria-hidden="true">⌕</span>
+                    <input class="input" id="journal-search-input" type="search" placeholder="Try a word or phrase" aria-label="Search journal entries" data-testid="journal-search-input">
+                    <button class="button button-small" type="button" data-testid="journal-search-submit" onclick="showStatus('Search is ready. Matching entries will appear below.')">Search</button>
+                  </div>
+                </div>
+                <div class="field" data-testid="journal-date-filter">
+                  <span class="label">Date range</span>
+                  <div class="date-range">
+                    <label class="date-input-wrap"><span class="hint">From</span><input class="input" type="date" aria-label="Start date" data-testid="journal-date-start"></label>
+                    <label class="date-input-wrap"><span class="hint">To</span><input class="input" type="date" aria-label="End date" data-testid="journal-date-end"></label>
+                  </div>
+                </div>
+              </div>
+              <div class="filter-bottom">
+                <div class="multi-filter-grid" data-testid="journal-filters" aria-label="Journal filters">
+                  <div class="popup-group" data-testid="journal-tag-filter">
+                    <button class="button button-outline filter-trigger" type="button" aria-haspopup="listbox" aria-expanded="true" data-testid="journal-tag-filter-trigger" onclick="showStatus('Choose one or more saved tags to filter the timeline.')"><span>Tags · All</span><span aria-hidden="true">⌄</span></button>
+                    <div class="popup-panel" role="listbox" aria-label="Saved tags" aria-multiselectable="true" data-testid="journal-tag-filter-options" data-tf-state="popup-open">
+                      <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="journal-tag-option-outside" data-tf-sample="true" onclick="showStatus('Outside tag selected in this preview.')">Outside</button>
+                      <button class="popup-option selected" type="button" role="option" aria-selected="true" data-testid="journal-tag-option-small-joys" data-tf-sample="true" onclick="showStatus('Small joys tag selected in this preview.')">Small joys</button>
+                      <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="journal-tag-option-work" data-tf-sample="true" onclick="showStatus('Work tag selected in this preview.')">Work</button>
+                    </div>
+                  </div>
+                  <div class="popup-group" data-testid="journal-set-filter">
+                    <button class="button button-outline filter-trigger" type="button" aria-haspopup="listbox" aria-expanded="true" data-testid="journal-set-filter-trigger" onclick="showStatus('Choose a question set to show its answers.')"><span>Question set · All</span><span aria-hidden="true">⌄</span></button>
+                    <div class="popup-panel" role="listbox" aria-label="Question sets" data-testid="journal-set-filter-options" data-tf-state="popup-open">
+                      <button class="popup-option selected" type="button" role="option" aria-selected="true" data-testid="journal-set-option-all" onclick="showStatus('All question sets selected.')">All sets</button>
+                      <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="journal-set-option-monthly" onclick="showStatus('Monthly Goals filter selected in this preview.')">Monthly Goals</button>
+                      <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="journal-set-option-gratitude" onclick="showStatus('Gratitude filter selected in this preview.')">Gratitude</button>
+                    </div>
+                  </div>
+                  <div class="popup-group" data-testid="journal-mood-filter">
+                    <button class="button button-outline filter-trigger" type="button" aria-haspopup="listbox" aria-expanded="true" data-testid="journal-mood-filter-trigger" onclick="showStatus('Choose a mood to narrow your entries.')"><span>Mood · All</span><span aria-hidden="true">⌄</span></button>
+                    <div class="popup-panel" role="listbox" aria-label="Moods" data-testid="journal-mood-filter-options" data-tf-state="popup-open">
+                      <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="journal-mood-option-calm" data-tf-sample="true" onclick="showStatus('Calm mood selected in this preview.')">Calm</button>
+                      <button class="popup-option selected" type="button" role="option" aria-selected="true" data-testid="journal-mood-option-reflective" data-tf-sample="true" onclick="showStatus('Reflective mood selected in this preview.')">Reflective</button>
+                      <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="journal-mood-option-grateful" data-tf-sample="true" onclick="showStatus('Grateful mood selected in this preview.')">Grateful</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="check-filters">
+                  <label for="filter-photo"><input id="filter-photo" type="checkbox" data-testid="journal-photo-filter"> Has photo</label>
+                  <label for="filter-star"><input id="filter-star" type="checkbox" data-testid="journal-star-filter"> Starred</label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section aria-label="Journal results">
+            <div class="results-heading">
+              <h2>Recent entries</h2>
+              <div class="tabs" role="tablist" aria-label="Journal view" data-testid="journal-view" data-components="Tabs ToggleGroup">
+                <button class="tab active" type="button" role="tab" aria-selected="true" data-testid="journal-view-timeline" onclick="showStatus('Timeline view selected. Entries are shown in date order.')">Timeline</button>
+                <button class="tab" type="button" role="tab" aria-selected="false" data-testid="journal-view-calendar" onclick="showStatus('Calendar view selected. Choose a highlighted date to filter entries.')">Calendar</button>
+              </div>
+            </div>
+            <div class="browse-content">
+              <section class="card" data-testid="journal-timeline" aria-label="Entries in date order">
+                <div class="card-content">
+                  <div class="timeline entry-timeline">
+                    <article class="timeline-item" data-testid="journal-timeline-entry-1" data-tf-sample>
+                      <a class="timeline-link" href="entry-details.html">
+                        <div class="timeline-meta"><time class="timeline-date" datetime="2026-10-24" data-testid="journal-entry-date-1">Saturday, October 24 · 8:18 pm</time><span class="badge badge-outline">Free-flow</span><span class="badge badge-success">★ Starred</span></div>
+                        <h3 class="timeline-title" data-testid="journal-entry-title-1">A walk without a plan</h3>
+                        <p class="timeline-preview" data-testid="journal-entry-preview-1">We took the longer path beside the river. The light had gone soft by the time we turned back, and I felt less hurried than I had all week.</p>
+                      </a>
+                    </article>
+                    <article class="timeline-item" data-testid="journal-timeline-entry-2" data-tf-sample>
+                      <a class="timeline-link" href="entry-details.html">
+                        <div class="timeline-meta"><time class="timeline-date" datetime="2026-10-22" data-testid="journal-entry-date-2">Thursday, October 22 · 7:03 am</time><span class="badge badge-outline">Gratitude</span><span class="badge">Calm</span></div>
+                        <h3 class="timeline-title" data-testid="journal-entry-title-2">A few things that helped</h3>
+                        <p class="timeline-preview" data-testid="journal-entry-preview-2">A quiet breakfast, a kind message, and the first page of a book I’ve been meaning to start.</p>
+                      </a>
+                    </article>
+                    <article class="timeline-item" data-testid="journal-timeline-entry-3" data-tf-sample>
+                      <a class="timeline-link" href="entry-details.html">
+                        <div class="timeline-meta"><time class="timeline-date" datetime="2026-10-19" data-testid="journal-entry-date-3">Monday, October 19 · 9:42 pm</time><span class="badge badge-outline">10-Thought Dump</span><span class="badge">3 thoughts</span></div>
+                        <h3 class="timeline-title" data-testid="journal-entry-title-3">Monday, in fragments</h3>
+                        <p class="timeline-preview" data-testid="journal-entry-preview-3">A useful conversation. Rain on the train window. Remember to call back. Dinner was better than expected.</p>
+                      </a>
+                    </article>
+                    <article class="timeline-item" data-testid="journal-timeline-entry-4" data-tf-sample>
+                      <a class="timeline-link" href="entry-details.html">
+                        <div class="timeline-meta"><time class="timeline-date" datetime="2026-10-16" data-testid="journal-entry-date-4">Friday, October 16 · 6:27 pm</time><span class="badge badge-outline">Free-flow</span><span class="badge">Photo</span></div>
+                        <h3 class="timeline-title" data-testid="journal-entry-title-4">The last warm evening</h3>
+                        <p class="timeline-preview" data-testid="journal-entry-preview-4">We ate outside and stayed until the air turned cool. I saved a photo of the little table under the string lights.</p>
+                      </a>
+                    </article>
+                  </div>
+                  <p class="empty-state" data-testid="journal-empty-state" hidden>No entries match these filters. Try adjusting your search.</p>
+                </div>
+              </section>
+
+              <section class="card" data-testid="journal-calendar" aria-labelledby="calendar-heading">
+                <div class="card-content">
+                  <div class="calendar-header"><button class="button button-ghost button-small" type="button" aria-label="Previous month" data-testid="journal-calendar-previous" onclick="showStatus('Previous month selected.')">‹</button><h2 class="calendar-month" id="calendar-heading" data-testid="journal-calendar-month">October 2026</h2><button class="button button-ghost button-small" type="button" aria-label="Next month" data-testid="journal-calendar-next" onclick="showStatus('Next month selected.')">›</button></div>
+                  <div class="calendar" role="grid" aria-label="October 2026">
+                    <span class="calendar-head" role="columnheader">S</span><span class="calendar-head" role="columnheader">M</span><span class="calendar-head" role="columnheader">T</span><span class="calendar-head" role="columnheader">W</span><span class="calendar-head" role="columnheader">T</span><span class="calendar-head" role="columnheader">F</span><span class="calendar-head" role="columnheader">S</span>
+                    <span class="calendar-cell" aria-hidden="true"></span><span class="calendar-cell" aria-hidden="true"></span><span class="calendar-cell" aria-hidden="true"></span><span class="calendar-cell" aria-hidden="true"></span>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 1, 2026" data-testid="journal-calendar-day-1" onclick="showStatus('October 1 selected.')">1</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 2, 2026" data-testid="journal-calendar-day-2" onclick="showStatus('October 2 selected.')">2</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 3, 2026" data-testid="journal-calendar-day-3" onclick="showStatus('October 3 selected.')">3</button>
+                    <button class="calendar-cell day-button has-entry" type="button" role="gridcell" aria-label="October 4, 2026, entries" data-testid="journal-calendar-day-4" data-tf-sample onclick="showStatus('October 4 selected.')">4</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 5, 2026" data-testid="journal-calendar-day-5" onclick="showStatus('October 5 selected.')">5</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 6, 2026" data-testid="journal-calendar-day-6" onclick="showStatus('October 6 selected.')">6</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 7, 2026" data-testid="journal-calendar-day-7" onclick="showStatus('October 7 selected.')">7</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 8, 2026" data-testid="journal-calendar-day-8" onclick="showStatus('October 8 selected.')">8</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 9, 2026" data-testid="journal-calendar-day-9" onclick="showStatus('October 9 selected.')">9</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 10, 2026" data-testid="journal-calendar-day-10" onclick="showStatus('October 10 selected.')">10</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 11, 2026" data-testid="journal-calendar-day-11" onclick="showStatus('October 11 selected.')">11</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 12, 2026" data-testid="journal-calendar-day-12" onclick="showStatus('October 12 selected.')">12</button>
+                    <button class="calendar-cell day-button has-entry" type="button" role="gridcell" aria-label="October 13, 2026, entries" data-testid="journal-calendar-day-13" data-tf-sample onclick="showStatus('October 13 selected.')">13</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 14, 2026" data-testid="journal-calendar-day-14" onclick="showStatus('October 14 selected.')">14</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 15, 2026" data-testid="journal-calendar-day-15" onclick="showStatus('October 15 selected.')">15</button>
+                    <button class="calendar-cell day-button has-entry" type="button" role="gridcell" aria-label="October 16, 2026, entries" data-testid="journal-calendar-day-16" data-tf-sample onclick="showStatus('October 16 selected.')">16</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 17, 2026" data-testid="journal-calendar-day-17" onclick="showStatus('October 17 selected.')">17</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 18, 2026" data-testid="journal-calendar-day-18" onclick="showStatus('October 18 selected.')">18</button>
+                    <button class="calendar-cell day-button has-entry" type="button" role="gridcell" aria-label="October 19, 2026, entries" data-testid="journal-calendar-day-19" data-tf-sample onclick="showStatus('October 19 selected.')">19</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 20, 2026" data-testid="journal-calendar-day-20" onclick="showStatus('October 20 selected.')">20</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 21, 2026" data-testid="journal-calendar-day-21" onclick="showStatus('October 21 selected.')">21</button>
+                    <button class="calendar-cell day-button has-entry" type="button" role="gridcell" aria-label="October 22, 2026, entries" data-testid="journal-calendar-day-22" data-tf-sample onclick="showStatus('October 22 selected.')">22</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 23, 2026" data-testid="journal-calendar-day-23" onclick="showStatus('October 23 selected.')">23</button>
+                    <button class="calendar-cell day-button has-entry" type="button" role="gridcell" aria-label="October 24, 2026, entries" data-testid="journal-calendar-day-24" data-tf-sample onclick="showStatus('October 24 selected.')">24</button>
+                    <button class="calendar-cell day-button selected" type="button" role="gridcell" aria-label="October 25, 2026, selected" aria-selected="true" data-testid="journal-calendar-day-25" data-tf-sample onclick="showStatus('October 25 selected.')">25</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 26, 2026" data-testid="journal-calendar-day-26" onclick="showStatus('October 26 selected.')">26</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 27, 2026" data-testid="journal-calendar-day-27" onclick="showStatus('October 27 selected.')">27</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 28, 2026" data-testid="journal-calendar-day-28" onclick="showStatus('October 28 selected.')">28</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 29, 2026" data-testid="journal-calendar-day-29" onclick="showStatus('October 29 selected.')">29</button>
+                    <button class="calendar-cell day-button" type="button" role="gridcell" aria-label="October 30, 2026" data-testid="journal-calendar-day-30" onclick="showStatus('October 30 selected.')">30</button>
+                    <button class="calendar-cell day-button has-entry" type="button" role="gridcell" aria-label="October 31, 2026, entries" data-testid="journal-calendar-day-31" data-tf-sample onclick="showStatus('October 31 selected.')">31</button>
+                  </div>
+                  <div class="calendar-legend"><span><span class="legend-mark" aria-hidden="true"></span>Entry saved</span><span><span class="legend-mark" aria-hidden="true"></span>Selected day</span></div>
+                </div>
+              </section>
+            </div>
+          </section>
+        </div>
+        <p class="status-message" id="page-status" data-testid="page-status" role="status" aria-live="polite" hidden></p>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      const status = document.querySelector('[data-testid="page-status"]');
+      status.textContent = message;
+      status.hidden = false;
+    }
+  </script>
+</body>
+</html>

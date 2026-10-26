@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDiary - Backup and restore</title>
+<style>
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.1450 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.1450 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.1450 0 0);
+  --primary: oklch(0.2050 0 0);
+  --primary-foreground: oklch(0.9850 0 0);
+  --secondary: oklch(0.9700 0 0);
+  --secondary-foreground: oklch(0.2050 0 0);
+  --muted: oklch(0.9700 0 0);
+  --muted-foreground: oklch(0.5560 0 0);
+  --accent: oklch(0.9700 0 0);
+  --accent-foreground: oklch(0.2050 0 0);
+  --destructive: oklch(0.5770 0.2450 27.3250);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9220 0 0);
+  --input: oklch(0.9220 0 0);
+  --ring: oklch(0.7080 0 0);
+  --radius: 0.625rem;
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --sidebar: oklch(0.9850 0 0);
+  --sidebar-foreground: oklch(0.1450 0 0);
+  --sidebar-primary: oklch(0.2050 0 0);
+  --sidebar-primary-foreground: oklch(0.9850 0 0);
+  --sidebar-accent: oklch(0.9700 0 0);
+  --sidebar-accent-foreground: oklch(0.2050 0 0);
+  --sidebar-border: oklch(0.9220 0 0);
+  --alert-success: oklch(0.55 0.20 142);
+  --alert-success-bg: oklch(0.96 0.04 142);
+  --alert-success-foreground: oklch(0.38 0.13 142);
+  --alert-info: oklch(0.50 0.20 255);
+  --alert-info-bg: oklch(0.96 0.03 255);
+  --alert-info-foreground: oklch(0.40 0.16 255);
+  --alert-warning: oklch(0.68 0.18 55);
+  --alert-warning-bg: oklch(0.97 0.05 80);
+  --alert-warning-foreground: oklch(0.45 0.13 55);
+  --alert-danger: oklch(0.55 0.22 27);
+  --alert-danger-bg: oklch(0.96 0.03 27);
+  --alert-danger-foreground: oklch(0.45 0.18 27);
+  --overlay: oklch(0 0 0 / 50%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --background: oklch(0.1450 0 0);
+  --foreground: oklch(0.9850 0 0);
+  --card: oklch(0.2050 0 0);
+  --card-foreground: oklch(0.9850 0 0);
+  --popover: oklch(0.2690 0 0);
+  --popover-foreground: oklch(0.9850 0 0);
+  --primary: oklch(0.9220 0 0);
+  --primary-foreground: oklch(0.2050 0 0);
+  --secondary: oklch(0.2690 0 0);
+  --secondary-foreground: oklch(0.9850 0 0);
+  --muted: oklch(0.2690 0 0);
+  --muted-foreground: oklch(0.7080 0 0);
+  --accent: oklch(0.2690 0 0);
+  --accent-foreground: oklch(0.9850 0 0);
+  --destructive: oklch(0.7040 0.1910 22.2160);
+  --destructive-foreground: oklch(0.1450 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.5560 0 0);
+  --sidebar: oklch(0.2050 0 0);
+  --sidebar-foreground: oklch(0.9850 0 0);
+  --sidebar-primary: oklch(0.4880 0.2430 264.3760);
+  --sidebar-primary-foreground: oklch(0.9850 0 0);
+  --sidebar-accent: oklch(0.2690 0 0);
+  --sidebar-accent-foreground: oklch(0.9850 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --alert-success: oklch(0.72 0.17 142);
+  --alert-success-bg: oklch(0.30 0.06 142);
+  --alert-success-foreground: oklch(0.90 0.08 142);
+  --alert-info: oklch(0.72 0.15 255);
+  --alert-info-bg: oklch(0.30 0.05 255);
+  --alert-info-foreground: oklch(0.90 0.06 255);
+  --alert-warning: oklch(0.80 0.15 75);
+  --alert-warning-bg: oklch(0.32 0.06 65);
+  --alert-warning-foreground: oklch(0.92 0.07 75);
+  --alert-danger: oklch(0.70 0.18 27);
+  --alert-danger-bg: oklch(0.30 0.07 27);
+  --alert-danger-foreground: oklch(0.90 0.07 27);
+  --overlay: oklch(0 0 0 / 60%); }
+}
+:root[data-theme="dark"] { --background: oklch(0.1450 0 0);
+  --foreground: oklch(0.9850 0 0);
+  --card: oklch(0.2050 0 0);
+  --card-foreground: oklch(0.9850 0 0);
+  --popover: oklch(0.2690 0 0);
+  --popover-foreground: oklch(0.9850 0 0);
+  --primary: oklch(0.9220 0 0);
+  --primary-foreground: oklch(0.2050 0 0);
+  --secondary: oklch(0.2690 0 0);
+  --secondary-foreground: oklch(0.9850 0 0);
+  --muted: oklch(0.2690 0 0);
+  --muted-foreground: oklch(0.7080 0 0);
+  --accent: oklch(0.2690 0 0);
+  --accent-foreground: oklch(0.9850 0 0);
+  --destructive: oklch(0.7040 0.1910 22.2160);
+  --destructive-foreground: oklch(0.1450 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.5560 0 0);
+  --sidebar: oklch(0.2050 0 0);
+  --sidebar-foreground: oklch(0.9850 0 0);
+  --sidebar-primary: oklch(0.4880 0.2430 264.3760);
+  --sidebar-primary-foreground: oklch(0.9850 0 0);
+  --sidebar-accent: oklch(0.2690 0 0);
+  --sidebar-accent-foreground: oklch(0.9850 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --alert-success: oklch(0.72 0.17 142);
+  --alert-success-bg: oklch(0.30 0.06 142);
+  --alert-success-foreground: oklch(0.90 0.08 142);
+  --alert-info: oklch(0.72 0.15 255);
+  --alert-info-bg: oklch(0.30 0.05 255);
+  --alert-info-foreground: oklch(0.90 0.06 255);
+  --alert-warning: oklch(0.80 0.15 75);
+  --alert-warning-bg: oklch(0.32 0.06 65);
+  --alert-warning-foreground: oklch(0.92 0.07 75);
+  --alert-danger: oklch(0.70 0.18 27);
+  --alert-danger-bg: oklch(0.30 0.07 27);
+  --alert-danger-foreground: oklch(0.90 0.07 27);
+  --overlay: oklch(0 0 0 / 60%); }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+[hidden] { display: none !important; }
+h1, h2, p { margin: 0; }
+.app { display: flex; flex-direction: column; min-height: 100vh; width: 100%; max-width: 100%; }
+.sidebar { background: var(--sidebar); color: var(--sidebar-foreground); border-bottom: 1px solid var(--sidebar-border); padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sidebar-header { font-weight: 600; }
+.sidebar-nav { display: flex; flex-wrap: wrap; gap: 4px; }
+.nav-item { display: block; padding: 6px 10px; border-radius: var(--radius-md); color: inherit; text-decoration: none; font-size: 14px; }
+.nav-item:hover { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
+.nav-item[aria-current="page"] { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); font-weight: 600; }
+.main { flex: 1; min-width: 0; width: 100%; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.page-header h1 { font-size: 22px; font-weight: 700; }
+.page-sub { color: var(--muted-foreground); font-size: 14px; margin-top: 4px; }
+.card { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card-title { font-size: 16px; font-weight: 600; }
+.card-desc { color: var(--muted-foreground); font-size: 13px; }
+.card-footer { display: flex; flex-wrap: wrap; gap: 8px; }
+.section-label { font-size: 13px; font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.label { font-size: 14px; font-weight: 500; }
+.hint { font-size: 12px; color: var(--muted-foreground); }
+.muted { color: var(--muted-foreground); }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.row > div { min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.input, .textarea { width: 100%; min-width: 0; height: 36px; border: 1px solid var(--input); border-radius: var(--radius-md); background: var(--background); color: var(--foreground); padding: 6px 10px; font: inherit; }
+.textarea { height: auto; min-height: 110px; resize: vertical; }
+.input:disabled, .textarea:disabled { opacity: .5; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: var(--radius-md); border: 1px solid transparent; font: inherit; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; background: var(--primary); color: var(--primary-foreground); white-space: nowrap; }
+.btn-outline { background: var(--background); border-color: var(--border); color: var(--foreground); }
+.btn-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.btn-ghost { background: transparent; color: var(--foreground); }
+.btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.btn-sm { height: 32px; padding: 0 12px; font-size: 13px; }
+.btn-icon { width: 36px; padding: 0; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-full { width: 100%; }
+.badge { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; border: 1px solid transparent; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.badge-default { background: var(--primary); color: var(--primary-foreground); }
+.badge-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.badge-outline { border-color: var(--border); color: var(--foreground); }
+.badge-success { background: var(--alert-success-bg); color: var(--alert-success-foreground); border-color: var(--alert-success); }
+.badge-warning { background: var(--alert-warning-bg); color: var(--alert-warning-foreground); border-color: var(--alert-warning); }
+.badge-danger { background: var(--alert-danger-bg); color: var(--alert-danger-foreground); border-color: var(--alert-danger); }
+.alert { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.alert-title { font-weight: 600; }
+.alert-success { background: var(--alert-success-bg); color: var(--alert-success-foreground); border-color: var(--alert-success); }
+.alert-info { background: var(--alert-info-bg); color: var(--alert-info-foreground); border-color: var(--alert-info); }
+.alert-warning { background: var(--alert-warning-bg); color: var(--alert-warning-foreground); border-color: var(--alert-warning); }
+.alert-danger { background: var(--alert-danger-bg); color: var(--alert-danger-foreground); border-color: var(--alert-danger); }
+.progress { height: 8px; background: var(--secondary); border-radius: 999px; overflow: hidden; }
+.progress > span { display: block; height: 100%; background: var(--primary); }
+.separator { height: 1px; width: 100%; background: var(--border); }
+.switch { width: 36px; height: 20px; flex: none; border-radius: 999px; background: var(--input); border: 1px solid transparent; position: relative; padding: 0; cursor: pointer; }
+.switch::after { content: ""; position: absolute; top: 1px; left: 1px; width: 16px; height: 16px; border-radius: 50%; background: var(--background); transition: transform .15s; }
+.switch[data-state="checked"] { background: var(--primary); }
+.switch[data-state="checked"]::after { transform: translateX(16px); background: var(--primary-foreground); }
+.switch:disabled { opacity: .5; }
+.choice { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
+.choice input { margin-top: 4px; accent-color: var(--primary); width: 16px; height: 16px; flex: none; }
+.choice input:disabled { opacity: .5; }
+.choice-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.overlay { position: fixed; inset: 0; background: var(--overlay); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; overflow-y: auto; }
+.dialog { background: var(--background); color: var(--foreground); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 32rem; max-height: calc(100vh - 2rem); display: flex; flex-direction: column; overflow: hidden; }
+.dialog-header { padding: 16px 16px 0; display: flex; flex-direction: column; gap: 4px; position: relative; }
+.dialog-title { font-size: 17px; font-weight: 600; padding-right: 40px; }
+.dialog-desc { font-size: 13px; color: var(--muted-foreground); }
+.dialog-close { position: absolute; top: 10px; right: 10px; }
+.dialog-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; min-height: 0; }
+.dialog-footer { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.kv { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.kv-value { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.table-wrap { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+th { color: var(--muted-foreground); font-weight: 500; font-size: 13px; }
+tr:last-child td { border-bottom: 0; }
+td.cell-actions { white-space: normal; }
+.cell-actions .btn + .btn { margin-left: 6px; }
+@media (min-width: 768px) {
+  .sidebar { width: 16rem; min-height: 100vh; border-bottom: 0; border-right: 1px solid var(--sidebar-border); position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: none; }
+  .sidebar-nav { flex-direction: column; flex-wrap: nowrap; }
+  .app { flex-direction: row; }
+  .main { padding: 24px 32px; }
+}
+@media (max-width: 639px) {
+  thead { display: none; }
+  table, tbody { display: block; width: 100%; }
+  tr { display: block; padding: 12px; border-bottom: 1px solid var(--border); }
+  tr:last-child { border-bottom: 0; }
+  td { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; border: 0; text-align: right; }
+  td::before { content: attr(data-label); color: var(--muted-foreground); text-align: left; flex: none; }
+  td.cell-actions { justify-content: flex-start; flex-wrap: wrap; }
+  td.cell-actions::before { display: none; }
+  .overlay { padding: 8px; }
+}
+
+</style>
+</head>
+<body>
+<div class="app" data-testid="sidebar-provider" data-screen="backup">
+<aside class="sidebar" data-testid="sidebar"><div class="sidebar-header" data-testid="sidebar-header">MyDiary</div><nav class="sidebar-nav" data-testid="sidebar-nav" aria-label="Main"><a class="nav-item" href="home.html" data-testid="nav-home">Home</a><a class="nav-item" href="entries.html" data-testid="nav-entries">Entries</a><a class="nav-item" href="search.html" data-testid="nav-search">Search</a><a class="nav-item" href="ask.html" data-testid="nav-ask">Ask</a><a class="nav-item" href="compare.html" data-testid="nav-compare">Compare</a><a class="nav-item" href="questions.html" data-testid="nav-questions">Questions</a><a class="nav-item" href="on-this-day.html" data-testid="nav-on-this-day">On This Day</a><a class="nav-item" href="account.html" data-testid="nav-account">Account</a><a class="nav-item" href="plan-devices.html" data-testid="nav-plan-devices">Plan and devices</a><a class="nav-item" href="settings.html" data-testid="nav-settings">Settings</a><a class="nav-item" href="backup.html" data-testid="nav-backup" aria-current="page">Backup and restore</a><a class="nav-item" href="data.html" data-testid="nav-data">Export and import</a></nav><a class="btn btn-full" href="entry-new.html" data-testid="write-entry-button">Write entry</a></aside>
+<main class="main" data-testid="main-content">
+
+<header class="page-header" data-testid="page-header">
+  <h1>Backup and restore</h1>
+  <p class="page-sub">Back up your journal to your own cloud drive. Journal text goes only to the provider you choose.</p>
+</header>
+<div id="status" class="alert alert-success" role="status" data-testid="status-message" hidden></div>
+
+<section data-testid="backup-paid-state" data-tf-state="paid" class="main" style="padding:0;gap:16px">
+  <section class="card" data-testid="provider-card" aria-labelledby="prov-title">
+    <h2 class="card-title" id="prov-title">Backup provider</h2>
+    <fieldset class="stack" style="border:0;padding:0;margin:0" data-testid="provider-radio-group">
+      <legend class="label" style="margin-bottom:4px">Provider</legend>
+      <label class="choice" data-testid="provider-option-google">
+        <input type="radio" name="provider" checked>
+        <span class="choice-text"><span>Google Drive</span><span class="hint">Your own Google account.</span></span>
+      </label>
+      <label class="choice" data-testid="provider-option-onedrive">
+        <input type="radio" name="provider">
+        <span class="choice-text"><span>OneDrive</span><span class="hint">Your own Microsoft account.</span></span>
+      </label>
+    </fieldset>
+  </section>
+
+  <section class="card" data-testid="backup-status-card" aria-labelledby="status-title">
+    <h2 class="card-title" id="status-title">Last backup</h2>
+    <div class="kv" data-testid="last-backup-row">
+      <span class="muted">Last backup</span>
+      <span class="kv-value" data-testid="last-backup-time">2026-10-23 22:05 from Pixel 8</span>
+    </div>
+    <div class="row" data-testid="sync-row">
+      <div>
+        <div class="label">Sync</div>
+        <p class="hint" data-testid="sync-status-text">Last sync 2026-10-24 08:12 from Surface Laptop 5.</p>
+      </div>
+      <span class="badge badge-success" data-testid="sync-status">Synced</span>
+    </div>
+    <div class="card-footer">
+      <button class="btn" data-testid="back-up-now-button" onclick="say('Backup saved to Google Drive at 2026-10-24 09:30.')">Back up now</button>
+      <button class="btn btn-outline" data-testid="restore-button" onclick="say('Restore started. Entries from the backup will appear on this device.')">Restore</button>
+    </div>
+  </section>
+</section>
+
+<div class="separator" aria-hidden="true"></div>
+<p class="section-label">Free-user state</p>
+
+<section class="card" data-testid="backup-free-state" data-tf-state="free" aria-labelledby="free-title">
+  <h2 class="card-title" id="free-title">Backup and restore</h2>
+  <div class="alert alert-warning" role="note" data-testid="free-notice">
+    <span class="alert-title">Backup is a paid feature</span>
+    <span>No backup runs on the free plan. Upgrade to back up and restore your journal.</span>
+  </div>
+  <fieldset class="stack" style="border:0;padding:0;margin:0" data-testid="free-provider-group">
+    <legend class="label" style="margin-bottom:4px">Provider</legend>
+    <label class="choice"><input type="radio" name="free-provider" disabled><span>Google Drive</span></label>
+    <label class="choice"><input type="radio" name="free-provider" disabled><span>OneDrive</span></label>
+  </fieldset>
+  <div class="row" data-testid="free-sync-row">
+    <span class="muted">Last backup</span>
+    <span class="badge badge-outline" data-testid="free-last-backup">None</span>
+  </div>
+  <div class="card-footer">
+    <button class="btn" onclick="alert('Backup is a paid feature. Upgrade to back up.')" data-testid="back-up-now-button-free" data-tf-state="free">Back up now</button>
+    <button class="btn btn-outline" onclick="alert('Restore is a paid feature.')" data-testid="restore-button-free" data-tf-state="free">Restore</button>
+  </div>
+</section>
+
+</main>
+</div>
+<script>
+function say(t){var s=document.getElementById('status');if(s){s.textContent=t;s.hidden=false;}}
+function openD(id){document.getElementById(id).hidden=false;}
+function closeD(id){document.getElementById(id).hidden=true;}
+function tog(b){var on=b.getAttribute('aria-checked')==='true';b.setAttribute('aria-checked',String(!on));b.dataset.state=on?'unchecked':'checked';}
+</script>
+</body>
+</html>

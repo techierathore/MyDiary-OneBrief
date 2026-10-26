@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Welcome</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="welcome-app-bar">
+      <div>
+        <div class="app-bar-title">MyDiary</div>
+        <div class="app-bar-subtitle">Your private journal</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="text-center" style="padding: 16px 0 8px;">
+        <div style="font-size: 4rem; margin-bottom: 8px;">📔</div>
+        <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin-bottom: 6px;">Welcome to MyDiary</h1>
+        <p style="color: var(--slate-500); font-size: 0.9375rem;">One journal. Every device. Yours alone.</p>
+      </div>
+
+      <div class="tabs" data-testid="welcome-tabs">
+        <div class="tab active" data-testid="welcome-tab-signin">Sign in</div>
+        <div class="tab" data-testid="welcome-tab-create">Create account</div>
+      </div>
+
+      <div class="card" data-testid="welcome-signin-card">
+        <div class="field">
+          <label class="field-label">Email</label>
+          <input type="email" class="input" placeholder="you@example.com" data-testid="welcome-email-input">
+        </div>
+        <div class="field">
+          <label class="field-label">Password</label>
+          <input type="password" class="input" placeholder="••••••••" data-testid="welcome-password-input">
+        </div>
+        <a href="home.html" class="btn btn-primary btn-block" data-testid="welcome-signin-button">Sign in</a>
+        <a href="#forgot" class="btn btn-ghost btn-block" data-testid="welcome-forgot-link">Forgot password?</a>
+      </div>
+
+      <div class="card hidden" data-testid="welcome-create-card">
+        <div class="field">
+          <label class="field-label">First name</label>
+          <input type="text" class="input" placeholder="Jane" data-testid="welcome-firstname-input">
+        </div>
+        <div class="field">
+          <label class="field-label">Last name</label>
+          <input type="text" class="input" placeholder="Doe" data-testid="welcome-lastname-input">
+        </div>
+        <div class="field">
+          <label class="field-label">Email</label>
+          <input type="email" class="input" placeholder="you@example.com" data-testid="welcome-create-email-input">
+        </div>
+        <div class="field">
+          <label class="field-label">Password</label>
+          <input type="password" class="input" placeholder="••••••••" data-testid="welcome-create-password-input">
+        </div>
+        <a href="home.html" class="btn btn-primary btn-block" data-testid="welcome-create-button">Create account</a>
+      </div>
+
+      <p class="text-center" style="font-size: 0.8125rem; color: var(--slate-400);">Your journal stays on this device unless you back it up.</p>
+    </div>
+
+    <div class="dialog-overlay" id="forgot" data-tf-state="popup-open" data-testid="welcome-forgot-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Reset password</div>
+        <div class="field">
+          <label class="field-label">Email</label>
+          <input type="email" class="input" placeholder="you@example.com" data-testid="welcome-forgot-email-input">
+        </div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="welcome-forgot-submit" onclick="alert('Reset link sent');">Send reset link</a>
+        <a href="#" class="btn btn-ghost btn-block" data-testid="welcome-forgot-cancel">Cancel</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

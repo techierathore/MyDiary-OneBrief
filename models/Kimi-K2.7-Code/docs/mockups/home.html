@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="home-app-bar">
+      <div class="app-bar-title">Today</div>
+      <div class="app-bar-actions">
+        <a href="search.html" class="icon-btn" data-testid="home-search-button" aria-label="Search">🔍</a>
+        <a href="settings.html" class="icon-btn" data-testid="home-settings-button" aria-label="Settings">⚙</a>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="card stat-card" data-testid="home-streak-card">
+        <div class="stat-icon">🔥</div>
+        <div>
+          <div class="stat-value" data-testid="home-streak-count">12</div>
+          <div class="stat-label">day streak</div>
+        </div>
+      </div>
+
+      <div class="card story-card" data-testid="home-onthisday-card">
+        <div class="section-title" style="color: #9a3412;">On this day</div>
+        <p class="story-text" data-testid="home-onthisday-story">Two years ago you wrote about finally finishing the garden project — a quiet, satisfying afternoon.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Today's entries</div>
+        <a href="entry.html" class="list-item" data-testid="home-entry-item" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">Morning reflection</div>
+            <div class="list-item-subtitle">08:14 · Free-Flow</div>
+          </div>
+          <div class="list-item-arrow">⭐</div>
+        </a>
+        <a href="dump.html" class="list-item" data-testid="home-entry-item" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">10-Thought Dump</div>
+            <div class="list-item-subtitle">07:42 · Dump</div>
+          </div>
+          <span class="chip chip-outline">Dump</span>
+        </a>
+      </div>
+    </div>
+
+    <a href="#write" class="fab" data-testid="home-write-fab">+</a>
+
+    <div class="bottom-nav" data-testid="home-bottom-nav">
+      <a href="home.html" class="nav-item active"><span class="nav-icon">🏠</span>Home</a>
+      <a href="timeline.html" class="nav-item"><span class="nav-icon">📜</span>Timeline</a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span>Calendar</a>
+      <a href="ask.html" class="nav-item"><span class="nav-icon">✨</span>Ask</a>
+      <a href="account.html" class="nav-item"><span class="nav-icon">👤</span>Account</a>
+    </div>
+
+    <div class="sheet-overlay" id="write" data-tf-state="popup-open" data-testid="home-write-sheet">
+      <div class="sheet">
+        <div class="sheet-title">What would you like to write?</div>
+        <a href="dump.html" class="sheet-option" data-testid="home-write-dump">
+          <span class="sheet-option-icon">⚡</span>
+          <span>10-Thought Dump</span>
+        </a>
+        <a href="entry.html" class="sheet-option" data-testid="home-write-entry">
+          <span class="sheet-option-icon">✍️</span>
+          <span>Free-Flow entry</span>
+        </a>
+        <a href="question-set.html" class="sheet-option" data-testid="home-write-questions">
+          <span class="sheet-option-icon">❓</span>
+          <span>Targeted Questioning</span>
+        </a>
+        <a href="#" class="sheet-option" data-testid="home-write-cancel" style="background: transparent; justify-content: center;">Cancel</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

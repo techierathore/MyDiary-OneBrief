@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDiary — Calendar</title>
+<style>
+:root{
+  --background:oklch(1 0 0);--foreground:oklch(0.1450 0 0);
+  --card:oklch(1 0 0);--card-foreground:oklch(0.1450 0 0);
+  --popover:oklch(1 0 0);--popover-foreground:oklch(0.1450 0 0);
+  --primary:oklch(0.2050 0 0);--primary-foreground:oklch(0.9850 0 0);
+  --secondary:oklch(0.9700 0 0);--secondary-foreground:oklch(0.2050 0 0);
+  --muted:oklch(0.9700 0 0);--muted-foreground:oklch(0.5560 0 0);
+  --accent:oklch(0.9700 0 0);--accent-foreground:oklch(0.2050 0 0);
+  --destructive:oklch(0.5770 0.2450 27.3250);--destructive-foreground:oklch(1 0 0);
+  --border:oklch(0.9220 0 0);--input:oklch(0.9220 0 0);--ring:oklch(0.7080 0 0);
+  --radius:0.625rem;
+  --sidebar:oklch(0.9850 0 0);--sidebar-foreground:oklch(0.1450 0 0);
+  --sidebar-primary:oklch(0.2050 0 0);--sidebar-primary-foreground:oklch(0.9850 0 0);
+  --sidebar-accent:oklch(0.9700 0 0);--sidebar-accent-foreground:oklch(0.2050 0 0);
+  --sidebar-border:oklch(0.9220 0 0);
+  --alert-success:oklch(0.55 0.20 142);--alert-info:oklch(0.50 0.20 255);
+  --alert-warning:oklch(0.68 0.18 55);--alert-danger:oklch(0.55 0.22 27);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--background);color:var(--foreground);
+  font:14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.icon{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* layout shell */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:16rem;flex:none;background:var(--sidebar);color:var(--sidebar-foreground);
+  border-right:1px solid var(--sidebar-border);display:flex;flex-direction:column}
+.sidebar-header{display:flex;align-items:center;gap:10px;padding:16px 16px 8px}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:var(--sidebar-primary);
+  color:var(--sidebar-primary-foreground);display:flex;align-items:center;justify-content:center}
+.sidebar-header b{font-size:15px}
+.sidebar-header small{display:block;color:var(--muted-foreground);font-size:11px}
+.sidebar-content{flex:1;padding:8px 12px;overflow:auto}
+.group-label{font-size:11px;font-weight:500;color:var(--muted-foreground);padding:16px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;
+  font-size:13px;color:var(--sidebar-foreground);margin:1px 0}
+.nav-item:hover{background:var(--sidebar-accent)}
+.nav-item.active{background:var(--sidebar-accent);color:var(--sidebar-accent-foreground);
+  font-weight:500}
+.sidebar-footer{border-top:1px solid var(--sidebar-border);padding:10px 12px;display:flex;
+  align-items:center;gap:10px}
+.avatar{width:30px;height:30px;border-radius:999px;background:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.inset{flex:1;display:flex;flex-direction:column;min-width:0}
+.pagebar{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;
+  gap:12px;padding:0 24px}
+.pagebar h1{font-size:16px;font-weight:600;margin:0}
+.pagebar .spacer{flex:1}
+.content{padding:24px;max-width:960px}
+.stack>*+*{margin-top:24px}
+.grid{display:grid;gap:16px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;
+  padding:0 16px;border-radius:calc(var(--radius) - 4px);border:1px solid transparent;
+  font-size:13.5px;font-weight:500;cursor:pointer;background:var(--primary);
+  color:var(--primary-foreground)}
+.btn:hover{opacity:.9}
+.btn-outline{background:var(--background);color:var(--foreground);border-color:var(--border)}
+.btn-ghost{background:transparent;color:var(--foreground)}
+.btn-destructive{background:var(--destructive);color:var(--destructive-foreground)}
+.btn-sm{height:30px;padding:0 10px;font-size:12.5px}
+.icon-btn{width:30px;height:30px;border-radius:6px;border:none;background:transparent;
+  cursor:pointer;color:var(--muted-foreground);display:inline-flex;align-items:center;
+  justify-content:center}
+.icon-btn:hover{background:var(--accent);color:var(--foreground)}
+/* cards */
+.card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:0 1px 2px oklch(0 0 0/4%)}
+.card-header{padding:16px 16px 0}
+.card-title{font-weight:600;font-size:14.5px;margin:0}
+.card-desc{color:var(--muted-foreground);font-size:12.5px;margin:2px 0 0}
+.card-content{padding:16px}
+.card-footer{padding:0 16px 16px;display:flex;gap:8px;align-items:center}
+/* forms */
+.label{font-size:13px;font-weight:500;display:block;margin:0 0 6px}
+.input,.select,.textarea{width:100%;height:36px;border:1px solid var(--input);border-radius:
+  calc(var(--radius) - 4px);background:var(--background);padding:0 12px;font:inherit;color:inherit}
+.textarea{height:auto;min-height:80px;padding:10px 12px;resize:vertical}
+.field{margin:0}
+.field+.field{margin-top:16px}
+.hint{font-size:12px;color:var(--muted-foreground);margin-top:4px}
+/* badges, chips, alerts */
+.badge{display:inline-flex;align-items:center;gap:6px;height:20px;padding:0 8px;border-radius:999px;
+  font-size:11.5px;font-weight:500;background:var(--primary);color:var(--primary-foreground)}
+.badge.secondary{background:var(--secondary);color:var(--secondary-foreground)}
+.badge.outline{background:transparent;color:var(--foreground);border:1px solid var(--border)}
+.badge.success{background:color-mix(in oklab,var(--alert-success) 15%,white);
+  color:var(--alert-success)}
+.badge.warning{background:color-mix(in oklab,var(--alert-warning) 20%,white);
+  color:oklch(0.45 0.12 55)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;
+  background:var(--secondary);color:var(--secondary-foreground);font-size:12.5px}
+.alert{display:flex;gap:10px;padding:12px 14px;border-radius:calc(var(--radius) - 4px);
+  border:1px solid var(--border);background:var(--background);font-size:13px}
+.alert.warning{border-color:color-mix(in oklab,var(--alert-warning) 45%,var(--border));
+  background:color-mix(in oklab,var(--alert-warning) 10%,white)}
+.alert.info{border-color:color-mix(in oklab,var(--alert-info) 40%,var(--border));
+  background:color-mix(in oklab,var(--alert-info) 8%,white)}
+/* table */
+.table{width:100%;border-collapse:collapse;font-size:13px}
+.table th{text-align:left;font-weight:500;color:var(--muted-foreground);font-size:12px;
+  padding:8px 10px;border-bottom:1px solid var(--border)}
+.table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle}
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border)}
+.tab{padding:8px 14px;font-size:13.5px;color:var(--muted-foreground);border-bottom:2px solid
+  transparent;margin-bottom:-1px;cursor:pointer}
+.tab.active{color:var(--foreground);font-weight:500;border-bottom-color:var(--foreground)}
+/* switch */
+.switch{width:38px;height:22px;border-radius:999px;background:var(--input);border:none;
+  position:relative;cursor:pointer;flex:none}
+.switch.on{background:var(--primary)}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;
+  border-radius:999px;background:white;transition:left .15s}
+.switch.on::after{left:18px}
+/* dialog */
+.dialog-backdrop{position:fixed;inset:0;background:oklch(0 0 0/45%);display:flex;
+  align-items:center;justify-content:center;padding:24px;z-index:20}
+.dialog{width:100%;max-width:440px;background:var(--popover);color:var(--popover-foreground);
+  border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 10px 30px oklch(0 0 0/18%)}
+.dialog-head{display:flex;align-items:flex-start;gap:12px;padding:16px 16px 0}
+.dialog-head h2{font-size:15px;font-weight:600;margin:0}
+.dialog-head p{color:var(--muted-foreground);font-size:12.5px;margin:2px 0 0}
+.dialog-head .spacer{flex:1}
+.dialog-body{padding:16px}
+.dialog-foot{display:flex;justify-content:flex-end;gap:8px;padding:0 16px 16px}
+/* stat tile */
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px}
+.stat b{font-size:22px;display:block}
+.stat span{color:var(--muted-foreground);font-size:12px}
+/* empty state */
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:32px;
+  color:var(--muted-foreground);text-align:center;border:1px dashed var(--border);
+  border-radius:var(--radius)}
+/* calendar screen */
+.cal-switch{display:flex;align-items:center;gap:2px}
+.cal-month{font-weight:600;font-size:14px;min-width:112px;text-align:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:calc(var(--radius) - 4px);overflow:hidden}
+.cal-dow{background:var(--card);padding:8px 6px;font-size:11.5px;font-weight:500;
+  color:var(--muted-foreground);text-transform:uppercase;letter-spacing:.04em;text-align:center}
+.cal-cell{background:var(--card);min-height:64px;padding:6px;position:relative;display:block}
+a.cal-cell:hover{background:var(--accent)}
+.cal-cell.out{color:var(--muted-foreground);background:var(--muted)}
+.cal-num{font-size:12.5px;font-weight:500}
+.cal-num.today{display:inline-flex;align-items:center;justify-content:center;width:22px;
+  height:22px;border-radius:999px;background:var(--primary);color:var(--primary-foreground);
+  font-weight:600;font-size:12px}
+.cal-count{position:absolute;top:6px;right:6px;height:18px;padding:0 7px;font-size:11px}
+.cal-legend{margin-top:12px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="sidebar" data-testid="sidebar" aria-label="App navigation">
+    <div class="sidebar-header">
+      <div class="logo-mark"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></div>
+      <div><b>MyDiary</b><small>one journal, yours</small></div>
+    </div>
+    <div class="sidebar-content">
+      <div class="group-label">Write</div>
+      <a class="nav-item" data-testid="nav-home" href="home.html"><svg class="icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21h-7v-6H10v6H3z"/></svg><span>Home</span></a>
+      <a class="nav-item" data-testid="nav-write-dump" href="write-dump.html"><svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg><span>10-Thought Dump</span></a>
+      <a class="nav-item" data-testid="nav-write-free" href="write-free.html"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Free-Flow</span></a>
+      <a class="nav-item" data-testid="nav-sets" href="sets.html"><svg class="icon" viewBox="0 0 24 24"><path d="M9 3h6M9 9h6M9 15h6M4 6h2M4 12h2M4 18h2"/></svg><span>Question sets</span></a>
+      <div class="group-label">Look back</div>
+      <a class="nav-item" data-testid="nav-timeline" href="timeline.html"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 3"/></svg><span>Timeline</span></a>
+      <a class="nav-item active" data-testid="nav-calendar" href="calendar.html"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendar</span></a>
+      <a class="nav-item" data-testid="nav-search" href="search.html"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span></a>
+      <a class="nav-item" data-testid="nav-ask" href="ask.html"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/></svg><span>Ask</span></a>
+      <a class="nav-item" data-testid="nav-compare" href="compare.html"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg><span>Compare</span></a>
+      <div class="group-label">Settings</div>
+      <a class="nav-item" data-testid="nav-settings" href="settings.html"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span></a>
+      <a class="nav-item" data-testid="nav-settings-plan" href="settings-plan.html"><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg><span>Plan &amp; devices</span></a>
+      <a class="nav-item" data-testid="nav-settings-backup" href="settings-backup.html"><svg class="icon" viewBox="0 0 24 24"><path d="M4 14.9A7 7 0 1 1 5.7 21"/><path d="M12 12V3l4 4"/></svg><span>Backup &amp; sync</span></a>
+      <a class="nav-item" data-testid="nav-settings-support" href="settings-support.html"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m5 17 2-2M17 7l-2 2"/></svg><span>Support &amp; privacy</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar" data-testid="sidebar-user">MR</div>
+      <div style="flex:1;min-width:0"><b style="font-size:12.5px">Maya Rao</b>
+        <div style="font-size:11px;color:var(--muted-foreground)">Free · 1 device</div></div>
+      <a class="icon-btn" data-testid="sign-out" href="signin.html" title="Sign out"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></a>
+    </div>
+  </nav>
+  <main class="inset">
+    <header class="pagebar">
+      <h1 data-testid="page-title">Calendar</h1>
+      <div class="cal-switch">
+        <button class="icon-btn" data-testid="cal-prev" onclick="alert('Previous month')" aria-label="Previous month"><svg class="icon" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="cal-month" data-testid="cal-month">October 2026</span>
+        <button class="icon-btn" data-testid="cal-next" onclick="alert('Next month')" aria-label="Next month"><svg class="icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+      <div class="spacer"></div>
+    </header>
+    <div class="content stack">
+      <div class="card">
+        <div class="card-content">
+          <div class="cal-grid">
+            <div class="cal-dow">Mon</div>
+            <div class="cal-dow">Tue</div>
+            <div class="cal-dow">Wed</div>
+            <div class="cal-dow">Thu</div>
+            <div class="cal-dow">Fri</div>
+            <div class="cal-dow">Sat</div>
+            <div class="cal-dow">Sun</div>
+            <!-- week of 28 Sep – 4 Oct -->
+            <div class="cal-cell out"><span class="cal-num">28</span></div>
+            <div class="cal-cell out"><span class="cal-num">29</span></div>
+            <div class="cal-cell out"><span class="cal-num">30</span></div>
+            <div class="cal-cell"><span class="cal-num">1</span></div>
+            <a class="cal-cell" href="calendar-day.html" data-testid="day-2"><span class="cal-num">2</span><span class="badge secondary cal-count" data-tf-sample>1</span></a>
+            <div class="cal-cell"><span class="cal-num">3</span></div>
+            <div class="cal-cell"><span class="cal-num">4</span></div>
+            <!-- week of 5 – 11 Oct -->
+            <div class="cal-cell"><span class="cal-num">5</span></div>
+            <div class="cal-cell"><span class="cal-num">6</span></div>
+            <div class="cal-cell"><span class="cal-num">7</span></div>
+            <div class="cal-cell"><span class="cal-num">8</span></div>
+            <a class="cal-cell" href="calendar-day.html" data-testid="day-9"><span class="cal-num">9</span><span class="badge secondary cal-count" data-tf-sample>1</span></a>
+            <div class="cal-cell"><span class="cal-num">10</span></div>
+            <div class="cal-cell"><span class="cal-num">11</span></div>
+            <!-- week of 12 – 18 Oct -->
+            <a class="cal-cell" href="calendar-day.html" data-testid="day-12"><span class="cal-num">12</span><span class="badge secondary cal-count" data-tf-sample>3</span></a>
+            <div class="cal-cell"><span class="cal-num">13</span></div>
+            <div class="cal-cell"><span class="cal-num">14</span></div>
+            <div class="cal-cell"><span class="cal-num">15</span></div>
+            <div class="cal-cell"><span class="cal-num">16</span></div>
+            <div class="cal-cell"><span class="cal-num">17</span></div>
+            <a class="cal-cell" href="calendar-day.html" data-testid="day-18"><span class="cal-num">18</span><span class="badge secondary cal-count" data-tf-sample>1</span></a>
+            <!-- week of 19 – 25 Oct -->
+            <a class="cal-cell" href="calendar-day.html" data-testid="day-19"><span class="cal-num">19</span><span class="badge secondary cal-count" data-tf-sample>2</span></a>
+            <div class="cal-cell"><span class="cal-num">20</span></div>
+            <div class="cal-cell"><span class="cal-num">21</span></div>
+            <div class="cal-cell"><span class="cal-num">22</span></div>
+            <div class="cal-cell"><span class="cal-num">23</span></div>
+            <div class="cal-cell"><span class="cal-num">24</span></div>
+            <a class="cal-cell" href="calendar-day.html" data-testid="day-25"><span class="cal-num today">25</span><span class="badge secondary cal-count" data-tf-sample>2</span></a>
+            <!-- week of 26 Oct – 1 Nov -->
+            <div class="cal-cell"><span class="cal-num">26</span></div>
+            <div class="cal-cell"><span class="cal-num">27</span></div>
+            <div class="cal-cell"><span class="cal-num">28</span></div>
+            <div class="cal-cell"><span class="cal-num">29</span></div>
+            <div class="cal-cell"><span class="cal-num">30</span></div>
+            <div class="cal-cell"><span class="cal-num">31</span></div>
+            <div class="cal-cell out"><span class="cal-num">1</span></div>
+          </div>
+          <p class="hint cal-legend">A count means the day has entries — open it to see them.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

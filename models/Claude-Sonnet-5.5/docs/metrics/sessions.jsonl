@@ -1,0 +1,1 @@
+{"kind":"session","session_id":"d73438b6-3aa3-4d31-87ad-cb817eedfb50","harness":"claude-code","model":"claude-sonnet-5-5","duration_s":570,"input_tokens":120,"output_tokens":130178,"cache_read_tokens":5575439,"cache_creation_tokens":274761,"cost_usd":null,"ts":"2026-10-24T08:19:39Z","v":1,"project_type":"docs","app":"MyDiary-Sonnet"}

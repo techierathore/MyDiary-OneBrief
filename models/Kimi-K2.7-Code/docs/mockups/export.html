@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Export & Import</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="export-app-bar">
+      <a href="account.html" class="icon-btn" data-testid="export-back" aria-label="Back">←</a>
+      <div class="app-bar-title">Export & Import</div>
+    </div>
+
+    <div class="content">
+      <div class="card action-card" data-testid="export-export-card">
+        <div class="section-title">Export</div>
+        <p style="font-size: 0.875rem; color: var(--slate-500);">Download all your journal entries as a JSON file.</p>
+        <button class="btn btn-primary btn-block" data-testid="export-json-button" onclick="alert('Export started');">
+          <span>📤</span><span>Export to JSON</span>
+        </button>
+        <div class="badge badge-success" data-testid="export-result" data-tf-sample="sample" style="width: fit-content;">Exported 142 entries</div>
+      </div>
+
+      <div class="card action-card" data-testid="export-import-card">
+        <div class="section-title">Import MyDiary JSON</div>
+        <p style="font-size: 0.875rem; color: var(--slate-500);">Import entries from a MyDiary JSON export.</p>
+        <button class="btn btn-secondary btn-block" data-testid="export-import-button" onclick="alert('Import started');">
+          <span>📥</span><span>Import MyDiary JSON</span>
+        </button>
+      </div>
+
+      <div class="card action-card" data-testid="export-dayone-card">
+        <div class="section-title">Day One import</div>
+        <p style="font-size: 0.875rem; color: var(--slate-500);">Import a JSON export from Day One.</p>
+        <button class="btn btn-secondary btn-block" data-testid="export-dayone-button" onclick="alert('Day One import started');">
+          <span>📥</span><span>Import Day One JSON</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

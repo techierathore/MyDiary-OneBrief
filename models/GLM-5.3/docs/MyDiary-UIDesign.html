@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyDiary — UI Design</title>
+<script>
+/* Resolve the theme BEFORE first paint (no flash). Saved choice wins; otherwise
+   pick by time of day — light 07:00–19:00 local, softened dark at night. */
+(function(){
+  try{
+    var t = localStorage.getItem('tf-theme');
+    if(t!=='light' && t!=='dark'){ var h = new Date().getHours(); t = (h>=7 && h<19) ? 'light' : 'dark'; }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){ document.documentElement.setAttribute('data-theme','light'); }
+})();
+</script>
+<style>
+/* LIGHT is the default theme — a warm off-white, easy on the eyes (never bright white). */
+:root{
+  --bg:#f4f1e9; --panel:#efe9db; --panel2:#e7e0cd; --line:#d8cfb6;
+  --ink:#2e2a22; --muted:#6f6857; --accent:#2f6f9f; --accent2:#3f7d54;
+  --warn:#9a6b15; --danger:#b03a52; --ok:#3f7d54;
+  --code-bg:#ece5d3; --code-ink:#332f26; --row-alt:#eae2cf;
+  --h3:#3a352b; --h4:#2f6f9f; --quote:#4a4537; --cta-bg:#e6eef5;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+/* DARK — softened near-black (warmer / less harsh than pure #0f1115). */
+html[data-theme="dark"]{
+  --bg:#11141a; --panel:#171b23; --panel2:#1e2430; --line:#2b3240;
+  --ink:#dfe3ea; --muted:#99a2b1; --accent:#7cc4ff; --accent2:#a6e3a1;
+  --warn:#f9c74f; --danger:#f38ba8; --ok:#a6e3a1;
+  --code-bg:#0c1016; --code-ink:#d8dde8; --row-alt:#141821;
+  --h3:#cfd5e3; --h4:#7cc4ff; --quote:#cfd5e3; --cta-bg:#0d2030;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:13px;background:var(--code-bg);color:var(--code-ink);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+pre{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;color:var(--code-ink);position:relative}
+pre code{background:none;border:none;padding:0}
+.copy{position:absolute;top:8px;right:8px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;font-family:var(--sans);cursor:pointer}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+/* floating light/dark toggle (top-right) */
+.theme-toggle{position:fixed;top:12px;right:14px;z-index:10000;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;font-family:var(--sans);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.theme-toggle:hover{color:var(--accent);border-color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.layout.no-toc{grid-template-columns:1fr}
+nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding:18px 14px}
+nav.side h1{font-size:14px;margin:0 0 4px;letter-spacing:.5px;color:var(--ink)}
+nav.side .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+nav.side ol,nav.side ul{list-style:none;padding:0;margin:0}
+nav.side li{font-size:13px;margin:2px 0}
+nav.side li a{display:block;padding:5px 8px;color:var(--ink);border-radius:6px}
+nav.side li a:hover{background:var(--panel2);text-decoration:none}
+nav.side li.h3 a{padding-left:22px;font-size:12.5px;color:var(--h3)}
+nav.side .group{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:14px 8px 4px}
+
+main{padding:28px 40px 80px;max-width:1100px}
+.layout.no-toc main{margin:0 auto}
+
+h1{font-size:28px;margin:0 0 6px}
+h2{font-size:22px;margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+h3{font-size:17px;margin:22px 0 6px;color:var(--h3);scroll-margin-top:16px}
+h4{font-size:14px;margin:14px 0 4px;color:var(--h4);scroll-margin-top:16px}
+.subtitle{color:var(--muted);font-size:14px;margin-top:-4px;margin-bottom:18px}
+p{margin:6px 0 10px}
+blockquote{border-left:3px solid var(--accent);background:var(--panel);margin:8px 0;padding:8px 14px;color:var(--quote)}
+ul,ol{padding-left:22px}
+li{margin:2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--panel2);color:var(--h3);font-weight:600}
+tr:nth-child(even) td{background:var(--row-alt)}
+
+hr{border:none;border-top:1px solid var(--line);margin:24px 0}
+.anchor-link{color:var(--muted);font-weight:400;font-size:0.85em;margin-left:8px;opacity:0;transition:opacity .15s;text-decoration:none}
+h2:hover .anchor-link,h3:hover .anchor-link,h4:hover .anchor-link{opacity:1}
+
+/* inline TOC at top of main content */
+.toc-inline{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:14px 0 24px}
+.toc-inline > div{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.toc-inline ol,.toc-inline ul{margin:4px 0;padding-left:18px}
+.toc-inline li{font-size:13px;margin:1px 0}
+.toc-inline a{color:var(--h3)}
+
+/* mermaid diagram wrapper + toolbar */
+.diagram{position:relative;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);margin:14px 0;overflow:hidden}
+.diagram .mermaid{padding:14px;margin:0;background:transparent;border:none;overflow:auto}
+.diagram .dt{display:flex;gap:6px;justify-content:flex-end;padding:6px 8px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.diagram .dt button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 10px;font-size:12px;font-family:var(--sans);cursor:pointer;min-width:30px}
+.diagram .dt button:hover{color:var(--accent);border-color:var(--accent)}
+.diagram .dt .zlabel{padding:3px 6px;font-size:11px;color:var(--muted);font-family:var(--mono);align-self:center}
+.diagram.fs{position:fixed;inset:0;z-index:9999;border-radius:0;border:none}
+.diagram.fs .mermaid{height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto}}
+</style>
+</head>
+<body>
+<button id="themeToggle" class="theme-toggle" title="Toggle light / dark">&#9790; Dark</button>
+<div class="layout no-toc">
+  <main>
+    <h1>MyDiary — UI Design</h1>
+    <div class="subtitle">Rendered 2026-10-25 &middot; source <code>MyDiary-UIDesign.md</code></div>
+
+    <div class="toc-inline">
+      <div>Contents</div>
+      <ol>
+        <li><a href="#design-system">Design system</a></li>
+        <li><a href="#screens">Screens</a></li>
+        <li class="h3"><a href="#screen-sign-in-signin">Screen: Sign in (/signin)</a></li>
+        <li class="h3"><a href="#screen-home-home">Screen: Home (/home)</a></li>
+        <li class="h3"><a href="#screen-10-thought-dump-write-dump">Screen: 10-Thought Dump (/write/dump)</a></li>
+        <li class="h3"><a href="#screen-free-flow-write-free">Screen: Free-Flow (/write/free)</a></li>
+        <li class="h3"><a href="#screen-question-sets-sets">Screen: Question sets (/sets)</a></li>
+        <li class="h3"><a href="#screen-answer-a-set-sets-answer">Screen: Answer a set (/sets/answer)</a></li>
+        <li class="h3"><a href="#screen-timeline-timeline">Screen: Timeline (/timeline)</a></li>
+        <li class="h3"><a href="#screen-calendar-calendar">Screen: Calendar (/calendar)</a></li>
+        <li class="h3"><a href="#screen-search-search">Screen: Search (/search)</a></li>
+        <li class="h3"><a href="#screen-ask-ask">Screen: Ask (/ask)</a></li>
+        <li class="h3"><a href="#screen-compare-compare">Screen: Compare (/compare)</a></li>
+        <li class="h3"><a href="#screen-settings-settings">Screen: Settings (/settings)</a></li>
+        <li class="h3"><a href="#screen-plan-devices-settings-plan">Screen: Plan &amp;amp; devices (/settings/plan)</a></li>
+        <li class="h3"><a href="#screen-backup-sync-settings-backup">Screen: Backup &amp;amp; sync (/settings/backup)</a></li>
+        <li class="h3"><a href="#screen-support-privacy-settings-support">Screen: Support &amp;amp; privacy (/settings/support)</a></li>
+        <li><a href="#click-through-flow">Click-through flow</a></li>
+      </ol>
+    </div>
+<table>
+<thead><tr><th></th><th></th></tr></thead>
+<tbody>
+<tr><td>App</td><td>MyDiary</td></tr>
+<tr><td>Kind</td><td>app</td></tr>
+<tr><td>Size</td><td>Medium</td></tr>
+<tr><td>UI library</td><td>TrBlazeUI 2.1.9 (<code>TrBlazeUI.Components</code>, icons from <code>TrBlazeUI.Icons.Lucide</code>)</td></tr>
+<tr><td>Theme</td><td>light (the library's default OKLCH palette; dark mode available via the library's <code>.dark</code>)</td></tr>
+</tbody>
+</table>
+<h2 id="design-system">Design system<a class="anchor-link" href="#design-system">#</a></h2>
+<ul>
+<li><strong>Layout shell:</strong> <code>SidebarProvider</code> + <code>Sidebar</code> (left, 16rem, collapsible) + <code>SidebarInset</code> on every routed screen except Sign in, which uses <code>CenteredPanel</code>. The sidebar footer holds the user's <code>Avatar</code>, plan line and sign-out icon button; dialogs are <code>Dialog</code> (and <code>AlertDialog</code> where the action is destructive).
+</li>
+<li><strong>Theme:</strong> TrBlazeUI default light theme, OKLCH variables, <code>--radius</code> 0.625rem; a warm, quiet reading feel, nothing louder than the library defaults.
+</li>
+<li><strong>Shared controls:</strong> <code>Card</code> family for every block; <code>Badge</code> for kinds, due states and counts; <code>StatTile</code>/<code>StatGroup</code> for the streak and counters; <code>Button</code> variants (primary, outline, ghost, destructive); <code>Field</code> + <code>Input</code>/<code>Textarea</code>/<code>Select</code> for all forms; <code>Tabs</code> on Settings; <code>Empty</code> for empty states; <code>Alert</code> for warnings and info.
+</li>
+<li><strong>Rules:</strong> 24px between blocks, 16px inside grids; 24px content padding, max-width 960px; 14px base text; 56px page header bar with the page title left and the primary action right; sample data carries <code>data-tf-sample</code>; state-only boxes carry <code>data-tf-state</code>. Below 768px the sidebar becomes the library's mobile sheet.
+</li>
+</ul>
+<h2 id="screens">Screens<a class="anchor-link" href="#screens">#</a></h2>
+<h3 id="screen-sign-in-signin">Screen: Sign in (<code>/signin</code>)<a class="anchor-link" href="#screen-sign-in-signin">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/signin.html">mockups/signin.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-1, BRD-2, BRD-4, BRD-5</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Centered panel</td><td><code>CenteredPanel</code> + <code>Card</code></td><td>The app mark, name, and the one-line promise that the journal stays on the device</td></tr>
+<tr><td>Sign-in form</td><td><code>Field</code> + <code>Input</code></td><td>Email and password; the primary <code>Button</code> signs in through AppManager's device-login</td></tr>
+<tr><td>Refusal message</td><td><code>Alert</code> (warning, <code>data-tf-state="error"</code>)</td><td>The free-second-device refusal: "a paid licence allows more"</td></tr>
+<tr><td>Links</td><td><code>Button</code> ghost links</td><td>Create an account → the Create account dialog; Forgot password → its dialog</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Email</td><td>email</td><td>yes</td><td>AppManager account email; must exist to sign in</td></tr>
+<tr><td>Password</td><td>password</td><td>yes</td><td>Sent RSA-encrypted, never stored by MyDiary</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Create account (<a href="mockups/signin-create-account.html">mockup</a>): first name, last name, email, password with <code>PasswordStrength</code>, confirm password, device name — creates the account and lands on Home; Forgot password (<a href="mockups/signin-forgot-password.html">mockup</a>): email, then reset token and new password — resets through AppManager.</p>
+<p><strong>States:</strong> empty: the plain form · loading: the button shows a <code>Spinner</code> while AppManager answers · error: wrong credentials and the device refusals show as the <code>Alert</code>.</p>
+<h3 id="screen-home-home">Screen: Home (<code>/home</code>)<a class="anchor-link" href="#screen-home-home">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/home.html">mockups/home.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-6, BRD-7, BRD-8, BRD-9, BRD-10, BRD-11</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Stats row</td><td><code>StatGroup</code> + <code>StatTile</code></td><td>Streak days, entries today, entries this month</td></tr>
+<tr><td>Due-set card</td><td><code>Card</code> + <code>Badge</code> success + <code>Button</code></td><td>The set that is due (Monthly Goals on the 1st) with a button into its answer page</td></tr>
+<tr><td>On This Day card</td><td><code>Card</code> + <code>Badge</code> outline</td><td>One warm story per past year, generated on device and cached — never a list of entries</td></tr>
+<tr><td>Today card</td><td><code>Card</code> + entry rows</td><td>Today's entries: kind badge, snippet, time, star, mood; a row opens the Entry dialog</td></tr>
+<tr><td>Header actions</td><td><code>Button</code></td><td>10-Thought Dump and Free-Flow quick starts</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(no inputs — the screen is read-and-tap)</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Unlock (<a href="mockups/home-unlock.html">mockup</a>): the lock overlay shown at launch when a PIN or biometric is set — <code>InputOTP</code> digits or the fingerprint/face button unlocks to Home.</p>
+<p><strong>States:</strong> empty: "Nothing written today — the day is open" <code>Empty</code>; loading: <code>Skeleton</code> rows while the journal loads; error: journal file problem shows an <code>Alert</code> with the support link.</p>
+<h3 id="screen-10-thought-dump-write-dump"><a id="screen-10-thought-dump-writedump"></a>Screen: 10-Thought Dump (<code>/write/dump</code>)<a class="anchor-link" href="#screen-10-thought-dump-write-dump">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/write-dump.html">mockups/write-dump.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-14, BRD-15</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Ten numbered lines</td><td><code>Field</code> + <code>Input</code> rows</td><td>Ten single-line inputs, numbered 1-10</td></tr>
+<tr><td>Save action</td><td><code>Button</code> primary</td><td>Saves the dump; empty lines are dropped on save</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Thought 1-10</td><td>text</td><td>no</td><td>Empty lines dropped at save; no length games — a thought is short</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: ten empty numbered lines, cursor in line 1 · loading: the save button spins · error: a save failure keeps the lines on screen with an <code>Alert</code>.</p>
+<h3 id="screen-free-flow-write-free"><a id="screen-free-flow-writefree"></a>Screen: Free-Flow (<code>/write/free</code>)<a class="anchor-link" href="#screen-free-flow-write-free">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/write-free.html">mockups/write-free.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-16, BRD-17</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><code>Field</code> + <code>Input</code></td><td>The entry's title</td></tr>
+<tr><td>Body</td><td><code>RichTextEditor</code></td><td>Formatting: bold, italic, lists, quote — stored as HTML</td></tr>
+<tr><td>Photos</td><td><code>FileUpload</code> + thumbnails</td><td>Photos attached to the entry, stored on the device</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td>text</td><td>no</td><td>1-120 characters</td></tr>
+<tr><td>Body</td><td>rich text</td><td>yes (a non-empty entry)</td><td>Formatting kept on save</td></tr>
+<tr><td>Photos</td><td>image files</td><td>no</td><td>Device photo formats; each stays on the device</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none (the photo picker is a platform sheet).</p>
+<p><strong>States:</strong> empty: title placeholder and a blank editor · loading: save spins · error: an attachment that fails shows an <code>Alert</code> naming the photo.</p>
+<h3 id="screen-question-sets-sets">Screen: Question sets (<code>/sets</code>)<a class="anchor-link" href="#screen-question-sets-sets">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/sets.html">mockups/sets.html</a> · <strong>Roles:</strong> Goal reviewer (any user) · <strong>BRD:</strong> BRD-18, BRD-19</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Built-in set cards</td><td><code>Card</code> grid + <code>Badge</code></td><td>The seven built-in sets, each with its due badge ("Due today") or answered-count badge</td></tr>
+<tr><td>Answer action</td><td><code>Button</code> outline per card</td><td>Opens the set's answer page</td></tr>
+<tr><td>Build-your-own card</td><td>dashed <code>Card</code></td><td>Opens the Build your own set dialog</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(no inputs — the screen is a library)</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Build your own set (<a href="mockups/sets-build-own.html">mockup</a>): set name, cadence (<code>Select</code>: none, monthly on the 1st, yearly, weekly), question rows with add and remove — the created set joins the list and is answerable.</p>
+<p><strong>States:</strong> empty: even a fresh app lists the seven built-in sets, so the screen is never empty · loading: <code>Skeleton</code> cards · error: none expected beyond the general alert.</p>
+<h3 id="screen-answer-a-set-sets-answer"><a id="screen-answer-a-set-setsanswer"></a>Screen: Answer a set (<code>/sets/answer</code>)<a class="anchor-link" href="#screen-answer-a-set-sets-answer">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/sets-answer.html">mockups/sets-answer.html</a> · <strong>Roles:</strong> Goal reviewer (any user) · <strong>BRD:</strong> BRD-20, BRD-21</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>History alert</td><td><code>Alert</code> info</td><td>"Answered N times before — last on …" with a link into Compare</td></tr>
+<tr><td>Progress</td><td><code>Stepper</code> + <code>StepperItem</code></td><td>Question 1..N; the current question carries <code>aria-current</code></td></tr>
+<tr><td>Question cards</td><td><code>Card</code> + <code>Textarea</code></td><td>One card per question in the set, answer beside it</td></tr>
+<tr><td>Save action</td><td><code>Button</code> primary</td><td>Saves all answers as today's set entry</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Answer per question</td><td>long text</td><td>no</td><td>Unanswered questions are saved empty; the entry is stored with today's date</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: every textarea blank with its placeholder · loading: save spins · error: an <code>Alert</code> keeps the answers on screen if saving fails.</p>
+<h3 id="screen-timeline-timeline">Screen: Timeline (<code>/timeline</code>)<a class="anchor-link" href="#screen-timeline-timeline">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/timeline.html">mockups/timeline.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-22, BRD-23, BRD-24, BRD-25, BRD-26, BRD-27</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Date groups</td><td><code>Timeline</code> + <code>TimelineItem</code></td><td>Entries grouped under their dates, newest first</td></tr>
+<tr><td>Entry rows</td><td>row cards + <code>Badge</code> + chips</td><td>Kind badge, snippet, time, star, mood chip, tag chips; a row opens the Entry dialog</td></tr>
+<tr><td>Header actions</td><td><code>Button</code></td><td>10-Thought Dump and Free-Flow starts</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(no inputs — the screen is browse-and-tap)</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Entry (<a href="mockups/timeline-entry.html">mockup</a>): the entry's full text and photos, star, tags (add-tag chip), mood <code>Select</code>, and Edit (opens the matching writer) and Delete (<code>AlertDialog</code> confirm).</p>
+<p><strong>States:</strong> empty: "Your journal starts with the first thought" <code>Empty</code> with a write button · loading: <code>Skeleton</code> rows · error: an <code>Alert</code> on a journal read failure.</p>
+<h3 id="screen-calendar-calendar">Screen: Calendar (<code>/calendar</code>)<a class="anchor-link" href="#screen-calendar-calendar">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/calendar.html">mockups/calendar.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-28, BRD-29</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Month switcher</td><td>icon buttons + label</td><td>Previous / next month; the label names the month</td></tr>
+<tr><td>Month grid</td><td><code>Calendar</code></td><td>Days with entries carry a count badge and open the Day entries dialog; today is ringed</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(no inputs — a tap on a counted day opens it)</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Day entries (<a href="mockups/calendar-day.html">mockup</a>): that day's entries as rows opening the Entry dialog, plus a 10-Thought Dump start for the day.</p>
+<p><strong>States:</strong> empty: a month with no entries shows a clean grid, no counts · loading: the grid builds in one pass · error: an <code>Alert</code> on a journal read failure.</p>
+<h3 id="screen-search-search">Screen: Search (<code>/search</code>)<a class="anchor-link" href="#screen-search-search">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/search.html">mockups/search.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-30, BRD-31</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Keyword</td><td><code>Field</code> + <code>Input</code></td><td>The keyword, matched over the whole journal</td></tr>
+<tr><td>Filters</td><td><code>DatePicker</code> pair, <code>Select</code>s, <code>Switch</code>es</td><td>Date range, tag, question set, mood; "only with photos" and "only starred" switches</td></tr>
+<tr><td>Results</td><td><code>Card</code> + result rows</td><td>The match count, then rows with the keyword highlighted, opening the Entry dialog</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Keyword</td><td>text</td><td>no</td><td>Empty keyword with filters set still filters</td></tr>
+<tr><td>Date range</td><td>dates</td><td>no</td><td>From &lt;= To when both set</td></tr>
+<tr><td>Tag / set / mood</td><td>select</td><td>no</td><td>Options come from the journal's own tags, sets and moods</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Entry (from a result row).</p>
+<p><strong>States:</strong> empty: "No entries match — try fewer filters" <code>Empty</code>, drawn with <code>data-tf-state="empty"</code> · loading: the results area shows <code>Skeleton</code> rows · error: an <code>Alert</code> on a search failure.</p>
+<h3 id="screen-ask-ask">Screen: Ask (<code>/ask</code>)<a class="anchor-link" href="#screen-ask-ask">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/ask.html">mockups/ask.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-32, BRD-33</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Thread</td><td><code>ChatThread</code> + <code>ChatMessage</code></td><td>User question, then the counted answer with source-entry chips (each opens the Entry dialog) and a footer line ("answered on device · N sources")</td></tr>
+<tr><td>No-match answer</td><td><code>ChatMessage</code> (<code>data-tf-state="nomatch"</code>)</td><td>"Nothing in your journal matches that — I won't guess."</td></tr>
+<tr><td>Composer</td><td><code>ChatComposer</code></td><td>The question box with the Ask button; a note names the plan's model</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Question</td><td>long text</td><td>yes</td><td>Trimmed; never sent empty</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Entry (from a source chip).</p>
+<p><strong>States:</strong> empty: a fresh thread invites the first question · loading: the assistant bubble shows <code>Typing</code> (<code>Streaming</code>) · error: the model being unreachable shows an <code>Alert</code>; no-match is a result, not an error.</p>
+<h3 id="screen-compare-compare">Screen: Compare (<code>/compare</code>)<a class="anchor-link" href="#screen-compare-compare">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/compare.html">mockups/compare.html</a> · <strong>Roles:</strong> Goal reviewer (any user) · <strong>BRD:</strong> BRD-34</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Pickers</td><td><code>Select</code> pair</td><td>The set, then the question inside it</td></tr>
+<tr><td>Count line</td><td>muted text</td><td>"N answers across … months"</td></tr>
+<tr><td>Answers grid</td><td><code>Card</code> + <code>Badge</code> outline</td><td>One card per period the question was answered in, side by side</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Set</td><td>select</td><td>yes</td><td>Defaults to the set you came from</td></tr>
+<tr><td>Question</td><td>select</td><td>yes</td><td>Defaults to the set's first question</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: "Answer the set once and the comparisons start" <code>Empty</code> · loading: <code>Skeleton</code> cards · error: an <code>Alert</code> on a read failure.</p>
+<h3 id="screen-settings-settings">Screen: Settings (<code>/settings</code>)<a class="anchor-link" href="#screen-settings-settings">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/settings.html">mockups/settings.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-35, BRD-36, BRD-37, BRD-38, BRD-39, BRD-40, BRD-41, BRD-42</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Tabs</td><td><code>Tabs</code></td><td>Profile · Password &amp; lock · Reminders · AI model</td></tr>
+<tr><td>Profile</td><td><code>Field</code> + <code>Input</code></td><td>First and last name editable; email read-only (the AppManager sign-in)</td></tr>
+<tr><td>Change password</td><td><code>Field</code> + <code>Input</code> + <code>PasswordStrength</code></td><td>Current, new, confirm; changed through AppManager</td></tr>
+<tr><td>App lock</td><td><code>Switch</code> + <code>InputOTP</code></td><td>Lock on/off, PIN digits, biometric switch, lock preview link</td></tr>
+<tr><td>Reminders</td><td><code>Switch</code> + time <code>Input</code> + day chips</td><td>Time and weekdays</td></tr>
+<tr><td>AI model</td><td><code>Select</code> (+ paid block, <code>data-tf-state="paid"</code>)</td><td>Free: on-device model only; paid: model, provider, own key, journal-text warning</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>First / last name</td><td>text</td><td>yes</td><td>1-60 characters</td></tr>
+<tr><td>Email</td><td>email</td><td>—</td><td>Read-only; changes go through AppManager</td></tr>
+<tr><td>Current / new password</td><td>password</td><td>yes on change</td><td>New password confirmed twice; <code>PasswordStrength</code> shown</td></tr>
+<tr><td>PIN</td><td>digits</td><td>yes when lock is on</td><td>6 digits set through the OTP field</td></tr>
+<tr><td>Reminder time</td><td>time</td><td>yes when on</td><td>A valid time; weekdays at least one</td></tr>
+<tr><td>AI key</td><td>password</td><td>no</td><td>Paid only; kept in the OS secure storage, never in the journal store</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Unlock (the preview link shows the real lock screen).</p>
+<p><strong>States:</strong> empty: the free AI view shows the single built-in model with the upsell info · loading: each save spins · error: AppManager password errors and weak PINs show as <code>Alert</code>s.</p>
+<h3 id="screen-plan-devices-settings-plan"><a id="screen-plan--devices-settingsplan"></a>Screen: Plan &amp; devices (<code>/settings/plan</code>)<a class="anchor-link" href="#screen-plan-devices-settings-plan">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/settings-plan.html">mockups/settings-plan.html</a> · <strong>Roles:</strong> Free user (sees Free), Paid user · <strong>BRD:</strong> BRD-43, BRD-44, BRD-45, BRD-46, BRD-47, BRD-48</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Plan card</td><td><code>Card</code> + <code>Badge</code></td><td>Plan name (Free, Pro, Pro-Plus), when it ends, devices n of m in use, and the free fallback note</td></tr>
+<tr><td>Devices table</td><td><code>Table</code></td><td>Every signed-in device: name, this-device badge, last seen; Forget and Block per row; a blocked row shows its badge and Unblock</td></tr>
+<tr><td>Grace note</td><td><code>Alert</code> info</td><td>Works offline 30 days from the last licence check</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(no inputs — actions on rows)</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Forget confirm (<code>AlertDialog</code>): forgetting frees the slot at once.</p>
+<p><strong>States:</strong> empty: a free user sees "Free · 1 device" with the upgrade note · loading: the table shows <code>Skeleton</code> rows · error: AppManager unreachable inside the grace shows the offline <code>Alert</code>.</p>
+<h3 id="screen-backup-sync-settings-backup"><a id="screen-backup--sync-settingsbackup"></a>Screen: Backup &amp; sync (<code>/settings/backup</code>)<a class="anchor-link" href="#screen-backup-sync-settings-backup">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/settings-backup.html">mockups/settings-backup.html</a> · <strong>Roles:</strong> Paid user (cloud, sync, restore); Free user (export &amp; import only) · <strong>BRD:</strong> BRD-49, BRD-50, BRD-51, BRD-52, BRD-53</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Cloud card</td><td>provider rows + <code>Button</code></td><td>Connect the user's own Google Drive or OneDrive; Backup now; last backup time</td></tr>
+<tr><td>Sync</td><td><code>Switch</code> + status line</td><td>Sync between the paid devices, last sync time and device count</td></tr>
+<tr><td>Restore card</td><td><code>Card</code> + <code>Button</code></td><td>Restore the whole journal on a new device (paid)</td></tr>
+<tr><td>Export &amp; import</td><td><code>Card</code> + <code>Button</code> pair</td><td>Export to JSON, import from JSON — any plan; Day One exports understood</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(no text fields — cloud sign-in happens in the platform browser)</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Import choose-file (<code>AlertDialog</code>-style confirm before merging a big import).</p>
+<p><strong>States:</strong> empty: nothing connected — two connect buttons and an export/import card · loading: backup/sync buttons spin with <code>Progress</code> · error: cloud unreachable keeps the last good backup noted in an <code>Alert</code>.</p>
+<h3 id="screen-support-privacy-settings-support"><a id="screen-support--privacy-settingssupport"></a>Screen: Support &amp; privacy (<code>/settings/support</code>)<a class="anchor-link" href="#screen-support-privacy-settings-support">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/settings-support.html">mockups/settings-support.html</a> · <strong>Roles:</strong> Free user, Paid user, Goal reviewer · <strong>BRD:</strong> BRD-54, BRD-55, BRD-56</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Problem report</td><td><code>Field</code> + <code>Input</code> + <code>Textarea</code> + <code>Select</code></td><td>Title, description, type (Bug, Feature, Support, Feedback) — sent through AppManager with device details</td></tr>
+<tr><td>Account data card</td><td><code>Card</code> + <code>Button</code> pair</td><td>Request a copy of account data; Delete my account — opens the confirm dialog</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td>text</td><td>yes</td><td>1-120 characters</td></tr>
+<tr><td>Description</td><td>long text</td><td>yes</td><td>What happened, what you expected</td></tr>
+<tr><td>Type</td><td>select</td><td>no</td><td>Defaults to Bug</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Confirm deletion (<a href="mockups/settings-support-delete.html">mockup</a>): type-your-email field and optional reason — the request goes to AppManager and its estimated completion is shown; the journal on the device is noted as never uploaded.</p>
+<p><strong>States:</strong> empty: the plain form · loading: send spins and returns the issue number · error: AppManager errors (bad token, mismatched email) show as <code>Alert</code>s.</p>
+<h2 id="click-through-flow">Click-through flow<a class="anchor-link" href="#click-through-flow">#</a></h2>
+<div class="diagram">
+  <div class="dt">
+    <button data-zout title="Zoom out">&minus;</button>
+    <span class="zlabel">100%</span>
+    <button data-zin title="Zoom in">+</button>
+    <button data-fit title="Fit to width">Fit</button>
+    <button data-one title="Actual size">1:1</button>
+    <button data-fs title="Fullscreen">&#9166;</button>
+    <button data-pop title="Open in new tab">&#8599;</button>
+  </div>
+  <pre class="mermaid">flowchart LR
+  A["Sign in"] --&gt; B["Home"]
+  A --&gt;|"Create account"| B
+  B --&gt;|"due set"| C["Answer a set"]
+  B --&gt;|"today entry"| D["Entry dialog"]
+  B --&gt;|"quick write"| E["10-Thought Dump"]
+  B --&gt;|"quick write"| F["Free-Flow"]
+  G["Question sets"] --&gt; C
+  C --&gt;|"history"| H["Compare"]
+  I["Timeline"] --&gt; D
+  D --&gt;|"edit"| F
+  J["Calendar"] --&gt;|"day"| D
+  K["Search"] --&gt; D
+  L["Ask"] --&gt;|"source"| D
+  M["Settings"] --&gt;|"preview"| N["Unlock dialog"]
+  M --&gt; O["Plan &amp; devices"]
+  M --&gt; P["Backup &amp; sync"]
+  M --&gt; Q["Support &amp; privacy"]
+  E --&gt;|"save"| I
+  F --&gt;|"save"| I</pre>
+</div>
+<p>Every routed screen also carries the sidebar, whose items link to every other screen, and whose footer signs out to Sign in.</p>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+<script>
+// Light/dark toggle. The initial theme was already applied flash-free by the
+// <head> script (saved choice, else time-of-day). Clicking flips it, saves the
+// choice, and reloads so Mermaid re-renders in the matching theme.
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  var relabel = function(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '☀ Light' : '☾ Dark';
+  };
+  relabel();
+  btn.addEventListener('click', function(){
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try{ localStorage.setItem('tf-theme', next); }catch(e){}
+    location.reload();
+  });
+})();
+
+// Copy buttons on every code <pre> — but NEVER on a `pre.mermaid`:
+// mermaid reads the <pre>'s textContent as the diagram source, so a button
+// appended here glues "copy" onto the last line and breaks the parse
+// (flowcharts → "Syntax error"; sequence diagrams silently absorb it).
+// Mermaid blocks get copy/export from their own .diagram toolbar instead.
+document.querySelectorAll('pre:not(.mermaid)').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy';
+  btn.textContent = 'copy';
+  btn.addEventListener('click', () => {
+    const text = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => { btn.textContent = 'copy'; }, 1200);
+    });
+  });
+  pre.appendChild(btn);
+});
+
+// Mermaid init — theme follows the resolved light/dark theme
+if (window.mermaid) {
+  var mermaidTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+  mermaid.initialize({ startOnLoad: true, theme: mermaidTheme, securityLevel: 'loose' });
+}
+
+// Mermaid toolbar wiring — run after mermaid renders
+function wireMermaidToolbars() {
+  document.querySelectorAll('.diagram').forEach(dia => {
+    if (dia.dataset.wired) return;
+    const merm = dia.querySelector('.mermaid');
+    const svg = merm && merm.querySelector('svg');
+    if (!svg) return;
+    dia.dataset.wired = '1';
+    let scale = 1;
+    const label = dia.querySelector('.zlabel');
+    const apply = () => {
+      svg.style.transform = `scale(${scale})`;
+      svg.style.transformOrigin = 'top left';
+      if (label) label.textContent = Math.round(scale * 100) + '%';
+    };
+    const setScale = (s) => { scale = Math.max(0.25, Math.min(4, s)); apply(); };
+    dia.querySelector('[data-zin]').onclick = () => setScale(scale * 1.2);
+    dia.querySelector('[data-zout]').onclick = () => setScale(scale / 1.2);
+    dia.querySelector('[data-fit]').onclick = () => {
+      svg.style.transform = '';
+      svg.removeAttribute('width');
+      svg.style.maxWidth = '100%';
+      svg.style.height = 'auto';
+      scale = 1;
+      if (label) label.textContent = 'Fit';
+    };
+    dia.querySelector('[data-one]').onclick = () => {
+      svg.style.transform = '';
+      svg.style.maxWidth = 'none';
+      svg.style.width = '';
+      svg.style.height = '';
+      scale = 1;
+      if (label) label.textContent = '100%';
+    };
+    dia.querySelector('[data-fs]').onclick = () => {
+      dia.classList.toggle('fs');
+      if (dia.classList.contains('fs')) {
+        document.addEventListener('keydown', escFs);
+      } else {
+        document.removeEventListener('keydown', escFs);
+      }
+    };
+    function escFs(e) { if (e.key === 'Escape') { dia.classList.remove('fs'); document.removeEventListener('keydown', escFs); } }
+    dia.querySelector('[data-pop]').onclick = () => openInNewTab(svg);
+    // Ctrl+wheel zoom
+    merm.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      setScale(scale * (e.deltaY < 0 ? 1.1 : 1/1.1));
+    }, { passive: false });
+  });
+}
+
+function openInNewTab(svg) {
+  const svgSource = new XMLSerializer().serializeToString(svg);
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Diagram</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1115;color:#e6e8ee;font-family:system-ui,sans-serif}
+  .bar{position:fixed;top:0;left:0;right:0;padding:8px 12px;background:#161a22;border-bottom:1px solid #2a3142;display:flex;gap:8px;z-index:10}
+  .bar button{background:#1c2230;color:#9aa3b2;border:1px solid #2a3142;border-radius:6px;padding:5px 12px;font-size:13px;cursor:pointer}
+  .bar button:hover{color:#7cc4ff;border-color:#7cc4ff}
+  .bar .hint{margin-left:auto;color:#9aa3b2;font-size:11.5px;align-self:center}
+  #stage{position:absolute;top:42px;bottom:0;left:0;right:0;overflow:hidden}
+  #stage svg{width:100%;height:100%}
+</style>
+</head><body>
+<div class="bar">
+  <button onclick="zpz.zoomIn()">+</button>
+  <button onclick="zpz.zoomOut()">−</button>
+  <button onclick="zpz.fit();zpz.center()">Fit</button>
+  <button onclick="zpz.resetZoom();zpz.center()">1:1</button>
+  <button onclick="window.print()">Print</button>
+  <button onclick="dlPng()">PNG</button>
+  <button onclick="dlSvg()">SVG</button>
+  <span class="hint">Drag to pan · Ctrl+wheel to zoom · + / − keys</span>
+</div>
+<div id="stage">${svgSource}</div>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"><\/script>
+<script>
+  const el = document.querySelector('#stage svg');
+  const zpz = svgPanZoom(el, { zoomScaleSensitivity: .3, minZoom: .2, maxZoom: 10, controlIconsEnabled: false, fit: true, center: true });
+  document.addEventListener('keydown', e => {
+    if (e.key === '+' || e.key === '=') zpz.zoomIn();
+    if (e.key === '-' || e.key === '_') zpz.zoomOut();
+    if (e.key === '0') { zpz.resetZoom(); zpz.center(); }
+  });
+  function dlSvg() {
+    const blob = new Blob([new XMLSerializer().serializeToString(el)], { type: 'image/svg+xml' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'diagram.svg'; a.click();
+  }
+  function dlPng() {
+    const src = new XMLSerializer().serializeToString(el);
+    const img = new Image();
+    const url = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(src)));
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = el.clientWidth * 2; c.height = el.clientHeight * 2;
+      const ctx = c.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img, 0, 0);
+      c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'diagram.png'; a.click(); });
+    };
+    img.src = url;
+  }
+<\/script>
+</body></html>`;
+  const w = window.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+// Run wiring after mermaid finishes (it renders async)
+if (window.mermaid) {
+  setTimeout(wireMermaidToolbars, 400);
+  setTimeout(wireMermaidToolbars, 1200);  // safety re-run for slow renders
+}
+</script>
+</body>
+</html>

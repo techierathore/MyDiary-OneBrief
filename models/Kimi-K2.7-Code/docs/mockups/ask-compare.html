@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Compare answers</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="compare-app-bar">
+      <a href="ask.html" class="icon-btn" data-testid="compare-back" aria-label="Back">←</a>
+      <div class="app-bar-title">Compare answers</div>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="compare-filters-card">
+        <div class="field">
+          <label class="field-label">Question</label>
+          <select class="select" data-testid="compare-question-select">
+            <option>How many coffee bottles did I open?</option>
+            <option>What am I grateful for?</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Period</label>
+          <select class="select" data-testid="compare-period-select">
+            <option>Monthly</option>
+            <option>Yearly</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card" data-testid="compare-grid-card" data-tf-sample="sample">
+        <div class="grid-3" data-testid="compare-grid">
+          <div class="grid-cell" data-testid="compare-cell">
+            <div class="grid-cell-header">Jan 2026</div>
+            <div class="grid-cell-value">2</div>
+            <div class="grid-cell-text">small bottles</div>
+          </div>
+          <div class="grid-cell" data-testid="compare-cell">
+            <div class="grid-cell-header">Feb 2026</div>
+            <div class="grid-cell-value">1</div>
+            <div class="grid-cell-text">bottle</div>
+          </div>
+          <div class="grid-cell" data-testid="compare-cell">
+            <div class="grid-cell-header">Mar 2026</div>
+            <div class="grid-cell-empty">No answer</div>
+          </div>
+          <div class="grid-cell" data-testid="compare-cell">
+            <div class="grid-cell-header">Apr 2026</div>
+            <div class="grid-cell-value">3</div>
+            <div class="grid-cell-text">bottles</div>
+          </div>
+          <div class="grid-cell" data-testid="compare-cell">
+            <div class="grid-cell-header">May 2026</div>
+            <div class="grid-cell-value">2</div>
+          </div>
+          <div class="grid-cell" data-testid="compare-cell">
+            <div class="grid-cell-header">Jun 2026</div>
+            <div class="grid-cell-empty">No answer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav" data-testid="compare-bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+      <a href="timeline.html" class="nav-item"><span class="nav-icon">📜</span>Timeline</a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span>Calendar</a>
+      <a href="ask.html" class="nav-item active"><span class="nav-icon">✨</span>Ask</a>
+      <a href="account.html" class="nav-item"><span class="nav-icon">👤</span>Account</a>
+    </div>
+  </div>
+</body>
+</html>

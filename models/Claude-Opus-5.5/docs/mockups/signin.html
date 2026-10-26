@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<main class="centered" data-testid="signin-page">
+  <div class="panel stack">
+    <div class="brand-mark" data-testid="brand">
+      <span class="sidebar-logo"><span class="i i-book i-lg"></span></span>
+      <h1 style="font-size:1.5rem" data-testid="page-title">Welcome to MyDiary</h1>
+      <p class="muted">Your private journal. Sign in to open it.</p>
+    </div>
+
+    <!-- CenteredPanel > Card with the sign-in form -->
+    <form class="card" action="home.html" data-testid="signin-card">
+      <div class="card-header">
+        <div class="card-title">Sign in</div>
+        <div class="card-description">Use your MyDiary account.</div>
+      </div>
+      <div class="card-content form">
+        <div class="alert alert-danger" data-tf-state="error" data-testid="signin-error" hidden>
+          <span class="i i-alert"></span>
+          <div><div class="t">Email or password is wrong</div><div class="d">Five wrong tries lock the account for 15 minutes.</div></div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="email">Email</label>
+          <input class="input" id="email" type="email" value="asha.verma@example.com" data-testid="signin-email">
+        </div>
+        <div class="field">
+          <div class="row between"><label class="field-label" for="pw">Password</label><a href="reset-password.html" class="btn-link small" data-testid="signin-forgot">Forgot password?</a></div>
+          <input class="input" id="pw" type="password" value="••••••••••" data-testid="signin-password">
+        </div>
+        <button class="btn btn-block" type="submit" data-testid="signin-submit">Sign in</button>
+      </div>
+      <div class="card-footer small muted" style="justify-content:center">
+        New here?&nbsp;<a href="register.html" class="btn-link" data-testid="signin-create-account">Create an account</a>
+      </div>
+    </form>
+
+    <p class="tiny muted" style="text-align:center" data-testid="signin-privacy">Your journal stays on your devices. Your account is used only for sign-in, devices and your plan.</p>
+
+    <!-- What happens instead of Home when this device is over the account's limit, or the licence check is overdue -->
+    <div class="mock-note" data-tf-state="device-over-limit" data-testid="signin-refused-note">
+      When this device is over the account's device limit, or the licence has not been checked for 30 days and there is no connection, signing in opens <a href="access-stopped.html" class="btn-link">Access stopped</a> instead of Home.
+    </div>
+  </div>
+</main>
+</body>
+</html>

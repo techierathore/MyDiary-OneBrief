@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Custom question set · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .custom-main { max-width: 920px; }
+    .write-nav-label { margin-top: 18px; }
+    .custom-form { display: grid; gap: 16px; }
+    .custom-field { display: grid; gap: 7px; }
+    .question-builder { display: grid; gap: 10px; }
+    .builder-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+    .order-number { display: grid; place-items: center; width: 30px; height: 30px; margin-top: 2px; border-radius: 50%; background: var(--muted); border: 1px solid var(--border); color: var(--muted-foreground); font-size: 10px; font-weight: 650; }
+    .builder-row .textarea { min-height: 68px; }
+    .order-actions { display: grid; gap: 5px; }
+    .order-actions .button { min-width: 33px; padding-left: 8px; padding-right: 8px; }
+    .builder-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .custom-question-help { margin: 4px 0 0; }
+    .save-footer { justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .footer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-message { flex-basis: 100%; }
+    @media (max-width: 520px) {
+      .builder-row { grid-template-columns: 28px minmax(0, 1fr) 32px; gap: 7px; }
+      .order-number { width: 27px; height: 27px; }
+      .order-actions .button { min-width: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" data-testid="app-navigation">
+      <a class="brand" href="home.html" data-testid="nav-brand"><span class="brand-mark" aria-hidden="true">m</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little room to reflect</span></span></a>
+      <nav aria-label="Main navigation">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="nav-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="nav-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link current" href="question-sets.html" aria-current="page" data-testid="nav-question-sets"><span class="nav-icon" aria-hidden="true">☷</span>Question sets</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="nav-ask"><span class="nav-icon" aria-hidden="true">⌕</span>Ask my journal</a>
+        </div>
+        <div class="nav-group-label write-nav-label">Write</div>
+        <div class="nav-list">
+          <a class="nav-link" href="thought-dump.html" data-testid="nav-thought-dump"><span class="nav-icon" aria-hidden="true">01</span>10-Thought Dump</a>
+          <a class="nav-link" href="free-flow-entry.html" data-testid="nav-free-flow"><span class="nav-icon" aria-hidden="true">✎</span>Free-Flow entry</a>
+        </div>
+      </nav>
+      <div class="sidebar-bottom"><a class="nav-link" href="profile.html" data-testid="nav-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb"><a href="home.html">Home</a> <span aria-hidden="true">/</span> <a href="question-sets.html">Question sets</a> <span aria-hidden="true">/</span> Create</div>
+        <div class="top-actions"><a class="button button-outline button-small" href="journal-browse.html" data-testid="custom-set-open-journal">Open journal</a><span class="avatar" aria-label="Journal user" data-testid="app-user-avatar" data-tf-sample>JD</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Quick navigation">
+        <a href="home.html" data-testid="mobile-nav-home">Home</a><a href="journal-browse.html" data-testid="mobile-nav-journal">Journal</a>
+        <a href="thought-dump.html" data-testid="mobile-nav-thought-dump">Thought Dump</a><a href="free-flow-entry.html" data-testid="mobile-nav-free-flow">Free-Flow</a>
+        <a href="question-sets.html" class="current" aria-current="page" data-testid="mobile-nav-question-sets">Questions</a><a href="ask-my-journal.html" data-testid="mobile-nav-ask">Ask</a>
+      </nav>
+      <main class="main custom-main">
+        <div class="page-heading">
+          <div><h1 data-testid="custom-set-page-title">Create a custom question set</h1><p>Choose a name and write the questions you want to return to.</p></div>
+          <a class="button button-outline" href="question-sets.html" data-testid="custom-set-back">← Question sets</a>
+        </div>
+
+        <section class="card" aria-label="Custom question set form">
+          <div class="card-header">
+            <div><h2 class="card-title">Your question set</h2><p class="card-description">Add questions in the order you want to answer them.</p></div>
+          </div>
+          <div class="card-content">
+            <form class="custom-form" onsubmit="return false">
+              <div class="custom-field field" data-testid="custom-set-name">
+                <label class="label" for="set-name">Set name <span class="muted">· required</span></label>
+                <input class="input" id="set-name" type="text" placeholder="For example, Sunday reset" required data-testid="custom-set-name-input" data-tf-sample>
+              </div>
+              <section class="custom-field" aria-label="Questions in this set" data-testid="custom-set-questions">
+                <div><span class="label">Questions <span class="muted">· add at least one</span></span><p class="hint custom-question-help">Write the prompts you want to answer in this set.</p></div>
+                <div class="question-builder">
+                  <div class="builder-row" data-testid="custom-set-question-row-1">
+                    <span class="order-number" aria-hidden="true" data-testid="custom-set-question-order-1">1</span>
+                    <textarea class="textarea" rows="2" aria-label="Question 1" placeholder="Write your first question…" data-testid="custom-set-question-1" data-tf-sample></textarea>
+                    <span aria-hidden="true"></span>
+                  </div>
+                  <div class="builder-row" data-testid="custom-set-question-row-2">
+                    <span class="order-number" aria-hidden="true" data-testid="custom-set-question-order-2">2</span>
+                    <textarea class="textarea" rows="2" aria-label="Question 2" placeholder="Add another question…" data-testid="custom-set-question-2" data-tf-sample></textarea>
+                    <span aria-hidden="true"></span>
+                  </div>
+                </div>
+                <div class="builder-actions">
+                  <button class="button button-outline button-small" type="button" onclick="showCustomStatus('A new question row is ready in the full app preview.')" data-testid="custom-set-add-question">＋ Add question</button>
+                  <span class="hint" data-testid="custom-set-question-hint">At least one question is required.</span>
+                </div>
+              </section>
+            </form>
+          </div>
+          <div class="card-footer save-footer">
+            <a class="button button-secondary" href="question-sets.html" data-testid="custom-set-cancel">Cancel</a>
+            <div class="footer-actions">
+              <a class="button button-outline" href="thought-dump.html" data-testid="custom-set-new-thought-dump">＋ 10-Thought Dump</a>
+              <button class="button" type="button" onclick="showCustomStatus('Custom set saved. Use Question sets to find it in your list.')" data-testid="custom-set-save">Save question set</button>
+            </div>
+            <p class="status-message" id="custom-set-status" role="status" aria-live="polite" data-testid="custom-set-status"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showCustomStatus(message) {
+      document.getElementById('custom-set-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

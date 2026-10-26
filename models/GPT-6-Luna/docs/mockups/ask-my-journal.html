@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask my journal · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .main { max-width: 1180px; }
+    .ask-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 16px; align-items: start; }
+    .chat-thread { display: grid; gap: 14px; padding: 16px 20px 20px; }
+    .chat-message { max-width: 90%; border: 1px solid var(--border); border-radius: 12px; background: var(--muted); padding: 14px 16px; }
+    .chat-message.user { margin-left: auto; background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+    .chat-author { margin: 0 0 6px; font-size: 10px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; }
+    .chat-copy { margin: 0; line-height: 1.65; }
+    .chat-answer { margin-top: 8px; }
+    .source-list { display: grid; gap: 8px; margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .source-item { display: grid; gap: 2px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); }
+    .source-title { font-size: 12px; font-weight: 620; }
+    .source-subtitle { color: var(--muted-foreground); font-size: 10px; }
+    .sample-banner { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 16px 20px 0; }
+    .compact-copy { margin: 5px 0 0; }
+    .composer { padding: 15px 20px 18px; border-top: 1px solid var(--border); }
+    .composer-row { display: flex; align-items: stretch; gap: 8px; }
+    .composer-row { margin-top: 7px; }
+    .composer-row .textarea { min-height: 44px; height: 44px; resize: vertical; }
+    .demo-note { color: var(--muted-foreground); font-size: 11px; }
+    @media (max-width: 850px) { .ask-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) {
+      .chat-thread { padding: 13px 15px 16px; }
+      .chat-message { max-width: 100%; }
+      .composer { padding: 12px 15px 15px; }
+      .composer-row { flex-direction: column; }
+      .composer-row .button { align-self: flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="home.html" data-testid="brand-home">
+        <span class="brand-mark" aria-hidden="true">m</span>
+        <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span>
+      </a>
+      <nav aria-label="Journal" data-testid="sidebar-nav">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="sidebar-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="sidebar-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link current" href="ask-my-journal.html" aria-current="page" data-testid="sidebar-ask"><span class="nav-icon" aria-hidden="true">✧</span>Ask my journal</a>
+          <a class="nav-link" href="compare-answers.html" data-testid="sidebar-compare"><span class="nav-icon" aria-hidden="true">↔</span>Compare answers</a>
+        </div>
+      </nav>
+      <nav class="sidebar-bottom" aria-label="Account" data-testid="account-nav">
+        <a class="nav-link" href="profile.html" data-testid="sidebar-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a>
+        <a class="nav-link" href="plan-and-devices.html" data-testid="sidebar-plan"><span class="nav-icon" aria-hidden="true">▣</span>Plan and devices</a>
+        <a class="nav-link" href="problem-report.html" data-testid="sidebar-support"><span class="nav-icon" aria-hidden="true">?</span>Problem report</a>
+      </nav>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb">Journal <span aria-hidden="true">/</span> Ask my journal</div>
+        <div class="top-actions"><span class="muted small">Private by design</span><span class="avatar" aria-label="Profile" data-testid="avatar-initials" data-tf-sample="true">AS</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Screens" data-testid="mobile-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a>
+        <a href="journal-browse.html" data-testid="mobile-journal">Journal</a>
+        <a class="current" href="ask-my-journal.html" aria-current="page" data-testid="mobile-ask">Ask</a>
+        <a href="compare-answers.html" data-testid="mobile-compare">Compare</a>
+        <a href="profile.html" data-testid="mobile-profile">Profile</a>
+        <a href="plan-and-devices.html" data-testid="mobile-plan">Plan</a>
+        <a href="problem-report.html" data-testid="mobile-support">Support</a>
+      </nav>
+
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <h1>Ask my journal</h1>
+            <p>Ask a question in your own words and revisit the entries behind a reflection.</p>
+          </div>
+          <div class="heading-actions">
+            <a class="button button-outline" href="compare-answers.html" data-testid="compare-answers-link">Compare answers</a>
+          </div>
+        </div>
+
+        <div class="ask-layout">
+          <section class="card" aria-label="Question and answer" data-testid="ask-thread">
+            <div class="sample-banner">
+              <span class="badge badge-info">Illustrative answer</span>
+              <span class="demo-note">Sample content · not a verified result</span>
+            </div>
+            <div class="chat-thread" role="log" aria-live="polite">
+              <article class="chat-message user" data-testid="ask-question">
+                <p class="chat-author">You</p>
+                <p class="chat-copy" data-testid="ask-question-value" data-tf-sample="true">What helped me feel grounded during a busy week?</p>
+              </article>
+              <article class="chat-message" data-testid="ask-answer">
+                <p class="chat-author" data-tf-sample="true">Sample reflection</p>
+                <p class="chat-copy chat-answer" data-testid="ask-answer-value" data-tf-sample="true">Across these sample entries, a quiet walk, an unhurried start to the morning, and writing down one small next step came up as grounding habits.</p>
+                <div class="source-list" data-testid="ask-sources" aria-label="Sample source entries">
+                  <a class="source-item" href="entry-details.html" data-testid="ask-source-1">
+                    <span class="source-title" data-testid="ask-source-1-title" data-tf-sample="true">A walk before the day began</span>
+                    <span class="source-subtitle" data-testid="ask-source-1-date" data-tf-sample="true">14 March 2026 · Journal entry</span>
+                  </a>
+                  <a class="source-item" href="entry-details.html" data-testid="ask-source-2">
+                    <span class="source-title" data-testid="ask-source-2-title" data-tf-sample="true">Making room for a slower morning</span>
+                    <span class="source-subtitle" data-testid="ask-source-2-date" data-tf-sample="true">22 April 2026 · Journal entry</span>
+                  </a>
+                  <a class="source-item" href="entry-details.html" data-testid="ask-source-3">
+                    <span class="source-title" data-testid="ask-source-3-title" data-tf-sample="true">One next step is enough</span>
+                    <span class="source-subtitle" data-testid="ask-source-3-date" data-tf-sample="true">8 June 2026 · Journal entry</span>
+                  </a>
+                </div>
+              </article>
+            </div>
+            <form class="composer" data-testid="ask-composer" onsubmit="return false">
+              <label class="label" for="ask-question-input">Ask a question</label>
+              <div class="composer-row">
+                <textarea class="textarea" id="ask-question-input" rows="1" placeholder="What would you like to revisit?" aria-label="Ask a question" data-testid="ask-composer-input"></textarea>
+                <button class="button" type="button" data-testid="ask-send" onclick="showStatus('ask-status', 'Static preview only. Your question was not sent.')">Ask</button>
+              </div>
+              <p class="status-message" id="ask-status" role="status" aria-live="polite" data-testid="ask-status"></p>
+            </form>
+          </section>
+
+          <aside class="grid">
+            <section class="card" data-testid="ask-count">
+              <div class="card-header">
+                <div><h2 class="card-title">Entries in this sample</h2><p class="card-description">Shown for layout only</p></div>
+              </div>
+              <div class="card-content">
+                <div class="stat">
+                  <span class="stat-value" data-testid="ask-count-value" data-tf-sample="true">3</span>
+                  <span class="badge" data-testid="ask-count-badge" data-tf-sample="true">sample entries</span>
+                  <p class="stat-note">Illustrative count; exact counting is not verified.</p>
+                </div>
+              </div>
+            </section>
+            <section class="alert alert-warning" role="note" data-testid="ask-no-match">
+              <div>
+                <strong>Implementation note · not verified</strong>
+                <p class="small compact-copy">The BRD records the TechieRag blocker for exact counts and no-match refusal (BRD-34 and BRD-36; §9). This sample does not demonstrate verified behavior; no-match must not produce an invented answer.</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+
+        <div class="screen-links" aria-label="Continue to another screen">
+          <a href="home.html" data-testid="return-home-link">Home</a>
+          <a href="compare-answers.html" data-testid="continue-compare-link">Compare answers</a>
+          <a href="problem-report.html" data-testid="report-problem-link">Report a problem</a>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(id, message) {
+      const status = document.getElementById(id);
+      if (status) status.textContent = message;
+    }
+  </script>
+</body>
+</html>

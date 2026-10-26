@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Import and export · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .eyebrow { margin-bottom: 5px; color: var(--primary); font-size: 10px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+    .file-drop { display: grid; gap: 8px; padding: 14px; border: 1px dashed var(--input); border-radius: 8px; background: var(--muted); }
+    .file-drop input { width: 100%; max-width: 100%; color: var(--muted-foreground); font: inherit; font-size: 11px; }
+    .file-note { color: var(--muted-foreground); font-size: 11px; }
+    .card .button { margin-top: 15px; }
+    .status-layout { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+    .progress { width: 100%; margin-top: 12px; }
+    .progress-empty > span { width: 0; }
+    @media (max-width: 720px) { .status-layout { grid-template-columns: 1fr; } .card .button { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <nav class="sidebar" aria-label="Primary navigation" data-testid="home-nav">
+      <a class="brand" href="home.html" data-testid="nav-brand"><span class="brand-mark" aria-hidden="true">M</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span></a>
+      <div><div class="nav-group-label">Journal</div><div class="nav-list"><a class="nav-link" href="home.html" data-testid="nav-home">Home</a><a class="nav-link" href="journal-browse.html" data-testid="nav-journal">Journal</a></div></div>
+      <div><div class="nav-group-label">Account</div><div class="nav-list">
+        <a class="nav-link" href="profile.html" data-testid="nav-profile">Profile</a><a class="nav-link" href="plan-and-devices.html" data-testid="nav-plan">Plan and devices</a>
+        <a class="nav-link" href="account-data.html" data-testid="nav-account-data">Account data</a><a class="nav-link" href="ai-preferences.html" data-testid="nav-ai">AI preferences</a>
+        <a class="nav-link" href="backup-and-sync.html" data-testid="nav-backup">Backup and sync</a><a class="nav-link current" href="import-and-export.html" aria-current="page" data-testid="nav-transfer">Import and export</a>
+        <a class="nav-link" href="privacy-and-reminders.html" data-testid="nav-privacy">Privacy and reminders</a>
+      </div></div>
+      <div class="sidebar-bottom nav-list"><a class="nav-link" href="problem-report.html" data-testid="nav-support">Problem report</a></div>
+    </nav>
+    <div class="workspace">
+      <header class="topbar" data-testid="page-header"><div class="crumb"><a href="home.html" data-testid="breadcrumb-home">Home</a> <span aria-hidden="true">/</span> <a href="profile.html" data-testid="breadcrumb-profile">Profile</a> <span aria-hidden="true">/</span> Import and export</div><div class="top-actions"><a class="button button-outline button-small" href="home.html" data-testid="return-to-home">Back to journal</a></div></header>
+      <nav class="mobile-nav" aria-label="Compact navigation" data-testid="responsive-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a><a href="profile.html" data-testid="mobile-profile">Profile</a><a href="account-data.html" data-testid="mobile-account-data">Account data</a><a href="ai-preferences.html" data-testid="mobile-ai">AI</a><a href="backup-and-sync.html" data-testid="mobile-backup">Backup</a><a href="import-and-export.html" class="current" aria-current="page" data-testid="mobile-transfer">Transfer</a><a href="privacy-and-reminders.html" data-testid="mobile-privacy">Privacy</a>
+      </nav>
+      <main class="main">
+        <div class="page-heading"><div><div class="eyebrow">Move your journal</div><h1 data-testid="screen-title">Import and export</h1><p data-testid="screen-intro">Create a portable MyDiary backup or bring entries in from a supported journal export.</p></div></div>
+
+        <div class="grid grid-2">
+          <section class="card" aria-labelledby="export-title" data-testid="export-json">
+            <div class="card-header"><div><h2 class="card-title" id="export-title">Export your journal</h2><p class="card-description">Create a MyDiary JSON file containing your journal entries and supported attachments.</p></div><span class="badge badge-info">JSON</span></div>
+            <div class="card-content">
+              <p class="small muted">Keep the exported file somewhere private. Anyone with access to it may be able to read its contents.</p>
+              <button class="button" type="button" data-testid="export-json-button" onclick="showStatus('Your MyDiary JSON export would be prepared here.')">Export as JSON</button>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="json-import-title" data-testid="import-json">
+            <div class="card-header"><div><h2 class="card-title" id="json-import-title">Import a MyDiary file</h2><p class="card-description">Choose a valid MyDiary JSON export to add its entries to this journal.</p></div><span class="badge badge-outline">.json</span></div>
+            <div class="card-content">
+              <label class="file-drop" for="mydiary-file">
+                <span class="label">MyDiary JSON export</span>
+                <input id="mydiary-file" type="file" accept=".json,application/json" aria-describedby="json-file-help" data-testid="import-json-file">
+                <span id="json-file-help" class="file-note">Select one MyDiary export file.</span>
+              </label>
+              <button class="button button-secondary" type="button" data-testid="import-json-button" onclick="showStatus('MyDiary JSON file selected for validation. No import was run in this mockup.')">Import MyDiary JSON</button>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="dayone-import-title" data-testid="import-day-one">
+            <div class="card-header"><div><h2 class="card-title" id="dayone-import-title">Import from Day One</h2><p class="card-description">Bring entries from a Day One export into your MyDiary journal.</p></div><span class="badge badge-outline">Day One</span></div>
+            <div class="card-content">
+              <label class="file-drop" for="dayone-file">
+                <span class="label">Day One export file</span>
+                <input id="dayone-file" type="file" accept=".zip,.json,application/json,application/zip" aria-describedby="dayone-file-help" data-testid="import-day-one-file">
+                <span id="dayone-file-help" class="file-note">Choose a supported Day One export.</span>
+              </label>
+              <button class="button button-secondary" type="button" data-testid="import-day-one-button" onclick="showStatus('Day One export selected for validation. No import was run in this mockup.')">Import Day One export</button>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="transfer-result-title" data-testid="transfer-result">
+            <div class="card-header"><div><h2 class="card-title" id="transfer-result-title">Transfer status</h2><p class="card-description">File processing progress and any result will appear here.</p></div><span class="badge badge-outline" data-testid="transfer-state" data-tf-sample="true">Ready</span></div>
+            <div class="card-content">
+              <div class="status-layout">
+                <div class="small" id="action-status" role="status" aria-live="polite" data-testid="transfer-status-message">Choose an export or import action to begin.</div>
+                <span class="small muted" data-testid="transfer-progress-value" data-tf-sample="true">0%</span>
+              </div>
+              <div class="progress progress-empty" role="progressbar" aria-label="File transfer progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-testid="transfer-progress"><span></span></div>
+              <p class="hint">Nothing has been imported or exported yet.</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      document.getElementById('action-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

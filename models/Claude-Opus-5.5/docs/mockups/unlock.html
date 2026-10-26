@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unlock — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<main class="centered" data-testid="unlock-page">
+  <div class="panel stack">
+    <div class="brand-mark" data-testid="brand">
+      <span class="sidebar-logo"><span class="i i-lock i-lg"></span></span>
+      <h1 style="font-size:1.5rem" data-testid="page-title">MyDiary is locked</h1>
+      <p class="muted">Enter your PIN to open your journal, Asha.</p>
+    </div>
+
+    <!-- PIN form; correct PIN opens Home (BRD-14) -->
+    <form class="card" action="home.html" data-testid="unlock-card">
+      <div class="card-content form" style="padding-top:1.5rem">
+        <div class="alert alert-danger" data-tf-state="error" data-testid="unlock-error" hidden>
+          <span class="i i-alert"></span>
+          <div><div class="t">Wrong PIN. Try again.</div></div>
+        </div>
+        <div class="field">
+          <label class="field-label" style="text-align:center">PIN</label>
+          <div class="otp" data-testid="unlock-pin">
+            <div class="otp-slot filled" data-testid="unlock-pin-slot-1">•</div>
+            <div class="otp-slot filled" data-testid="unlock-pin-slot-2">•</div>
+            <div class="otp-slot" data-testid="unlock-pin-slot-3"></div>
+            <div class="otp-slot" data-testid="unlock-pin-slot-4"></div>
+          </div>
+        </div>
+        <button class="btn btn-block" type="submit" data-testid="unlock-submit">Unlock</button>
+        <div class="separator"></div>
+        <a href="home.html" class="btn btn-outline btn-lg btn-block" data-testid="unlock-biometric"><span class="i i-finger i-lg"></span>Use fingerprint or face</a>
+      </div>
+      <div class="card-footer small muted" style="justify-content:center">
+        <a href="signin.html" class="btn-link" data-testid="unlock-forgot">Forgot your PIN? Sign in again</a>
+      </div>
+    </form>
+
+    <p class="tiny muted" style="text-align:center" data-testid="unlock-note">Signing in again clears the PIN. Your journal stays on this device.</p>
+  </div>
+</main>
+</body>
+</html>

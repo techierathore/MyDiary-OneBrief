@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item active"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">Insights / Ask</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="ask-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Ask your journal</h1>
+        <p>Ask in plain words. MyDiary counts from your entries and shows which ones it used.</p>
+      </div>
+
+      <div class="alert alert-info" data-testid="ask-privacy-alert">
+        <span class="i i-lock i-lg"></span>
+        <div><div class="t">Private</div><div class="d">Ask reads only your journal on this device.</div></div>
+      </div>
+
+      <!-- Question (BRD-58) -->
+      <section class="card" data-testid="ask-question-card">
+        <div class="card-content form" style="padding-top:1.5rem">
+          <div class="field">
+            <label class="field-label" for="q">Your question</label>
+            <textarea class="textarea" id="q" rows="2" data-testid="ask-question">How many coffee bottles did I open last year?</textarea>
+          </div>
+          <div class="row between">
+            <div class="row" data-testid="ask-examples">
+              <span class="tiny muted">Try:</span>
+              <button class="btn btn-outline btn-sm" data-testid="ask-example" onclick="msg('Question filled in: How many times did I run in September?')">How many times did I run in September?</button>
+              <button class="btn btn-outline btn-sm" onclick="msg('Question filled in: When did I last water the herbs?')">When did I last water the herbs?</button>
+              <button class="btn btn-outline btn-sm" onclick="msg('Question filled in: What did I spend on the Kitchen redo?')">What did I spend on the Kitchen redo?</button>
+            </div>
+            <button class="btn" data-testid="ask-submit" onclick="msg('Asking…')"><span class="i i-sparkles"></span>Ask</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Thinking (state: loading) -->
+      <div class="card" data-tf-state="loading" data-testid="ask-loading" hidden>
+        <div class="card-content stack" style="padding-top:1.5rem">
+          <div class="row small muted"><span class="i i-sparkles"></span>Reading your entries…</div>
+          <div class="skeleton" style="width:70%"></div>
+          <div class="skeleton" style="width:40%"></div>
+        </div>
+      </div>
+
+      <!-- Answer (BRD-58) -->
+      <section class="card otd-card" data-testid="ask-answer-card">
+        <div class="card-header">
+          <div class="card-description">Answer</div>
+          <div class="row" style="align-items:baseline">
+            <span class="year-chip" style="font-size:2.5rem;line-height:1" data-testid="ask-answer-count">7</span>
+            <span class="card-title" data-testid="ask-answer-text">You opened 7 bottles of coffee in 2025.</span>
+          </div>
+        </div>
+        <div class="card-content">
+          <p class="tiny muted" data-testid="ask-model-label">Answered on this device by MyDiary's built-in model (Qwen 0.5B)</p>
+        </div>
+      </section>
+
+      <!-- Sources (BRD-59) -->
+      <section class="card" data-testid="ask-sources">
+        <div class="card-header row">
+          <div><div class="card-title">Sources</div><div class="card-description" data-testid="ask-sources-count">Counted from 6 entries</div></div>
+          <span class="badge badge-outline">2025</span>
+        </div>
+        <div class="card-content stack">
+          <a href="entry.html" class="item" data-testid="ask-source">
+            <span class="badge badge-secondary">+1</span>
+            <div class="item-content">
+              <div class="item-title">12 Jan 2025</div>
+              <div class="item-description">…opened the new Blue Tokai <mark>bottle</mark> of coffee this morning, it smells like chocolate.</div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="ask-source-2">
+            <span class="badge badge-secondary">+1</span>
+            <div class="item-content">
+              <div class="item-title">3 Mar 2025</div>
+              <div class="item-description">…finished the old one and <mark>opened a fresh bottle</mark> of the cold brew concentrate.</div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="ask-source-3">
+            <span class="badge">+2</span>
+            <div class="item-content">
+              <div class="item-title">19 May 2025 <span class="badge badge-outline">counts 2</span></div>
+              <div class="item-description">…back from the Pune trip and <mark>opened both bottles</mark> of coffee I bought at the roastery.</div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="ask-source-4">
+            <span class="badge badge-secondary">+1</span>
+            <div class="item-content">
+              <div class="item-title">2 Aug 2025</div>
+              <div class="item-description">…<mark>new coffee bottle</mark> opened, the hazelnut one Riya left behind.</div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="ask-source-5">
+            <span class="badge badge-secondary">+1</span>
+            <div class="item-content">
+              <div class="item-title">14 Oct 2025</div>
+              <div class="item-description">…<mark>opened a bottle</mark> of coffee before the run, bad idea, stitch at 4 km.</div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="ask-source-6">
+            <span class="badge badge-secondary">+1</span>
+            <div class="item-content">
+              <div class="item-title">21 Dec 2025</div>
+              <div class="item-description">…last <mark>coffee bottle</mark> of the year opened on the balcony among the herbs.</div>
+            </div>
+          </a>
+        </div>
+        <div class="card-footer">
+          <a href="compare.html" class="btn btn-link" data-testid="ask-compare-link"><span class="i i-columns"></span>Compare answers over time</a>
+        </div>
+      </section>
+
+      <!-- No match (state: no-match, BRD-60) -->
+      <section class="card" data-tf-state="no-match" data-testid="ask-no-match">
+        <div class="card-header">
+          <div class="mock-note" style="align-self:flex-start">When nothing matches</div>
+          <div class="card-title">No entries mention that.</div>
+          <div class="card-description">MyDiary did not guess a number. Try other words, or search instead.</div>
+        </div>
+        <div class="card-footer"><a href="search.html" class="btn btn-outline btn-sm" data-testid="ask-no-match-search">Search my journal</a></div>
+      </section>
+
+      <!-- Model not ready (state: error) -->
+      <div class="alert alert-danger" data-tf-state="error" data-testid="ask-error" hidden>
+        <span class="i i-alert i-lg"></span>
+        <div><div class="t">Ask could not answer</div><div class="d">The AI model did not start. Close MyDiary and open it again, or pick the built-in model in Settings.</div></div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

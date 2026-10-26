@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>Home · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .nav-region { display: contents; }
+    .home-intro { margin: 0; }
+    .home-layout { align-items: start; }
+    .home-primary { display: grid; gap: 16px; }
+    .home-side { display: grid; gap: 16px; align-content: start; }
+    .today-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .today-count { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; background: var(--accent); color: var(--primary); font-size: 21px; font-weight: 650; flex: 0 0 auto; }
+    .today-copy { min-width: 0; }
+    .today-copy p { margin: 4px 0 0; color: var(--muted-foreground); font-size: 11px; }
+    .today-entry-list { margin-top: 13px; }
+    .entry-preview-link { display: block; }
+    .entry-preview-link:hover .list-row-title { color: var(--primary); }
+    .streak-card { background: linear-gradient(145deg, var(--accent), var(--card) 78%); }
+    .streak-line { display: flex; align-items: baseline; gap: 8px; }
+    .streak-value { margin: 0; font-size: 31px; line-height: 1; letter-spacing: -.05em; font-weight: 680; }
+    .streak-copy { color: var(--muted-foreground); font-size: 11px; }
+    .story-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; }
+    .story-link { font-size: 11px; font-weight: 600; color: var(--primary); }
+    .due-card .card-content { padding-top: 9px; }
+    .due-title { margin: 11px 0 4px; font-size: 16px; font-weight: 630; letter-spacing: -.02em; }
+    .due-copy { margin: 0; color: var(--muted-foreground); font-size: 11px; }
+    .due-action { margin-top: 15px; }
+    .new-entry-panel { display: grid; gap: 8px; margin-top: 12px; padding: 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); box-shadow: var(--shadow); }
+    .new-entry-panel a { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px; border-radius: 6px; font-size: 12px; }
+    .new-entry-panel a:hover { background: var(--accent); }
+    .new-entry-panel small { color: var(--muted-foreground); font-size: 10px; }
+    .offline-note { display: flex; gap: 8px; align-items: flex-start; color: var(--muted-foreground); font-size: 10px; }
+    .offline-dot { width: 7px; height: 7px; margin-top: 5px; border-radius: 50%; background: var(--success); flex: 0 0 auto; }
+    @media (max-width: 720px) { .new-entry-panel { margin-top: 10px; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <div class="nav-region" data-testid="home-nav" role="navigation" aria-label="MyDiary navigation">
+      <aside class="sidebar">
+        <a class="brand" href="home.html" aria-label="MyDiary home">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">Your private journal</span></span>
+        </a>
+        <div>
+          <div class="nav-group-label">Journal</div>
+          <nav class="nav-list" aria-label="Journal screens">
+            <a class="nav-link current" href="home.html" aria-current="page"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+            <a class="nav-link" href="journal-browse.html"><span class="nav-icon" aria-hidden="true">▤</span>Browse journal</a>
+            <a class="nav-link" href="question-sets.html"><span class="nav-icon" aria-hidden="true">☷</span>Question sets</a>
+            <a class="nav-link" href="ask-my-journal.html"><span class="nav-icon" aria-hidden="true">✧</span>Ask my journal</a>
+            <a class="nav-link" href="compare-answers.html"><span class="nav-icon" aria-hidden="true">↔</span>Compare answers</a>
+            <a class="nav-link" href="entry-details.html"><span class="nav-icon" aria-hidden="true">▧</span>Entry details</a>
+          </nav>
+        </div>
+        <div>
+          <div class="nav-group-label">Manage</div>
+          <nav class="nav-list" aria-label="Account and journal settings">
+            <a class="nav-link" href="account-data.html">Account data</a>
+            <a class="nav-link" href="ai-preferences.html">AI preferences</a>
+            <a class="nav-link" href="backup-and-sync.html">Backup and sync</a>
+            <a class="nav-link" href="import-and-export.html">Import and export</a>
+            <a class="nav-link" href="privacy-and-reminders.html">Privacy and reminders</a>
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <a class="nav-link" href="profile.html"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a>
+          <a class="nav-link" href="plan-and-devices.html"><span class="nav-icon" aria-hidden="true">▣</span>Plan and devices</a>
+          <a class="nav-link" href="problem-report.html"><span class="nav-icon" aria-hidden="true">?</span>Problem report</a>
+          <a class="nav-link" href="sign-in-and-account.html"><span class="nav-icon" aria-hidden="true">↩</span>Sign out</a>
+        </div>
+      </aside>
+      <nav class="mobile-nav" aria-label="Journal screens">
+        <a class="current" href="home.html" aria-current="page">Home</a>
+        <a href="journal-browse.html">Browse journal</a>
+          <a href="entry-details.html">Entry details</a>
+          <a href="question-sets.html">Questions</a>
+          <a href="ask-my-journal.html">Ask</a>
+          <a href="compare-answers.html">Compare</a>
+          <a href="profile.html">Profile</a>
+        <a href="sign-in-and-account.html">Account</a>
+      </nav>
+    </div>
+    <div class="workspace">
+      <header class="topbar">
+        <span class="crumb">Your journal <span aria-hidden="true">/</span> Home</span>
+        <div class="top-actions">
+          <span class="badge badge-success" data-testid="home-offline-status">On this device</span>
+          <a class="avatar" href="sign-in-and-account.html" aria-label="Account and sign in" data-testid="home-account-avatar" data-tf-sample>JD</a>
+        </div>
+      </header>
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <h1>Good morning</h1>
+            <p class="home-intro" data-testid="home-today-date"><time datetime="2026-10-25">Sunday, October 25, 2026</time> · A little space for today.</p>
+          </div>
+          <div class="heading-actions">
+            <div data-testid="home-new-entry" aria-label="New entry navigation menu">
+              <button class="button" type="button" aria-haspopup="true" aria-expanded="true" data-testid="home-new-entry-trigger" data-tf-state="popup-open" onclick="showStatus('Choose a writing style from the open new-entry menu.')">＋ New entry <span aria-hidden="true">⌄</span></button>
+              <div class="new-entry-panel" role="menu" aria-label="Choose an entry type" data-testid="home-new-entry-menu" data-tf-state="popup-open">
+                <a href="thought-dump.html" role="menuitem" data-testid="home-new-thought-dump"><span>10-Thought Dump</span><small>Quick lines</small></a>
+                <a href="free-flow-entry.html" role="menuitem" data-testid="home-new-free-flow"><span>Free-Flow entry</span><small>Write freely</small></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3 home-layout">
+          <section class="card" data-testid="home-today" aria-labelledby="today-title">
+            <div class="card-header">
+              <div><h2 class="card-title" id="today-title">Today in your journal</h2><p class="card-description">A small check-in with yourself.</p></div>
+              <span class="badge" data-testid="home-today-count" data-tf-sample>2 entries</span>
+            </div>
+            <div class="card-content">
+              <div class="today-summary">
+                <div class="today-count" aria-hidden="true" data-tf-sample>2</div>
+                <div class="today-copy"><strong data-testid="home-today-summary" data-tf-sample>You made time to write</strong><p>Entries saved today</p></div>
+              </div>
+              <div class="list today-entry-list">
+                <a class="list-row entry-preview-link" href="entry-details.html" data-testid="home-today-entry-1" data-tf-sample>
+                  <span class="avatar-small" aria-hidden="true">☀</span><span class="list-row-main"><span class="list-row-title" data-testid="home-today-entry-1-title">A slower start</span><span class="list-row-sub" data-testid="home-today-entry-1-time">8:42 am · Free-flow</span></span><span aria-hidden="true">›</span>
+                </a>
+                <a class="list-row entry-preview-link" href="entry-details.html" data-testid="home-today-entry-2" data-tf-sample>
+                  <span class="avatar-small" aria-hidden="true">✎</span><span class="list-row-main"><span class="list-row-title" data-testid="home-today-entry-2-title">Three things I noticed</span><span class="list-row-sub" data-testid="home-today-entry-2-time">11:16 am · Thought dump</span></span><span aria-hidden="true">›</span>
+                </a>
+              </div>
+              <a class="story-link" href="journal-browse.html" data-testid="home-open-journal">Open your journal <span aria-hidden="true">→</span></a>
+            </div>
+          </section>
+
+          <section class="card streak-card" data-testid="home-streak" aria-labelledby="streak-title">
+            <div class="card-header"><div><h2 class="card-title" id="streak-title">Your writing streak</h2><p class="card-description">Showing up counts, however briefly.</p></div><span aria-hidden="true">✧</span></div>
+            <div class="card-content">
+              <div class="streak-line"><p class="streak-value" data-testid="home-streak-value" data-tf-sample>12</p><span class="streak-copy">days in a row</span></div>
+              <p class="small muted" data-testid="home-streak-note" data-tf-sample>One honest sentence is enough to keep your rhythm.</p>
+            </div>
+          </section>
+
+          <section class="card due-card" data-testid="home-due-set" aria-labelledby="due-title">
+            <div class="card-header"><div><h2 class="card-title" id="due-title">A prompt for today</h2><p class="card-description">A question set is ready when you are.</p></div><span class="badge badge-info" data-testid="home-due-badge" data-tf-sample>Due today</span></div>
+            <div class="card-content">
+              <p class="due-title" data-testid="home-due-set-name" data-tf-sample>Weekly Retro</p>
+              <p class="due-copy" data-testid="home-due-set-description" data-tf-sample>Look back on the small wins and lessons from your week.</p>
+              <a class="button button-secondary due-action" href="question-sets.html" data-testid="home-open-due-set">View question sets <span aria-hidden="true">→</span></a>
+            </div>
+          </section>
+
+          <section class="card story span-2" data-testid="home-on-this-day" aria-labelledby="on-this-day-title">
+            <div class="card-content">
+              <p class="story-kicker" id="on-this-day-title">On this day · in a past year</p>
+              <p class="story-text" data-testid="home-on-this-day-story" data-tf-sample>“We took the long path home and found the little bookshop still open. I remember the rain tapping at the windows while we planned a trip we hadn’t booked yet.”</p>
+              <div class="story-footer"><span class="small muted" data-testid="home-on-this-day-date" data-tf-sample>October 25, 2022 · A day worth keeping</span><a class="story-link" href="entry-details.html" data-testid="home-on-this-day-entry">Read that memory <span aria-hidden="true">→</span></a></div>
+            </div>
+          </section>
+
+          <aside class="card" aria-label="Journal availability">
+            <div class="card-content">
+              <div class="offline-note"><span class="offline-dot" aria-hidden="true"></span><span><strong>Ready offline</strong><br>Your journal is stored on this device. It remains available offline after a recent licence check.</span></div>
+            </div>
+          </aside>
+        </div>
+        <p class="status-message" id="page-status" data-testid="page-status" role="status" aria-live="polite" hidden></p>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      const status = document.querySelector('[data-testid="page-status"]');
+      status.textContent = message;
+      status.hidden = false;
+    }
+  </script>
+</body>
+</html>

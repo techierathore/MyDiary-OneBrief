@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Build Question Set</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="builder-app-bar">
+      <a href="question-set.html" class="icon-btn" data-testid="builder-back" aria-label="Back">←</a>
+      <div class="app-bar-title">Build Set</div>
+      <a href="question-set.html" class="btn btn-sm btn-primary" data-testid="builder-save" style="padding: 8px 16px;">Save</a>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="builder-meta-card">
+        <div class="field">
+          <label class="field-label">Set name</label>
+          <input type="text" class="input" placeholder="e.g. Morning intentions" data-testid="builder-name-input">
+        </div>
+        <div class="field">
+          <label class="field-label">Category</label>
+          <select class="select" data-testid="builder-category-select">
+            <option>Monthly Goals</option>
+            <option>Yearly Review</option>
+            <option>Health</option>
+            <option>Fitness</option>
+            <option>Weekly Retro</option>
+            <option>Project Retro</option>
+            <option>Gratitude</option>
+            <option>Custom</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card" data-testid="builder-questions-card">
+        <div class="section-title">Questions</div>
+        <div class="question-row" data-testid="builder-question-row">
+          <button class="tool-btn" data-testid="builder-drag-question" onclick="alert('Drag to reorder');" title="Drag">⋮⋮</button>
+          <input type="text" class="input" value="What am I grateful for today?" data-testid="builder-question-input">
+          <button class="tool-btn" data-testid="builder-remove-question" onclick="alert('Question removed');" title="Remove">✕</button>
+        </div>
+        <div class="question-row" data-testid="builder-question-row">
+          <button class="tool-btn" data-testid="builder-drag-question" onclick="alert('Drag to reorder');" title="Drag">⋮⋮</button>
+          <input type="text" class="input" value="What will make today great?" data-testid="builder-question-input">
+          <button class="tool-btn" data-testid="builder-remove-question" onclick="alert('Question removed');" title="Remove">✕</button>
+        </div>
+        <button class="btn btn-secondary btn-block mt-3" data-testid="builder-add-question" onclick="alert('Question added');">+ Add question</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

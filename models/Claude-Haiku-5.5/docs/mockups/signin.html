@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDiary - Sign in</title>
+<style>
+/* TrBlazeUI theme variables (OKLCH), copied from the Theme Setup section. */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.1450 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.1450 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.1450 0 0);
+  --primary: oklch(0.2050 0 0);
+  --primary-foreground: oklch(0.9850 0 0);
+  --secondary: oklch(0.9700 0 0);
+  --secondary-foreground: oklch(0.2050 0 0);
+  --muted: oklch(0.9700 0 0);
+  --muted-foreground: oklch(0.5560 0 0);
+  --accent: oklch(0.9700 0 0);
+  --accent-foreground: oklch(0.2050 0 0);
+  --destructive: oklch(0.5770 0.2450 27.3250);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9220 0 0);
+  --input: oklch(0.9220 0 0);
+  --ring: oklch(0.7080 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.9850 0 0);
+  --sidebar-foreground: oklch(0.1450 0 0);
+  --sidebar-primary: oklch(0.2050 0 0);
+  --sidebar-primary-foreground: oklch(0.9850 0 0);
+  --sidebar-accent: oklch(0.9700 0 0);
+  --sidebar-accent-foreground: oklch(0.2050 0 0);
+  --sidebar-border: oklch(0.9220 0 0);
+  --alert-success: oklch(0.55 0.20 142);
+  --alert-info: oklch(0.50 0.20 255);
+  --alert-warning: oklch(0.68 0.18 55);
+  --alert-danger: oklch(0.55 0.22 27);
+  --alert-success-bg: oklch(0.97 0.03 142);
+  --alert-info-bg: oklch(0.97 0.02 255);
+  --alert-warning-bg: oklch(0.97 0.04 75);
+  --alert-danger-bg: oklch(0.97 0.02 27);
+  --alert-success-foreground: oklch(0.42 0.15 142);
+  --alert-info-foreground: oklch(0.42 0.17 255);
+  --alert-warning-foreground: oklch(0.50 0.14 75);
+  --alert-danger-foreground: oklch(0.45 0.20 27);
+  --sidebar-width: 16rem;
+  --sidebar-width-mobile: 18rem;
+  --sidebar-width-icon: 3rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: oklch(0.1450 0 0);
+    --foreground: oklch(0.9850 0 0);
+    --card: oklch(0.2050 0 0);
+    --card-foreground: oklch(0.9850 0 0);
+    --popover: oklch(0.2050 0 0);
+    --popover-foreground: oklch(0.9850 0 0);
+    --primary: oklch(0.9220 0 0);
+    --primary-foreground: oklch(0.2050 0 0);
+    --secondary: oklch(0.2690 0 0);
+    --secondary-foreground: oklch(0.9850 0 0);
+    --muted: oklch(0.2690 0 0);
+    --muted-foreground: oklch(0.7080 0 0);
+    --accent: oklch(0.2690 0 0);
+    --accent-foreground: oklch(0.9850 0 0);
+    --destructive: oklch(0.7040 0.1910 22.2160);
+    --destructive-foreground: oklch(0.9850 0 0);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.5560 0 0);
+    --sidebar: oklch(0.2050 0 0);
+    --sidebar-foreground: oklch(0.9850 0 0);
+    --sidebar-primary: oklch(0.4880 0.2430 264.3760);
+    --sidebar-primary-foreground: oklch(0.9850 0 0);
+    --sidebar-accent: oklch(0.2690 0 0);
+    --sidebar-accent-foreground: oklch(0.9850 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --alert-success: oklch(0.65 0.18 142);
+    --alert-info: oklch(0.65 0.18 255);
+    --alert-warning: oklch(0.75 0.16 75);
+    --alert-danger: oklch(0.65 0.20 27);
+    --alert-success-bg: oklch(0.30 0.06 142);
+    --alert-info-bg: oklch(0.30 0.05 255);
+    --alert-warning-bg: oklch(0.32 0.06 75);
+    --alert-danger-bg: oklch(0.30 0.06 27);
+    --alert-success-foreground: oklch(0.88 0.10 142);
+    --alert-info-foreground: oklch(0.88 0.08 255);
+    --alert-warning-foreground: oklch(0.90 0.10 75);
+    --alert-danger-foreground: oklch(0.88 0.10 27);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --background: oklch(0.1450 0 0);
+  --foreground: oklch(0.9850 0 0);
+  --card: oklch(0.2050 0 0);
+  --card-foreground: oklch(0.9850 0 0);
+  --popover: oklch(0.2050 0 0);
+  --popover-foreground: oklch(0.9850 0 0);
+  --primary: oklch(0.9220 0 0);
+  --primary-foreground: oklch(0.2050 0 0);
+  --secondary: oklch(0.2690 0 0);
+  --secondary-foreground: oklch(0.9850 0 0);
+  --muted: oklch(0.2690 0 0);
+  --muted-foreground: oklch(0.7080 0 0);
+  --accent: oklch(0.2690 0 0);
+  --accent-foreground: oklch(0.9850 0 0);
+  --destructive: oklch(0.7040 0.1910 22.2160);
+  --destructive-foreground: oklch(0.9850 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.5560 0 0);
+  --sidebar: oklch(0.2050 0 0);
+  --sidebar-foreground: oklch(0.9850 0 0);
+  --sidebar-primary: oklch(0.4880 0.2430 264.3760);
+  --sidebar-primary-foreground: oklch(0.9850 0 0);
+  --sidebar-accent: oklch(0.2690 0 0);
+  --sidebar-accent-foreground: oklch(0.9850 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --alert-success: oklch(0.65 0.18 142);
+  --alert-info: oklch(0.65 0.18 255);
+  --alert-warning: oklch(0.75 0.16 75);
+  --alert-danger: oklch(0.65 0.20 27);
+  --alert-success-bg: oklch(0.30 0.06 142);
+  --alert-info-bg: oklch(0.30 0.05 255);
+  --alert-warning-bg: oklch(0.32 0.06 75);
+  --alert-danger-bg: oklch(0.30 0.06 27);
+  --alert-success-foreground: oklch(0.88 0.10 142);
+  --alert-info-foreground: oklch(0.88 0.08 255);
+  --alert-warning-foreground: oklch(0.90 0.10 75);
+  --alert-danger-foreground: oklch(0.88 0.10 27);
+  color-scheme: dark;
+}
+
+/* Base */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; }
+.muted { color: var(--muted-foreground); }
+.small { font-size: 12px; }
+.center { text-align: center; }
+.grow { flex: 1; min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.stack-tight { display: flex; flex-direction: column; gap: 4px; }
+.row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.page { padding: 24px 16px; max-width: 560px; margin: 0 auto; width: 100%; }
+.typo-h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+.typo-h2 { font-size: 18px; font-weight: 600; }
+
+/* Button (Default, Outline, Ghost, Link, Icon; Small; block) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 16px; border-radius: calc(var(--radius) - 2px);
+  border: 1px solid transparent; font: inherit; font-weight: 500; font-size: 14px;
+  background: var(--primary); color: var(--primary-foreground);
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.btn-block { width: 100%; }
+.btn-outline { background: var(--background); color: var(--foreground); border-color: var(--border); }
+.btn-ghost { background: transparent; color: var(--foreground); }
+.btn-link { background: none; color: var(--primary); text-decoration: underline; height: auto; padding: 0; }
+.btn-icon { width: 40px; padding: 0; }
+.btn-sm { height: 32px; padding: 0 12px; font-size: 13px; }
+
+/* Input, Label, Field, FieldDescription, FieldError */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: 13px; font-weight: 500; }
+.input {
+  width: 100%; height: 40px; padding: 8px 12px; border-radius: calc(var(--radius) - 2px);
+  border: 1px solid var(--input); background: var(--background); color: var(--foreground);
+  font: inherit; font-size: 14px;
+}
+.input::placeholder { color: var(--muted-foreground); }
+.input-pin { height: 52px; font-size: 22px; letter-spacing: 0.5em; text-align: center; }
+.field-description { font-size: 12px; color: var(--muted-foreground); }
+.field-error { font-size: 12px; color: var(--destructive); }
+.field[data-invalid="true"] .input { border-color: var(--destructive); }
+
+/* Progress (PasswordStrength meter) */
+.progress { height: 6px; border-radius: 999px; background: var(--secondary); overflow: hidden; }
+.progress > span { display: block; height: 100%; background: var(--primary); }
+
+/* Card */
+.card {
+  background: var(--card); color: var(--card-foreground);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 1px 2px oklch(0 0 0 / 6%);
+}
+.card-title { font-size: 16px; font-weight: 600; }
+.card-description { font-size: 13px; color: var(--muted-foreground); }
+.card-link { text-decoration: none; display: block; }
+.card-link:hover .card { border-color: var(--ring); }
+.stat-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat { gap: 0; }
+.stat-tile-value { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.stat-tile-label { font-size: 12px; color: var(--muted-foreground); }
+
+/* Separator */
+.separator { height: 1px; background: var(--border); border: 0; margin: 0; }
+
+/* Alert (Default, Info, Success, Warning, Danger) */
+.alert {
+  border: 1px solid var(--border); border-left-width: 3px; border-radius: var(--radius);
+  padding: 12px 14px; background: var(--card); color: var(--card-foreground);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.alert-title { font-size: 14px; font-weight: 600; }
+.alert-description { font-size: 13px; }
+.alert-info { background: var(--alert-info-bg); border-color: var(--alert-info); color: var(--alert-info-foreground); }
+.alert-success { background: var(--alert-success-bg); border-color: var(--alert-success); color: var(--alert-success-foreground); }
+.alert-warning { background: var(--alert-warning-bg); border-color: var(--alert-warning); color: var(--alert-warning-foreground); }
+.alert-danger { background: var(--alert-danger-bg); border-color: var(--alert-danger); color: var(--alert-danger-foreground); }
+
+/* Badge (Default, Secondary, Outline, Destructive, Success, Info, Warning, Danger) */
+.badge {
+  display: inline-flex; align-items: center; border: 1px solid transparent;
+  border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 500;
+  white-space: nowrap; background: var(--primary); color: var(--primary-foreground);
+}
+.badge-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.badge-outline { background: transparent; color: var(--foreground); border-color: var(--border); }
+.badge-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.badge-success { background: var(--alert-success-bg); color: var(--alert-success-foreground); border-color: color-mix(in oklab, var(--alert-success) 30%, transparent); }
+.badge-info { background: var(--alert-info-bg); color: var(--alert-info-foreground); border-color: color-mix(in oklab, var(--alert-info) 30%, transparent); }
+.badge-warning { background: var(--alert-warning-bg); color: var(--alert-warning-foreground); border-color: color-mix(in oklab, var(--alert-warning) 30%, transparent); }
+.badge-danger { background: var(--alert-danger-bg); color: var(--alert-danger-foreground); border-color: color-mix(in oklab, var(--alert-danger) 30%, transparent); }
+
+/* Avatar (Default) */
+.avatar {
+  width: 40px; height: 40px; border-radius: 999px; background: var(--muted);
+  color: var(--foreground); display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 14px; flex-shrink: 0;
+}
+.avatar-lg { width: 64px; height: 64px; font-size: 20px; }
+
+/* Empty */
+.empty { text-align: center; padding: 20px 12px; color: var(--muted-foreground); border: 1px dashed var(--border); border-radius: var(--radius); }
+
+/* Lists (ItemGroup / Item) */
+.item-list { list-style: none; margin: 0; padding: 0; }
+.item { border-bottom: 1px solid var(--border); }
+.item:last-child { border-bottom: 0; }
+.item a { display: flex; align-items: center; gap: 12px; padding: 12px 0; text-decoration: none; }
+.item-title { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Key/value rows (Typography, value cells) */
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.kv:last-child { border-bottom: 0; }
+.kv-value { font-weight: 500; text-align: right; }
+
+/* Sidebar (SidebarProvider, Sidebar, SidebarMenuButton, SidebarInset, SidebarTrigger) */
+.nav-toggle-input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+.sidebar {
+  position: fixed; top: 0; bottom: 0; left: 0; z-index: 20;
+  width: var(--sidebar-width-mobile); background: var(--sidebar); color: var(--sidebar-foreground);
+  border-right: 1px solid var(--sidebar-border); padding: 16px 12px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 4px;
+  transform: translateX(-100%); transition: transform 0.2s ease;
+}
+.nav-toggle-input:checked ~ .sidebar-provider .sidebar { transform: none; }
+.sidebar-header { padding: 4px 8px 12px; }
+.sidebar-group-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); padding: 12px 8px 4px; }
+.sidebar-menu { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-menu-button {
+  display: flex; align-items: center; height: 36px; padding: 0 8px;
+  border-radius: calc(var(--radius) - 2px); text-decoration: none; font-size: 14px; color: inherit;
+}
+.sidebar-menu-button:hover { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); }
+.sidebar-menu-button[aria-current="page"] { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); font-weight: 600; }
+.sidebar-cta { margin-top: 12px; }
+.sidebar-inset { min-height: 100vh; width: 100%; }
+.app-header {
+  position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 8px;
+  height: 56px; padding: 0 16px; background: var(--background); border-bottom: 1px solid var(--border);
+}
+.app-header-title { flex: 1; min-width: 0; }
+.nav-trigger { cursor: pointer; }
+@media (min-width: 768px) {
+  .sidebar { transform: none; width: var(--sidebar-width); }
+  .sidebar-inset { margin-left: var(--sidebar-width); width: auto; }
+  .nav-trigger { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="page stack" data-testid="signin-screen">
+  <header class="stack-tight" data-testid="signin-header">
+    <p class="muted small">MyDiary</p>
+    <h1 class="typo-h1">Sign in</h1>
+    <p class="muted">Your journal stays on this device. Sign in to open it.</p>
+  </header>
+
+  <section class="card" data-testid="signin-card">
+    <div class="stack-tight">
+      <h2 class="card-title">Account</h2>
+      <p class="card-description">Create an account, or sign in to an existing one.</p>
+    </div>
+
+    <div class="alert alert-danger" role="alert" data-testid="signin-error-password" data-tf-state="error" hidden>
+      <p class="alert-title">Wrong email or password</p>
+      <p class="alert-description">Check both and try again.</p>
+    </div>
+
+    <div class="alert alert-danger" role="alert" data-testid="signin-error-device" data-tf-state="error" hidden>
+      <p class="alert-title">Free accounts sign in on one device</p>
+      <p class="alert-description">A paid licence allows more devices. Free a device slot or upgrade in Plan and devices.</p>
+    </div>
+
+    <form action="home.html" method="get" class="stack" data-testid="signin-form">
+      <div class="field" data-testid="signin-email-field">
+        <label class="label" for="signin-email">Email</label>
+        <input class="input" id="signin-email" name="email" type="email" placeholder="you@example.com" autocomplete="username" aria-describedby="signin-email-help" data-testid="signin-email-input">
+        <p class="field-description" id="signin-email-help">Use the email you signed up with.</p>
+      </div>
+
+      <div class="field" data-testid="signin-password-field">
+        <label class="label" for="signin-password">Password</label>
+        <input class="input" id="signin-password" name="password" type="password" autocomplete="current-password" data-testid="signin-password-input">
+      </div>
+
+      <div class="stack-tight" data-testid="signin-actions">
+        <button class="btn btn-block" type="submit" data-testid="signin-submit">Sign in</button>
+        <button class="btn btn-outline btn-block" type="submit" formaction="home.html" data-testid="signin-create-account">Create account</button>
+      </div>
+
+      <p class="center" data-testid="signin-forgot-row">
+        <a href="forgot-password.html" class="btn btn-link" data-testid="signin-forgot-link">Forgot password?</a>
+      </p>
+    </form>
+  </section>
+
+  <hr class="separator">
+  <p class="muted small center" data-testid="signin-device-note">Free accounts use one device. Paid accounts can use more.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Problem report · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .main { max-width: 1040px; }
+    .report-card { max-width: 820px; }
+    .report-textarea { min-height: 190px; }
+    .report-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .privacy-note { max-width: 560px; }
+    .report-alert { max-width: 820px; margin-top: 16px; }
+    @media (max-width: 720px) { .report-footer { align-items: stretch; flex-direction: column; } .report-footer .button { align-self: flex-start; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="home.html" data-testid="brand-home">
+        <span class="brand-mark" aria-hidden="true">m</span>
+        <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span>
+      </a>
+      <nav aria-label="Journal" data-testid="sidebar-nav">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="sidebar-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="sidebar-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="sidebar-ask"><span class="nav-icon" aria-hidden="true">✧</span>Ask my journal</a>
+          <a class="nav-link" href="compare-answers.html" data-testid="sidebar-compare"><span class="nav-icon" aria-hidden="true">↔</span>Compare answers</a>
+        </div>
+      </nav>
+      <nav class="sidebar-bottom" aria-label="Account" data-testid="account-nav">
+        <a class="nav-link" href="profile.html" data-testid="sidebar-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a>
+        <a class="nav-link" href="plan-and-devices.html" data-testid="sidebar-plan"><span class="nav-icon" aria-hidden="true">▣</span>Plan and devices</a>
+        <a class="nav-link current" href="problem-report.html" aria-current="page" data-testid="sidebar-support"><span class="nav-icon" aria-hidden="true">?</span>Problem report</a>
+      </nav>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb">Help <span aria-hidden="true">/</span> Problem report</div>
+        <div class="top-actions"><span class="muted small">We’re here to help</span><span class="avatar" aria-label="Profile" data-testid="avatar-initials" data-tf-sample="true">AS</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Screens" data-testid="mobile-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a>
+        <a href="journal-browse.html" data-testid="mobile-journal">Journal</a>
+        <a href="ask-my-journal.html" data-testid="mobile-ask">Ask</a>
+        <a href="compare-answers.html" data-testid="mobile-compare">Compare</a>
+        <a href="profile.html" data-testid="mobile-profile">Profile</a>
+        <a href="plan-and-devices.html" data-testid="mobile-plan">Plan</a>
+        <a class="current" href="problem-report.html" aria-current="page" data-testid="mobile-support">Support</a>
+      </nav>
+
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <h1>Report a problem</h1>
+            <p>Tell us what went wrong. Your report is sent to AppManager for the MyDiary owner to review.</p>
+          </div>
+        </div>
+
+        <section class="card report-card" data-testid="report-form">
+          <div class="card-header">
+            <div><h2 class="card-title">What happened?</h2><p class="card-description">Include the steps that led to the problem and what you expected to happen.</p></div>
+          </div>
+          <div class="card-content">
+            <div class="field">
+              <label class="label" for="report-description">Problem description <span aria-hidden="true">*</span></label>
+              <textarea class="textarea report-textarea" id="report-description" rows="7" required placeholder="Describe the problem and what you were doing when it happened." data-testid="report-description"></textarea>
+              <span class="hint">Required. Do not include journal entries or other private writing.</span>
+            </div>
+          </div>
+          <div class="card-footer report-footer">
+            <p class="small muted privacy-note">The report should contain the problem description only. Journal text is not needed to request support.</p>
+            <button class="button" type="button" data-testid="report-submit" onclick="showReportStatus()">Send report</button>
+          </div>
+        </section>
+
+        <section class="alert alert-info report-alert" role="status" aria-live="polite" data-testid="report-result">
+          <div><strong id="report-result-title">No report has been sent</strong><p class="small compact-copy" id="report-result-copy">This static mockup is not connected to AppManager.</p></div>
+        </section>
+
+        <div class="screen-links" aria-label="Continue to another screen">
+          <a href="home.html" data-testid="return-home-link">Home</a>
+          <a href="profile.html" data-testid="profile-link">Profile</a>
+          <a href="plan-and-devices.html" data-testid="plan-link">Plan and devices</a>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showReportStatus() {
+      document.getElementById('report-result-title').textContent = 'Preview only — report not sent';
+      document.getElementById('report-result-copy').textContent = 'This static mockup is not connected to AppManager. No report was submitted.';
+    }
+  </script>
+</body>
+</html>

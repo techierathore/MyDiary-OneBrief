@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyDiary — UI Design</title>
+<script>
+/* Resolve the theme BEFORE first paint (no flash). Saved choice wins; otherwise
+   pick by time of day — light 07:00–19:00 local, softened dark at night. */
+(function(){
+  try{
+    var t = localStorage.getItem('tf-theme');
+    if(t!=='light' && t!=='dark'){ var h = new Date().getHours(); t = (h>=7 && h<19) ? 'light' : 'dark'; }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){ document.documentElement.setAttribute('data-theme','light'); }
+})();
+</script>
+<style>
+/* LIGHT is the default theme — a warm off-white, easy on the eyes (never bright white). */
+:root{
+  --bg:#f4f1e9; --panel:#efe9db; --panel2:#e7e0cd; --line:#d8cfb6;
+  --ink:#2e2a22; --muted:#6f6857; --accent:#2f6f9f; --accent2:#3f7d54;
+  --warn:#9a6b15; --danger:#b03a52; --ok:#3f7d54;
+  --code-bg:#ece5d3; --code-ink:#332f26; --row-alt:#eae2cf;
+  --h3:#3a352b; --h4:#2f6f9f; --quote:#4a4537; --cta-bg:#e6eef5;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+/* DARK — softened near-black (warmer / less harsh than pure #0f1115). */
+html[data-theme="dark"]{
+  --bg:#11141a; --panel:#171b23; --panel2:#1e2430; --line:#2b3240;
+  --ink:#dfe3ea; --muted:#99a2b1; --accent:#7cc4ff; --accent2:#a6e3a1;
+  --warn:#f9c74f; --danger:#f38ba8; --ok:#a6e3a1;
+  --code-bg:#0c1016; --code-ink:#d8dde8; --row-alt:#141821;
+  --h3:#cfd5e3; --h4:#7cc4ff; --quote:#cfd5e3; --cta-bg:#0d2030;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:13px;background:var(--code-bg);color:var(--code-ink);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+pre{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;color:var(--code-ink);position:relative}
+pre code{background:none;border:none;padding:0}
+.copy{position:absolute;top:8px;right:8px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;font-family:var(--sans);cursor:pointer}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+/* floating light/dark toggle (top-right) */
+.theme-toggle{position:fixed;top:12px;right:14px;z-index:10000;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;font-family:var(--sans);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.theme-toggle:hover{color:var(--accent);border-color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.layout.no-toc{grid-template-columns:1fr}
+nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding:18px 14px}
+nav.side h1{font-size:14px;margin:0 0 4px;letter-spacing:.5px;color:var(--ink)}
+nav.side .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+nav.side ol,nav.side ul{list-style:none;padding:0;margin:0}
+nav.side li{font-size:13px;margin:2px 0}
+nav.side li a{display:block;padding:5px 8px;color:var(--ink);border-radius:6px}
+nav.side li a:hover{background:var(--panel2);text-decoration:none}
+nav.side li.h3 a{padding-left:22px;font-size:12.5px;color:var(--h3)}
+nav.side .group{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:14px 8px 4px}
+
+main{padding:28px 40px 80px;max-width:1100px}
+.layout.no-toc main{margin:0 auto}
+
+h1{font-size:28px;margin:0 0 6px}
+h2{font-size:22px;margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+h3{font-size:17px;margin:22px 0 6px;color:var(--h3);scroll-margin-top:16px}
+h4{font-size:14px;margin:14px 0 4px;color:var(--h4);scroll-margin-top:16px}
+.subtitle{color:var(--muted);font-size:14px;margin-top:-4px;margin-bottom:18px}
+p{margin:6px 0 10px}
+blockquote{border-left:3px solid var(--accent);background:var(--panel);margin:8px 0;padding:8px 14px;color:var(--quote)}
+ul,ol{padding-left:22px}
+li{margin:2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--panel2);color:var(--h3);font-weight:600}
+tr:nth-child(even) td{background:var(--row-alt)}
+
+hr{border:none;border-top:1px solid var(--line);margin:24px 0}
+.anchor-link{color:var(--muted);font-weight:400;font-size:0.85em;margin-left:8px;opacity:0;transition:opacity .15s;text-decoration:none}
+h2:hover .anchor-link,h3:hover .anchor-link,h4:hover .anchor-link{opacity:1}
+
+/* inline TOC at top of main content */
+.toc-inline{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:14px 0 24px}
+.toc-inline > div{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.toc-inline ol,.toc-inline ul{margin:4px 0;padding-left:18px}
+.toc-inline li{font-size:13px;margin:1px 0}
+.toc-inline a{color:var(--h3)}
+
+/* mermaid diagram wrapper + toolbar */
+.diagram{position:relative;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);margin:14px 0;overflow:hidden}
+.diagram .mermaid{padding:14px;margin:0;background:transparent;border:none;overflow:auto}
+.diagram .dt{display:flex;gap:6px;justify-content:flex-end;padding:6px 8px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.diagram .dt button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 10px;font-size:12px;font-family:var(--sans);cursor:pointer;min-width:30px}
+.diagram .dt button:hover{color:var(--accent);border-color:var(--accent)}
+.diagram .dt .zlabel{padding:3px 6px;font-size:11px;color:var(--muted);font-family:var(--mono);align-self:center}
+.diagram.fs{position:fixed;inset:0;z-index:9999;border-radius:0;border:none}
+.diagram.fs .mermaid{height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto}}
+</style>
+</head>
+<body>
+<button id="themeToggle" class="theme-toggle" title="Toggle light / dark">&#9790; Dark</button>
+<div class="layout no-toc">
+  <main>
+    <h1>MyDiary — UI Design</h1>
+    <div class="subtitle">Rendered 2026-10-25 &middot; source <code>MyDiary-UIDesign.md</code></div>
+
+    <div class="toc-inline">
+      <div>Contents</div>
+      <ol>
+        <li><a href="#design-system">Design system</a></li>
+        <li><a href="#screens">Screens</a></li>
+        <li class="h3"><a href="#screen-sign-in-and-account-account">Screen: Sign in and account (/account)</a></li>
+        <li class="h3"><a href="#screen-password-reset-account-forgot-password">Screen: Password reset (/account/forgot-password)</a></li>
+        <li class="h3"><a href="#screen-home-home">Screen: Home (/home)</a></li>
+        <li class="h3"><a href="#screen-journal-browse-journal">Screen: Journal browse (/journal)</a></li>
+        <li class="h3"><a href="#screen-entry-details-entries-entryid">Screen: Entry details (/entries/{entryId})</a></li>
+        <li class="h3"><a href="#screen-10-thought-dump-entries-new-thought-dump">Screen: 10-Thought Dump (/entries/new/thought-dump)</a></li>
+        <li class="h3"><a href="#screen-free-flow-entry-entries-new-free-flow">Screen: Free-Flow entry (/entries/new/free-flow)</a></li>
+        <li class="h3"><a href="#screen-question-sets-questions">Screen: Question sets (/questions)</a></li>
+        <li class="h3"><a href="#screen-answer-a-question-set-questions-setid-answer">Screen: Answer a question set (/questions/{setId}/answer)</a></li>
+        <li class="h3"><a href="#screen-custom-question-set-questions-custom-new">Screen: Custom question set (/questions/custom/new)</a></li>
+        <li class="h3"><a href="#screen-ask-my-journal-ask">Screen: Ask my journal (/ask)</a></li>
+        <li class="h3"><a href="#screen-compare-answers-compare">Screen: Compare answers (/compare)</a></li>
+        <li class="h3"><a href="#screen-profile-profile">Screen: Profile (/profile)</a></li>
+        <li class="h3"><a href="#screen-plan-and-devices-plan-devices">Screen: Plan and devices (/plan-devices)</a></li>
+        <li class="h3"><a href="#screen-problem-report-support-report">Screen: Problem report (/support/report)</a></li>
+        <li class="h3"><a href="#screen-account-data-account-data">Screen: Account data (/account/data)</a></li>
+        <li class="h3"><a href="#screen-ai-preferences-settings-ai">Screen: AI preferences (/settings/ai)</a></li>
+        <li class="h3"><a href="#screen-backup-and-sync-backup-sync">Screen: Backup and sync (/backup-sync)</a></li>
+        <li class="h3"><a href="#screen-import-and-export-transfer">Screen: Import and export (/transfer)</a></li>
+        <li class="h3"><a href="#screen-privacy-and-reminders-settings-privacy">Screen: Privacy and reminders (/settings/privacy)</a></li>
+        <li><a href="#click-through-flow">Click-through flow</a></li>
+        <li><a href="#branding-guide">Branding guide</a></li>
+      </ol>
+    </div>
+<table>
+<thead><tr><th></th><th></th></tr></thead>
+<tbody>
+<tr><td>App</td><td>MyDiary</td></tr>
+<tr><td>Kind</td><td>app</td></tr>
+<tr><td>Size</td><td>Medium</td></tr>
+<tr><td>UI library</td><td>TrBlazeUI Components 2.1.9 with Lucide icons</td></tr>
+<tr><td>Theme</td><td>Both; follows the device setting. &lt;!-- inferred — please verify --&gt;</td></tr>
+</tbody>
+</table>
+<h2 id="design-system">Design system<a class="anchor-link" href="#design-system">#</a></h2>
+<ul>
+<li><strong>Layout shell:</strong> Desktop uses TrBlazeUI <code>SidebarProvider</code>, <code>Sidebar</code>, <code>SidebarInset</code> and a page header. Phones use <code>ResponsiveNav</code> with the same routes and a scrollable compact navigation row.
+</li>
+<li><strong>Theme:</strong> TrBlazeUI's light and dark themes with warm paper-like surfaces and a muted sage primary colour. The sample screen uses realistic placeholder content only.
+</li>
+<li><strong>Shared controls:</strong> <code>Card</code>, <code>Button</code>, <code>Field</code>, <code>Input</code>, <code>Textarea</code>, <code>Badge</code>, <code>Alert</code>, <code>Tabs</code>, <code>InputGroup</code>, <code>Dialog</code> and <code>LucideIcon</code> where needed. Form controls use the library's own components.
+</li>
+<li><strong>Rules:</strong> Use the library's spacing scale consistently. Keep page content to a readable width; stack cards and controls below 720 px, and reduce table columns on phones rather than shrinking text. Use plain status messages and never rely on colour alone.
+</li>
+</ul>
+<h2 id="screens">Screens<a class="anchor-link" href="#screens">#</a></h2>
+<h3 id="screen-sign-in-and-account-account">Screen: Sign in and account (<code>/account</code>)<a class="anchor-link" href="#screen-sign-in-and-account-account">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/sign-in-and-account.html">mockups/sign-in-and-account.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-1 to BRD-4</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>account-panel</code></td><td><code>CenteredPanel</code>, <code>Card</code></td><td>MyDiary welcome and sign-in/account choices</td></tr>
+<tr><td><code>account-tabs</code></td><td><code>Tabs</code></td><td>Sign in or create account</td></tr>
+<tr><td><code>account-email</code>, <code>account-password</code></td><td><code>Field</code>, <code>Input</code></td><td>AppManager credentials</td></tr>
+<tr><td><code>account-submit</code></td><td><code>Button</code></td><td>Sign in or create account; links to Home in the click-through</td></tr>
+<tr><td><code>account-device-limit</code></td><td><code>Alert</code></td><td>A refused device sign-in explains the paid licence option</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Email</td><td>email</td><td>yes</td><td>AppManager rules</td></tr>
+<tr><td>Password</td><td>password</td><td>yes</td><td>AppManager rules</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no credentials · loading: sign-in in progress · error: AppManager refusal or device limit.</p>
+<h3 id="screen-password-reset-account-forgot-password"><a id="screen-password-reset-accountforgot-password"></a>Screen: Password reset (<code>/account/forgot-password</code>)<a class="anchor-link" href="#screen-password-reset-account-forgot-password">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/password-reset.html">mockups/password-reset.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-5</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>reset-panel</code></td><td><code>CenteredPanel</code>, <code>Card</code></td><td>Password-reset steps</td></tr>
+<tr><td><code>reset-email</code></td><td><code>Field</code>, <code>Input</code></td><td>Account email</td></tr>
+<tr><td><code>reset-code</code></td><td><code>InputOTP</code></td><td>Code supplied by AppManager</td></tr>
+<tr><td><code>reset-submit</code></td><td><code>Button</code></td><td>Submit the reset request</td></tr>
+<tr><td><code>reset-message</code></td><td><code>Alert</code></td><td>AppManager response</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Email</td><td>email</td><td>yes</td><td>AppManager rules</td></tr>
+<tr><td>Reset code</td><td>one-time code</td><td>when requested</td><td>AppManager rules</td></tr>
+<tr><td>New password</td><td>password</td><td>when requested</td><td>AppManager rules</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no email entered · loading: reset request sent · error: invalid or expired reset details.</p>
+<h3 id="screen-home-home">Screen: Home (<code>/home</code>)<a class="anchor-link" href="#screen-home-home">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/home.html">mockups/home.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-6 to BRD-12</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>app-shell</code>, <code>home-nav</code></td><td><code>Sidebar</code>, <code>ResponsiveNav</code></td><td>Shared navigation</td></tr>
+<tr><td><code>home-today</code>, <code>home-streak</code></td><td><code>Card</code>, <code>StatTile</code></td><td>Today's entries and current streak</td></tr>
+<tr><td><code>home-on-this-day</code></td><td><code>Card</code>, <code>Typography</code></td><td>A warm story from this date or nearby dates in past years</td></tr>
+<tr><td><code>home-due-set</code></td><td><code>Card</code>, <code>Badge</code>, <code>Button</code></td><td>A question set due today, including Monthly Goals on the 1st</td></tr>
+<tr><td><code>home-new-entry</code></td><td><code>Button</code>, <code>NavigationMenu</code></td><td>Links to both entry-writing screens</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>None</td><td>display only</td><td>no</td><td>None</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no entries yet · loading: today's journal is opening · error: local journal cannot be read.</p>
+<h3 id="screen-journal-browse-journal">Screen: Journal browse (<code>/journal</code>)<a class="anchor-link" href="#screen-journal-browse-journal">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/journal-browse.html">mockups/journal-browse.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-13 to BRD-21, BRD-71</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>journal-view</code></td><td><code>Tabs</code>, <code>ToggleGroup</code></td><td>Timeline or calendar view</td></tr>
+<tr><td><code>journal-search</code></td><td><code>InputGroup</code></td><td>Keyword search</td></tr>
+<tr><td><code>journal-date-filter</code></td><td><code>DateRangePicker</code></td><td>Date range</td></tr>
+<tr><td><code>journal-filters</code></td><td><code>MultiSelect</code>, <code>Checkbox</code>, <code>Badge</code></td><td>Tag, set, photo, star and mood filters</td></tr>
+<tr><td><code>journal-timeline</code></td><td><code>Timeline</code>, <code>Item</code></td><td>Entries in date order; each row links to Entry details</td></tr>
+<tr><td><code>journal-calendar</code></td><td><code>Calendar</code>, <code>Card</code></td><td>Dates with entries</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Keyword</td><td>search text</td><td>no</td><td>Matches saved journal text</td></tr>
+<tr><td>Date range</td><td>date range</td><td>no</td><td>Start is not after end</td></tr>
+<tr><td>Tag, set, photo, star, mood</td><td>filter choices</td><td>no</td><td>Any chosen filters apply to the one journal</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no entries match · loading: filter results are being read · error: search or local storage failed.</p>
+<h3 id="screen-entry-details-entries-entryid"><a id="screen-entry-details-entriesentryid"></a>Screen: Entry details (<code>/entries/{entryId}</code>)<a class="anchor-link" href="#screen-entry-details-entries-entryid">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/entry-details.html">mockups/entry-details.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-22 to BRD-25</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>entry-content</code></td><td><code>Card</code>, <code>Typography</code>, <code>Prose</code></td><td>Saved entry text and date</td></tr>
+<tr><td><code>entry-photos</code></td><td><code>FileUpload</code> preview area, <code>Card</code></td><td>Attached photos, separate from formatted text</td></tr>
+<tr><td><code>entry-tags</code></td><td><code>MultiSelect</code>, <code>Badge</code></td><td>Tags on this entry</td></tr>
+<tr><td><code>entry-star</code></td><td><code>ToggleGroup</code>, <code>Button</code></td><td>Starred state</td></tr>
+<tr><td><code>entry-mood</code></td><td><code>Rating</code> or <code>RadioGroup</code></td><td>Selected mood</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Tags</td><td>multi-choice</td><td>no</td><td>Saved as entry tags</td></tr>
+<tr><td>Starred</td><td>toggle</td><td>no</td><td>On or off</td></tr>
+<tr><td>Mood</td><td>choice</td><td>no</td><td>One selected mood</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: entry has no optional markers or photos · loading: entry is opening · error: entry is unavailable.</p>
+<h3 id="screen-10-thought-dump-entries-new-thought-dump"><a id="screen-10-thought-dump-entriesnewthought-dump"></a>Screen: 10-Thought Dump (<code>/entries/new/thought-dump</code>)<a class="anchor-link" href="#screen-10-thought-dump-entries-new-thought-dump">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/thought-dump.html">mockups/thought-dump.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-26 to BRD-27</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>thought-dump-fields</code></td><td><code>Field</code>, <code>Input</code></td><td>Ten numbered quick lines</td></tr>
+<tr><td><code>thought-dump-counter</code></td><td><code>Badge</code></td><td>Ten lines available</td></tr>
+<tr><td><code>thought-dump-save</code></td><td><code>Button</code></td><td>Save one entry; empty lines are dropped</td></tr>
+<tr><td><code>thought-dump-cancel</code></td><td><code>Button</code></td><td>Return to Home or Journal</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Thought 1–10</td><td>short text</td><td>no</td><td>Empty lines are omitted when saved</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: all ten lines are blank · loading: entry is being saved · error: save failed and text remains visible.</p>
+<h3 id="screen-free-flow-entry-entries-new-free-flow"><a id="screen-free-flow-entry-entriesnewfree-flow"></a>Screen: Free-Flow entry (<code>/entries/new/free-flow</code>)<a class="anchor-link" href="#screen-free-flow-entry-entries-new-free-flow">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/free-flow-entry.html">mockups/free-flow-entry.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-28 to BRD-29</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>free-flow-editor</code></td><td><code>RichTextEditor</code>, formatting toolbar</td><td>Formatted text</td></tr>
+<tr><td><code>free-flow-photos</code></td><td><code>FileUpload</code>, attachment previews</td><td>Photos attached beside the text, not inserted at the cursor</td></tr>
+<tr><td><code>free-flow-save</code></td><td><code>Button</code></td><td>Save the entry</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Entry text</td><td>formatted text</td><td>no</td><td>No length limit stated</td></tr>
+<tr><td>Photos</td><td>image files</td><td>no</td><td>Supported image files</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Native file picker for photos. <strong>States:</strong> empty: blank editor and no photos · loading: save in progress · error: save or file selection failed.</p>
+<h3 id="screen-question-sets-questions">Screen: Question sets (<code>/questions</code>)<a class="anchor-link" href="#screen-question-sets-questions">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/question-sets.html">mockups/question-sets.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-30</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>question-set-list</code></td><td><code>Card</code>, <code>Item</code>, <code>Badge</code></td><td>Seven built-in sets and the user's sets</td></tr>
+<tr><td><code>question-set-due</code></td><td><code>Badge</code>, <code>Alert</code></td><td>Which set is due</td></tr>
+<tr><td><code>question-set-open</code></td><td><code>&lt;a&gt;</code> links</td><td>Opens an answer session for the selected set</td></tr>
+<tr><td><code>question-set-create</code></td><td><code>&lt;a&gt;</code> link, <code>Button</code></td><td>Opens Custom question set</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>None</td><td>display only</td><td>no</td><td>None</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no user-created sets · loading: set list is opening · error: question sets cannot be read.</p>
+<h3 id="screen-answer-a-question-set-questions-setid-answer"><a id="screen-answer-a-question-set-questionssetidanswer"></a>Screen: Answer a question set (<code>/questions/{setId}/answer</code>)<a class="anchor-link" href="#screen-answer-a-question-set-questions-setid-answer">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/answer-question-set.html">mockups/answer-question-set.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-31</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>answer-set-title</code></td><td><code>Card</code>, <code>Typography</code></td><td>Selected set name and due date</td></tr>
+<tr><td><code>answer-set-questions</code></td><td><code>Field</code>, <code>Textarea</code></td><td>Answers for each question</td></tr>
+<tr><td><code>answer-set-progress</code></td><td><code>Progress</code></td><td>Position within the question set</td></tr>
+<tr><td><code>answer-set-save</code></td><td><code>Button</code></td><td>Save answers into the journal under this set</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Answer for each question</td><td>multi-line text</td><td>no</td><td>No answer length stated</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: questions shown without answers · loading: answers are being saved · error: save failed and answers remain visible.</p>
+<h3 id="screen-custom-question-set-questions-custom-new"><a id="screen-custom-question-set-questionscustomnew"></a>Screen: Custom question set (<code>/questions/custom/new</code>)<a class="anchor-link" href="#screen-custom-question-set-questions-custom-new">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/custom-question-set.html">mockups/custom-question-set.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-32</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>custom-set-name</code></td><td><code>Field</code>, <code>Input</code></td><td>User's set name</td></tr>
+<tr><td><code>custom-set-questions</code></td><td><code>Field</code>, <code>Textarea</code>, <code>Button</code></td><td>Questions in the new set</td></tr>
+<tr><td><code>custom-set-save</code></td><td><code>Button</code></td><td>Save the set and return to Question sets</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Set name</td><td>text</td><td>yes</td><td>No length limit stated</td></tr>
+<tr><td>Question text</td><td>multi-line text</td><td>yes</td><td>At least one question; inferred from “build their own”</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no questions added · loading: set is being saved · error: save failed and entered questions remain visible.</p>
+<h3 id="screen-ask-my-journal-ask">Screen: Ask my journal (<code>/ask</code>)<a class="anchor-link" href="#screen-ask-my-journal-ask">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/ask-my-journal.html">mockups/ask-my-journal.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-33 to BRD-37</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>ask-thread</code></td><td><code>ChatThread</code>, <code>ChatMessage</code></td><td>Question and response</td></tr>
+<tr><td><code>ask-composer</code></td><td><code>ChatComposer</code></td><td>Plain-language question</td></tr>
+<tr><td><code>ask-count</code></td><td><code>Badge</code>, <code>Card</code></td><td>Counted result, when supported</td></tr>
+<tr><td><code>ask-sources</code></td><td><code>ChatMessage</code> attachments</td><td>Source entries used for the answer</td></tr>
+<tr><td><code>ask-no-match</code></td><td><code>Alert</code></td><td>No-match message; no fabricated answer</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Question</td><td>text</td><td>yes</td><td>Non-empty question</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no question asked · loading: answer is being prepared · error: no answer is returned. Exact count and no-match behavior are blocked by the TechieRag gap recorded in the Architecture.</p>
+<h3 id="screen-compare-answers-compare">Screen: Compare answers (<code>/compare</code>)<a class="anchor-link" href="#screen-compare-answers-compare">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/compare-answers.html">mockups/compare-answers.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-38</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>compare-question</code></td><td><code>Select</code> or <code>Combobox</code></td><td>One question to compare</td></tr>
+<tr><td><code>compare-period-tabs</code></td><td><code>Tabs</code>, <code>ToggleGroup</code></td><td>Month or year periods</td></tr>
+<tr><td><code>compare-results</code></td><td><code>Table</code>, <code>Card</code></td><td>Answers side by side</td></tr>
+<tr><td><code>compare-sources</code></td><td><code>&lt;a&gt;</code> links</td><td>Opens the source entry</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Question</td><td>selection</td><td>yes</td><td>One question</td></tr>
+<tr><td>Periods</td><td>month/year choices</td><td>two or more</td><td>No range limit stated</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no comparable answers · loading: periods are being compared · error: comparison failed.</p>
+<h3 id="screen-profile-profile">Screen: Profile (<code>/profile</code>)<a class="anchor-link" href="#screen-profile-profile">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/profile.html">mockups/profile.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-39 to BRD-40</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>profile-tabs</code></td><td><code>Tabs</code></td><td>Profile details or password change</td></tr>
+<tr><td><code>profile-fields</code></td><td><code>Field</code>, <code>Input</code></td><td>Account details supported by AppManager</td></tr>
+<tr><td><code>profile-password</code></td><td><code>Field</code>, <code>Input</code>, <code>PasswordStrength</code></td><td>Current and new password</td></tr>
+<tr><td><code>profile-save</code></td><td><code>Button</code></td><td>Save profile or password changes</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Profile details</td><td>AppManager-supported fields</td><td>per API</td><td>AppManager rules; guide is missing</td></tr>
+<tr><td>Current, new and confirm password</td><td>password</td><td>yes for password change</td><td>AppManager rules</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: profile values not loaded · loading: AppManager is saving · error: AppManager rejected the change.</p>
+<h3 id="screen-plan-and-devices-plan-devices">Screen: Plan and devices (<code>/plan-devices</code>)<a class="anchor-link" href="#screen-plan-and-devices-plan-devices">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/plan-and-devices.html">mockups/plan-and-devices.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-41 to BRD-50, BRD-72</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>plan-summary</code></td><td><code>Card</code>, <code>Badge</code></td><td>Plan name and end date</td></tr>
+<tr><td><code>device-use</code></td><td><code>Progress</code>, <code>StatTile</code></td><td>Devices in use versus the allowed limit</td></tr>
+<tr><td><code>device-list</code></td><td><code>DataTable</code></td><td>Signed-in devices and their status</td></tr>
+<tr><td><code>device-actions</code></td><td><code>Button</code>, <code>AlertDialog</code></td><td>Forget or block a device after confirmation</td></tr>
+<tr><td><code>purchase-exclusion</code></td><td><code>Alert</code></td><td>No purchase button; paid licences are assigned outside MyDiary</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>None</td><td>display and actions</td><td>no</td><td>Values come from AppManager</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Confirm forgetting or blocking a device. <strong>States:</strong> empty: no devices listed · loading: plan and devices are being checked · error: AppManager could not be reached.</p>
+<h3 id="screen-problem-report-support-report"><a id="screen-problem-report-supportreport"></a>Screen: Problem report (<code>/support/report</code>)<a class="anchor-link" href="#screen-problem-report-support-report">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/problem-report.html">mockups/problem-report.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-51</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>report-form</code></td><td><code>Field</code>, <code>Textarea</code></td><td>User's problem description</td></tr>
+<tr><td><code>report-submit</code></td><td><code>Button</code></td><td>Send the report to AppManager</td></tr>
+<tr><td><code>report-result</code></td><td><code>Alert</code></td><td>Submission result</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Problem description</td><td>multi-line text</td><td>yes</td><td>AppManager rules</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no report text · loading: report is sending · error: AppManager rejected or could not receive it.</p>
+<h3 id="screen-account-data-account-data"><a id="screen-account-data-accountdata"></a>Screen: Account data (<code>/account/data</code>)<a class="anchor-link" href="#screen-account-data-account-data">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/account-data.html">mockups/account-data.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-52 to BRD-53</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>data-copy-request</code></td><td><code>Card</code>, <code>Button</code></td><td>Request a copy of account data</td></tr>
+<tr><td><code>data-delete-request</code></td><td><code>Card</code>, <code>Button</code>, <code>AlertDialog</code></td><td>Request deletion after confirmation</td></tr>
+<tr><td><code>data-result</code></td><td><code>Alert</code></td><td>AppManager request status</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Request choice</td><td>radio choice</td><td>yes</td><td>Copy or deletion</td></tr>
+<tr><td>Confirmation</td><td>explicit confirmation</td><td>yes for deletion</td><td>Must confirm before request</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Deletion confirmation. <strong>States:</strong> empty: no request made · loading: request is being sent · error: AppManager request failed.</p>
+<h3 id="screen-ai-preferences-settings-ai"><a id="screen-ai-preferences-settingsai"></a>Screen: AI preferences (<code>/settings/ai</code>)<a class="anchor-link" href="#screen-ai-preferences-settings-ai">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/ai-preferences.html">mockups/ai-preferences.html</a> · <strong>Roles:</strong> Paid journal user · <strong>BRD:</strong> BRD-54 to BRD-56</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>ai-model-picker</code></td><td><code>Select</code>, <code>Badge</code></td><td>Available model and current choice</td></tr>
+<tr><td><code>ai-service-key</code></td><td><code>Field</code>, <code>Input</code></td><td>The user's own service key</td></tr>
+<tr><td><code>ai-data-warning</code></td><td><code>Alert</code>, <code>Checkbox</code></td><td>Warns that journal text is sent online</td></tr>
+<tr><td><code>ai-save</code></td><td><code>Button</code></td><td>Store the choice through TechieRag</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Model</td><td>selection</td><td>yes for model change</td><td>Must be supported by TechieRag</td></tr>
+<tr><td>Service key</td><td>password</td><td>yes for online service</td><td>Stored with platform secure storage</td></tr>
+<tr><td>Data-sharing acknowledgement</td><td>checkbox</td><td>yes for online service</td><td>Must be accepted before enabling</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> None. <strong>States:</strong> empty: no paid options configured · loading: model/provider list is loading · error: unsupported model or key rejected.</p>
+<h3 id="screen-backup-and-sync-backup-sync">Screen: Backup and sync (<code>/backup-sync</code>)<a class="anchor-link" href="#screen-backup-and-sync-backup-sync">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/backup-and-sync.html">mockups/backup-and-sync.html</a> · <strong>Roles:</strong> Paid journal user · <strong>BRD:</strong> BRD-57 to BRD-60</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>backup-provider</code></td><td><code>Tabs</code>, <code>Card</code></td><td>Google Drive or OneDrive</td></tr>
+<tr><td><code>backup-actions</code></td><td><code>Button</code>, <code>AlertDialog</code></td><td>Back up, sync or restore</td></tr>
+<tr><td><code>backup-progress</code></td><td><code>Progress</code>, <code>Badge</code></td><td>Current transfer and result</td></tr>
+<tr><td><code>backup-history</code></td><td><code>Item</code></td><td>Most recent transfer result</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Cloud provider</td><td>choice</td><td>yes</td><td>Google Drive or OneDrive</td></tr>
+<tr><td>Transfer action</td><td>button choice</td><td>yes</td><td>Paid licence required</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Confirm replacing local content during restore. <strong>States:</strong> empty: no backup yet · loading: transfer in progress · error: provider or licence check failed.</p>
+<h3 id="screen-import-and-export-transfer">Screen: Import and export (<code>/transfer</code>)<a class="anchor-link" href="#screen-import-and-export-transfer">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/import-and-export.html">mockups/import-and-export.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-61 to BRD-63</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>export-json</code></td><td><code>Card</code>, <code>Button</code></td><td>Export one journal as JSON</td></tr>
+<tr><td><code>import-json</code></td><td><code>FileUpload</code>, <code>Button</code></td><td>Import a MyDiary JSON file</td></tr>
+<tr><td><code>import-day-one</code></td><td><code>FileUpload</code>, <code>Button</code></td><td>Import a Day One export</td></tr>
+<tr><td><code>transfer-result</code></td><td><code>Progress</code>, <code>Alert</code></td><td>File operation result</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Import file</td><td>file</td><td>yes for import</td><td>Must be a valid supported export</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Native file picker. <strong>States:</strong> empty: no file selected · loading: file is being processed · error: file is invalid or cannot be read.</p>
+<h3 id="screen-privacy-and-reminders-settings-privacy"><a id="screen-privacy-and-reminders-settingsprivacy"></a>Screen: Privacy and reminders (<code>/settings/privacy</code>)<a class="anchor-link" href="#screen-privacy-and-reminders-settings-privacy">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/privacy-and-reminders.html">mockups/privacy-and-reminders.html</a> · <strong>Roles:</strong> Journal user · <strong>BRD:</strong> BRD-64 to BRD-66</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td><code>privacy-pin</code></td><td><code>Switch</code>, <code>Field</code>, <code>Input</code></td><td>PIN lock</td></tr>
+<tr><td><code>privacy-biometric</code></td><td><code>Switch</code>, native platform prompt</td><td>Fingerprint or face unlock</td></tr>
+<tr><td><code>reminder-settings</code></td><td><code>Switch</code>, <code>TimePicker</code></td><td>Journaling reminders</td></tr>
+<tr><td><code>privacy-save</code></td><td><code>Button</code></td><td>Save privacy settings</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>PIN</td><td>numeric password</td><td>yes when enabled</td><td>Platform lock rules; no length was supplied</td></tr>
+<tr><td>Biometric</td><td>on/off</td><td>no</td><td>Device must support fingerprint or face unlock</td></tr>
+<tr><td>Reminder time</td><td>time</td><td>yes when enabled</td><td>Platform reminder rules</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Native biometric permission prompt. <strong>States:</strong> empty: no lock or reminder configured · loading: platform settings are saving · error: device does not support the selected protection.</p>
+<h2 id="click-through-flow">Click-through flow<a class="anchor-link" href="#click-through-flow">#</a></h2>
+<div class="diagram">
+  <div class="dt">
+    <button data-zout title="Zoom out">&minus;</button>
+    <span class="zlabel">100%</span>
+    <button data-zin title="Zoom in">+</button>
+    <button data-fit title="Fit to width">Fit</button>
+    <button data-one title="Actual size">1:1</button>
+    <button data-fs title="Fullscreen">&#9166;</button>
+    <button data-pop title="Open in new tab">&#8599;</button>
+  </div>
+  <pre class="mermaid">flowchart LR
+  SignIn["Sign in and account"] --&gt; Home["Home"]
+  SignIn --&gt; Reset["Password reset"]
+  Home --&gt; Journal["Journal browse"]
+  Journal --&gt; Entry["Entry details"]
+  Home --&gt; Questions["Question sets"]
+  Questions --&gt; Answer["Answer a question set"]
+  Questions --&gt; Custom["Custom question set"]
+  Home --&gt; Ask["Ask my journal"]
+  Ask --&gt; Compare["Compare answers"]
+  Home --&gt; Profile["Profile"]
+  Profile --&gt; Plan["Plan and devices"]
+  Plan --&gt; Backup["Backup and sync"]
+  Backup --&gt; Transfer["Import and export"]
+  Profile --&gt; Privacy["Privacy and reminders"]
+  Home --&gt; Report["Problem report"]
+  Home --&gt; AccountData["Account data"]
+  Profile --&gt; AiPrefs["AI preferences"]
+  Home --&gt; ThoughtDump["10-Thought Dump"]
+  Home --&gt; FreeFlow["Free-Flow entry"]</pre>
+</div>
+<h2 id="branding-guide">Branding guide<a class="anchor-link" href="#branding-guide">#</a></h2>
+<p>Use the component library's card, field, button and navigation shapes. Keep a quiet, private feel with warm neutral surfaces, a muted green primary colour, soft borders and no decorative charts. On This Day uses a short, warm story block; the rest of the screens stay clear and practical.</p>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+<script>
+// Light/dark toggle. The initial theme was already applied flash-free by the
+// <head> script (saved choice, else time-of-day). Clicking flips it, saves the
+// choice, and reloads so Mermaid re-renders in the matching theme.
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  var relabel = function(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '☀ Light' : '☾ Dark';
+  };
+  relabel();
+  btn.addEventListener('click', function(){
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try{ localStorage.setItem('tf-theme', next); }catch(e){}
+    location.reload();
+  });
+})();
+
+// Copy buttons on every code <pre> — but NEVER on a `pre.mermaid`:
+// mermaid reads the <pre>'s textContent as the diagram source, so a button
+// appended here glues "copy" onto the last line and breaks the parse
+// (flowcharts → "Syntax error"; sequence diagrams silently absorb it).
+// Mermaid blocks get copy/export from their own .diagram toolbar instead.
+document.querySelectorAll('pre:not(.mermaid)').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy';
+  btn.textContent = 'copy';
+  btn.addEventListener('click', () => {
+    const text = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => { btn.textContent = 'copy'; }, 1200);
+    });
+  });
+  pre.appendChild(btn);
+});
+
+// Mermaid init — theme follows the resolved light/dark theme
+if (window.mermaid) {
+  var mermaidTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+  mermaid.initialize({ startOnLoad: true, theme: mermaidTheme, securityLevel: 'loose' });
+}
+
+// Mermaid toolbar wiring — run after mermaid renders
+function wireMermaidToolbars() {
+  document.querySelectorAll('.diagram').forEach(dia => {
+    if (dia.dataset.wired) return;
+    const merm = dia.querySelector('.mermaid');
+    const svg = merm && merm.querySelector('svg');
+    if (!svg) return;
+    dia.dataset.wired = '1';
+    let scale = 1;
+    const label = dia.querySelector('.zlabel');
+    const apply = () => {
+      svg.style.transform = `scale(${scale})`;
+      svg.style.transformOrigin = 'top left';
+      if (label) label.textContent = Math.round(scale * 100) + '%';
+    };
+    const setScale = (s) => { scale = Math.max(0.25, Math.min(4, s)); apply(); };
+    dia.querySelector('[data-zin]').onclick = () => setScale(scale * 1.2);
+    dia.querySelector('[data-zout]').onclick = () => setScale(scale / 1.2);
+    dia.querySelector('[data-fit]').onclick = () => {
+      svg.style.transform = '';
+      svg.removeAttribute('width');
+      svg.style.maxWidth = '100%';
+      svg.style.height = 'auto';
+      scale = 1;
+      if (label) label.textContent = 'Fit';
+    };
+    dia.querySelector('[data-one]').onclick = () => {
+      svg.style.transform = '';
+      svg.style.maxWidth = 'none';
+      svg.style.width = '';
+      svg.style.height = '';
+      scale = 1;
+      if (label) label.textContent = '100%';
+    };
+    dia.querySelector('[data-fs]').onclick = () => {
+      dia.classList.toggle('fs');
+      if (dia.classList.contains('fs')) {
+        document.addEventListener('keydown', escFs);
+      } else {
+        document.removeEventListener('keydown', escFs);
+      }
+    };
+    function escFs(e) { if (e.key === 'Escape') { dia.classList.remove('fs'); document.removeEventListener('keydown', escFs); } }
+    dia.querySelector('[data-pop]').onclick = () => openInNewTab(svg);
+    // Ctrl+wheel zoom
+    merm.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      setScale(scale * (e.deltaY < 0 ? 1.1 : 1/1.1));
+    }, { passive: false });
+  });
+}
+
+function openInNewTab(svg) {
+  const svgSource = new XMLSerializer().serializeToString(svg);
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Diagram</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1115;color:#e6e8ee;font-family:system-ui,sans-serif}
+  .bar{position:fixed;top:0;left:0;right:0;padding:8px 12px;background:#161a22;border-bottom:1px solid #2a3142;display:flex;gap:8px;z-index:10}
+  .bar button{background:#1c2230;color:#9aa3b2;border:1px solid #2a3142;border-radius:6px;padding:5px 12px;font-size:13px;cursor:pointer}
+  .bar button:hover{color:#7cc4ff;border-color:#7cc4ff}
+  .bar .hint{margin-left:auto;color:#9aa3b2;font-size:11.5px;align-self:center}
+  #stage{position:absolute;top:42px;bottom:0;left:0;right:0;overflow:hidden}
+  #stage svg{width:100%;height:100%}
+</style>
+</head><body>
+<div class="bar">
+  <button onclick="zpz.zoomIn()">+</button>
+  <button onclick="zpz.zoomOut()">−</button>
+  <button onclick="zpz.fit();zpz.center()">Fit</button>
+  <button onclick="zpz.resetZoom();zpz.center()">1:1</button>
+  <button onclick="window.print()">Print</button>
+  <button onclick="dlPng()">PNG</button>
+  <button onclick="dlSvg()">SVG</button>
+  <span class="hint">Drag to pan · Ctrl+wheel to zoom · + / − keys</span>
+</div>
+<div id="stage">${svgSource}</div>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"><\/script>
+<script>
+  const el = document.querySelector('#stage svg');
+  const zpz = svgPanZoom(el, { zoomScaleSensitivity: .3, minZoom: .2, maxZoom: 10, controlIconsEnabled: false, fit: true, center: true });
+  document.addEventListener('keydown', e => {
+    if (e.key === '+' || e.key === '=') zpz.zoomIn();
+    if (e.key === '-' || e.key === '_') zpz.zoomOut();
+    if (e.key === '0') { zpz.resetZoom(); zpz.center(); }
+  });
+  function dlSvg() {
+    const blob = new Blob([new XMLSerializer().serializeToString(el)], { type: 'image/svg+xml' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'diagram.svg'; a.click();
+  }
+  function dlPng() {
+    const src = new XMLSerializer().serializeToString(el);
+    const img = new Image();
+    const url = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(src)));
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = el.clientWidth * 2; c.height = el.clientHeight * 2;
+      const ctx = c.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img, 0, 0);
+      c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'diagram.png'; a.click(); });
+    };
+    img.src = url;
+  }
+<\/script>
+</body></html>`;
+  const w = window.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+// Run wiring after mermaid finishes (it renders async)
+if (window.mermaid) {
+  setTimeout(wireMermaidToolbars, 400);
+  setTimeout(wireMermaidToolbars, 1200);  // safety re-run for slow renders
+}
+</script>
+</body>
+</html>

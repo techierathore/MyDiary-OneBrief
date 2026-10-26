@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Access stopped — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<main class="centered" data-testid="access-stopped-page">
+  <div class="panel stack" style="max-width:30rem">
+    <div class="brand-mark" data-testid="brand">
+      <span class="sidebar-logo"><span class="i i-lock i-lg"></span></span>
+      <h1 style="font-size:1.5rem" data-testid="page-title">MyDiary can't open here yet</h1>
+      <p class="muted" data-testid="access-stopped-safe">Your journal on this device is safe. Nothing has been deleted.</p>
+    </div>
+
+    <div class="mock-note" data-testid="access-stopped-variants-note">The app shows one of these three cards, depending on why access stopped.</div>
+
+    <!-- Variant 1 (BRD-9): free account already used on another device -->
+    <section class="card" data-tf-state="device-limit-free" data-testid="access-free-card">
+      <div class="card-header row">
+        <div><div class="card-title">This account is on another device</div><div class="card-description">Free plan · one device</div></div>
+        <span class="badge badge-secondary" data-testid="access-free-badge">Free</span>
+      </div>
+      <div class="card-content stack">
+        <p>A free account works on one device. This account is already used on Asha's Pixel 8. A paid licence allows more devices.</p>
+        <p class="small muted">Paid licences are assigned by the MyDiary owner. There is nothing to buy inside the app.</p>
+      </div>
+      <div class="card-footer">
+        <a href="signin.html" class="btn btn-outline btn-block" data-testid="access-free-other-account">Sign in with another account</a>
+      </div>
+    </section>
+
+    <!-- Variant 2 (BRD-10): paid account over its device limit -->
+    <section class="card" data-tf-state="device-limit-paid" data-testid="access-paid-card">
+      <div class="card-header row">
+        <div><div class="card-title">All your device slots are in use</div><div class="card-description">Pro plan · 2 devices</div></div>
+        <span class="badge badge-warning" data-testid="access-paid-count">2 of 2 devices in use</span>
+      </div>
+      <div class="card-content stack">
+        <div class="item" data-testid="access-paid-device">
+          <span class="i i-phone i-lg"></span>
+          <div class="item-content"><div class="item-title">Asha's Pixel 8</div><div class="item-description">Android 15 · last seen today, 8:12 am</div></div>
+        </div>
+        <div class="item" data-testid="access-paid-device-2">
+          <span class="i i-phone i-lg"></span>
+          <div class="item-content"><div class="item-title">Asha's iPad</div><div class="item-description">iPadOS 19 · last seen 2 October 2026</div></div>
+        </div>
+        <p class="small" data-testid="access-paid-how">On one of these devices, open Plan and devices and forget or block a device, then try again here.</p>
+      </div>
+      <div class="card-footer">
+        <a href="home.html" class="btn" data-testid="access-paid-try-again">Try again</a>
+        <a href="signin.html" class="btn btn-outline" data-testid="access-paid-other-account">Sign in with another account</a>
+      </div>
+    </section>
+
+    <!-- Variant 3 (BRD-11): licence check overdue -->
+    <section class="card" data-tf-state="licence-check-due" data-testid="access-licence-card">
+      <div class="card-header row">
+        <div><div class="card-title">Time for a licence check</div><div class="card-description">Last checked 17 September 2026</div></div>
+        <span class="badge badge-danger" data-testid="access-licence-badge">31 days</span>
+      </div>
+      <div class="card-content stack">
+        <p>MyDiary needs to check your licence. It has been 31 days since the last check. Connect to the internet and press Check now.</p>
+      </div>
+      <div class="card-footer">
+        <a href="home.html" class="btn" data-testid="access-licence-check-now">Check now</a>
+        <a href="signin.html" class="btn btn-outline" data-testid="access-licence-other-account">Sign in with another account</a>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

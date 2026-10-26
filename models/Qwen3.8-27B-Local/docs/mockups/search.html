@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDiary — Search</title>
+<style>
+:root{
+  --background:#ffffff; --foreground:#1c1c1c; --card:#ffffff; --card-foreground:#1c1c1c;
+  --primary:#1f1f1f; --primary-foreground:#fafafa; --secondary:#f5f5f5; --secondary-foreground:#1f1f1f;
+  --muted:#f5f5f5; --muted-foreground:#6f6f6f; --destructive:#ef4444; --destructive-foreground:#ffffff;
+  --border:#e8e8e8; --input:#e8e8e8; --ring:#b4b4b4; --success:#16a34a; --info:#2563eb; --warning:#d97706;
+  --radius:10px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--background);color:var(--foreground);line-height:1.5;font-size:14px;}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px 72px;}
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+.brand{font-weight:700;font-size:16px;}
+.grow{flex:1;}
+nav.main{display:flex;flex-wrap:wrap;gap:2px;align-items:center;}
+nav.main a{color:var(--muted-foreground);text-decoration:none;padding:6px 10px;border-radius:8px;font-size:13px;}
+nav.main a:hover{background:var(--secondary);color:var(--foreground);}
+nav.main a.current{background:var(--secondary);color:var(--foreground);font-weight:600;}
+h1.pg{font-size:20px;margin:0 0 4px;}
+.sub{color:var(--muted-foreground);margin:0 0 18px;font-size:13px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+.card h2{margin:0 0 6px;font-size:15px;}
+.card h3{margin:0 0 6px;font-size:14px;}
+.muted{color:var(--muted-foreground);}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.between{justify-content:space-between;}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--background);
+  color:var(--foreground);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;text-decoration:none;}
+.btn:hover{background:var(--secondary);}
+.btn.primary{background:var(--primary);color:var(--primary-foreground);border-color:var(--primary);}
+.btn.primary:hover{opacity:.92;background:var(--primary);}
+.btn.danger{color:var(--destructive);border-color:#fecaca;}
+.btn.danger:hover{background:#fef2f2;}
+.btn.small{padding:5px 9px;font-size:12px;}
+a.btn{text-align:center;justify-content:center;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:13px;margin-bottom:4px;font-weight:500;}
+.input,textarea,select{width:100%;border:1px solid var(--input);border-radius:8px;padding:8px 10px;font:inherit;
+  background:var(--background);color:var(--foreground);}
+textarea{min-height:120px;resize:vertical;}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;background:var(--secondary);color:var(--secondary-foreground);}
+.badge.success{background:#dcfce7;color:#166534;}
+.badge.warn{background:#fef3c7;color:#92400e;}
+.badge.danger{background:#fee2e2;color:#991b1b;}
+.badge.info{background:#dbeafe;color:#1e40af;}
+.list{list-style:none;margin:0;padding:0;}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);}
+.list li:last-child{border-bottom:none;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border);vertical-align:top;}
+th{color:var(--muted-foreground);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.02em;}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;}
+.tab{padding:8px 12px;font-size:13px;color:var(--muted-foreground);}
+.tab.current{color:var(--foreground);font-weight:600;background:var(--secondary);border-radius:8px 8px 0 0;}
+.switch{width:40px;height:22px;border-radius:999px;background:var(--border);position:relative;display:inline-block;flex:none;}
+.switch.on{background:var(--success);}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15);}
+.switch.on::after{left:20px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+.photo{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#e5e7eb,#cbd2da);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:12px;}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.cal .d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:12px;border:1px solid var(--border);position:relative;}
+.cal .d.dot::after{content:"";position:absolute;bottom:5px;width:5px;height:5px;border-radius:50%;background:var(--primary);}
+.cal .d.today{background:var(--primary);color:var(--primary-foreground);border-color:var(--primary);}
+.pill{border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12px;color:var(--muted-foreground);}
+.pill.on{background:var(--primary);color:var(--primary-foreground);border-color:var(--primary);}
+.note{border:1px solid var(--border);border-radius:8px;padding:10px 12px;background:var(--muted);font-size:13px;}
+.note.warn{background:#fffbeb;border-color:#fde68a;color:#92400e;}
+.note.info{background:#eff6ff;border-color:#bfdbfe;color:#1e40af;}
+.dialog{border:1px solid var(--border);border-radius:var(--radius);padding:16px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.12);margin-bottom:14px;}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--secondary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex:none;}
+.mood{font-size:18px;}
+.msg{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:var(--foreground);color:var(--background);
+  padding:10px 16px;border-radius:8px;display:none;z-index:10;}
+a.plain{color:var(--foreground);}
+</style>
+<script>
+function msg(t){var e=document.getElementById('msg');e.textContent=t;e.style.display='block';
+  clearTimeout(msg._t);msg._t=setTimeout(function(){e.style.display='none';},1800);}
+</script>
+</head>
+<body>
+<div class="wrap">
+<header class="topbar" data-testid="topbar"><span class="brand">Search</span><span class="grow"></span><nav class="main" data-testid="main-nav"><a href="home.html">Home</a><a href="write.html">Write</a><a href="questioning.html">Questioning</a><a href="entries.html">Entries</a><a class="current" href="search.html">Search</a><a href="ask.html">Ask</a><a href="account.html">Account</a></nav></header>
+<h1 class="pg">Search</h1>
+<p class="sub">Find entries by keyword, then narrow by date, tag, question set, photo, star and mood.</p>
+<div class="card" data-testid="search-box">
+  <div class="field"><label>Keyword</label>
+    <input class="input" id="kw" value="coffee" data-tf-sample data-testid="kw-input"></div>
+  <div class="row" data-testid="search-filters" style="gap:6px;">
+    <span class="pill on">Any date</span>
+    <span class="pill" onclick="msg('Date range applied')">Date range</span>
+    <span class="pill" onclick="msg('Tag filter applied')">Tag</span>
+    <span class="pill" onclick="msg('Question-set filter applied')">Set</span>
+    <span class="pill" onclick="msg('Has-photo filter applied')">Has photo</span>
+    <span class="pill" onclick="msg('Starred-only applied')">★ Starred</span>
+    <span class="pill" onclick="msg('Mood filter applied')">Mood</span>
+  </div>
+  <div style="margin-top:12px;"><button class="btn primary" data-testid="search-run" onclick="msg('3 entries match ' + 'coffee')">Search</button></div>
+</div>
+<div class="card" data-testid="search-results">
+  <h2>3 results for "coffee"</h2>
+  <ul class="list">
+    <li data-tf-sample><a class="plain" href="entry-detail.html"><strong>19 Oct 2026</strong> — <span class="muted">…a quiet morning with <u>coffee</u>, before the phone…</span></a><span class="mood">😊</span></li>
+    <li data-tf-sample><a class="plain" href="entry-detail.html"><strong>02 Oct 2026</strong> — <span class="muted">The <u>coffee</u> machine finally works again.</span></a><span class="mood">😌</span></li>
+    <li data-tf-sample><a class="plain" href="entry-detail.html"><strong>21 Sep 2026</strong> — <span class="muted">Two cups of <u>coffee</u> and one long walk.</span></a><span class="mood">😊</span></li>
+  </ul>
+</div>
+
+</div>
+<div id="msg" class="msg" role="status"></div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Backup & Restore</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="backup-app-bar">
+      <a href="account.html" class="icon-btn" data-testid="backup-back" aria-label="Back">←</a>
+      <div class="app-bar-title">Backup & Restore</div>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="backup-provider-card">
+        <div class="field">
+          <label class="field-label">Cloud provider</label>
+          <select class="select" data-testid="backup-provider-select">
+            <option>Google Drive</option>
+            <option>OneDrive</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span class="badge badge-success" data-testid="backup-status">Synced</span>
+          <span style="font-size: 0.8125rem; color: var(--slate-500);" data-testid="backup-last">Last backup: today at 08:14</span>
+        </div>
+        <button class="btn btn-primary btn-block" data-testid="backup-now-button" onclick="alert('Backup started');">Back up now</button>
+      </div>
+
+      <div class="card" data-testid="backup-snapshots-card">
+        <div class="section-title">Snapshots</div>
+        <div class="list-item" data-testid="backup-snapshot" style="margin-bottom: 10px;">
+          <div class="list-item-content">
+            <div class="list-item-title">18 Oct 2026 · 08:14</div>
+            <div class="list-item-subtitle">1.2 MB</div>
+          </div>
+          <button class="btn btn-sm btn-secondary" data-testid="backup-restore-button" onclick="alert('Restore started');" style="width: auto;">Restore</button>
+        </div>
+        <div class="list-item" data-testid="backup-snapshot" data-tf-sample="sample" style="margin-bottom: 10px;">
+          <div class="list-item-content">
+            <div class="list-item-title">11 Oct 2026 · 21:03</div>
+            <div class="list-item-subtitle">1.1 MB</div>
+          </div>
+          <button class="btn btn-sm btn-secondary" data-testid="backup-restore-button" onclick="alert('Restore started');" style="width: auto;">Restore</button>
+        </div>
+      </div>
+
+      <div class="card card-flat text-center" data-testid="backup-upgrade-card" style="background: var(--slate-50);">
+        <div style="font-size: 2rem; margin-bottom: 8px;">☁️</div>
+        <p style="font-size: 0.9375rem; color: var(--slate-600);">Cloud backup requires a paid licence. Ask the admin to assign one in AppManager.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

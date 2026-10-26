@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyDiary — UI Design</title>
+<script>
+/* Resolve the theme BEFORE first paint (no flash). Saved choice wins; otherwise
+   pick by time of day — light 07:00–19:00 local, softened dark at night. */
+(function(){
+  try{
+    var t = localStorage.getItem('tf-theme');
+    if(t!=='light' && t!=='dark'){ var h = new Date().getHours(); t = (h>=7 && h<19) ? 'light' : 'dark'; }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){ document.documentElement.setAttribute('data-theme','light'); }
+})();
+</script>
+<style>
+/* LIGHT is the default theme — a warm off-white, easy on the eyes (never bright white). */
+:root{
+  --bg:#f4f1e9; --panel:#efe9db; --panel2:#e7e0cd; --line:#d8cfb6;
+  --ink:#2e2a22; --muted:#6f6857; --accent:#2f6f9f; --accent2:#3f7d54;
+  --warn:#9a6b15; --danger:#b03a52; --ok:#3f7d54;
+  --code-bg:#ece5d3; --code-ink:#332f26; --row-alt:#eae2cf;
+  --h3:#3a352b; --h4:#2f6f9f; --quote:#4a4537; --cta-bg:#e6eef5;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+/* DARK — softened near-black (warmer / less harsh than pure #0f1115). */
+html[data-theme="dark"]{
+  --bg:#11141a; --panel:#171b23; --panel2:#1e2430; --line:#2b3240;
+  --ink:#dfe3ea; --muted:#99a2b1; --accent:#7cc4ff; --accent2:#a6e3a1;
+  --warn:#f9c74f; --danger:#f38ba8; --ok:#a6e3a1;
+  --code-bg:#0c1016; --code-ink:#d8dde8; --row-alt:#141821;
+  --h3:#cfd5e3; --h4:#7cc4ff; --quote:#cfd5e3; --cta-bg:#0d2030;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:13px;background:var(--code-bg);color:var(--code-ink);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+pre{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;color:var(--code-ink);position:relative}
+pre code{background:none;border:none;padding:0}
+.copy{position:absolute;top:8px;right:8px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;font-family:var(--sans);cursor:pointer}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+/* floating light/dark toggle (top-right) */
+.theme-toggle{position:fixed;top:12px;right:14px;z-index:10000;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;font-family:var(--sans);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.theme-toggle:hover{color:var(--accent);border-color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.layout.no-toc{grid-template-columns:1fr}
+nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding:18px 14px}
+nav.side h1{font-size:14px;margin:0 0 4px;letter-spacing:.5px;color:var(--ink)}
+nav.side .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+nav.side ol,nav.side ul{list-style:none;padding:0;margin:0}
+nav.side li{font-size:13px;margin:2px 0}
+nav.side li a{display:block;padding:5px 8px;color:var(--ink);border-radius:6px}
+nav.side li a:hover{background:var(--panel2);text-decoration:none}
+nav.side li.h3 a{padding-left:22px;font-size:12.5px;color:var(--h3)}
+nav.side .group{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:14px 8px 4px}
+
+main{padding:28px 40px 80px;max-width:1100px}
+.layout.no-toc main{margin:0 auto}
+
+h1{font-size:28px;margin:0 0 6px}
+h2{font-size:22px;margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+h3{font-size:17px;margin:22px 0 6px;color:var(--h3);scroll-margin-top:16px}
+h4{font-size:14px;margin:14px 0 4px;color:var(--h4);scroll-margin-top:16px}
+.subtitle{color:var(--muted);font-size:14px;margin-top:-4px;margin-bottom:18px}
+p{margin:6px 0 10px}
+blockquote{border-left:3px solid var(--accent);background:var(--panel);margin:8px 0;padding:8px 14px;color:var(--quote)}
+ul,ol{padding-left:22px}
+li{margin:2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--panel2);color:var(--h3);font-weight:600}
+tr:nth-child(even) td{background:var(--row-alt)}
+
+hr{border:none;border-top:1px solid var(--line);margin:24px 0}
+.anchor-link{color:var(--muted);font-weight:400;font-size:0.85em;margin-left:8px;opacity:0;transition:opacity .15s;text-decoration:none}
+h2:hover .anchor-link,h3:hover .anchor-link,h4:hover .anchor-link{opacity:1}
+
+/* inline TOC at top of main content */
+.toc-inline{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:14px 0 24px}
+.toc-inline > div{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.toc-inline ol,.toc-inline ul{margin:4px 0;padding-left:18px}
+.toc-inline li{font-size:13px;margin:1px 0}
+.toc-inline a{color:var(--h3)}
+
+/* mermaid diagram wrapper + toolbar */
+.diagram{position:relative;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);margin:14px 0;overflow:hidden}
+.diagram .mermaid{padding:14px;margin:0;background:transparent;border:none;overflow:auto}
+.diagram .dt{display:flex;gap:6px;justify-content:flex-end;padding:6px 8px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.diagram .dt button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 10px;font-size:12px;font-family:var(--sans);cursor:pointer;min-width:30px}
+.diagram .dt button:hover{color:var(--accent);border-color:var(--accent)}
+.diagram .dt .zlabel{padding:3px 6px;font-size:11px;color:var(--muted);font-family:var(--mono);align-self:center}
+.diagram.fs{position:fixed;inset:0;z-index:9999;border-radius:0;border:none}
+.diagram.fs .mermaid{height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto}}
+</style>
+</head>
+<body>
+<button id="themeToggle" class="theme-toggle" title="Toggle light / dark">&#9790; Dark</button>
+<div class="layout no-toc">
+  <main>
+    <h1>MyDiary — UI Design</h1>
+    <div class="subtitle">Rendered 2026-10-25 &middot; source <code>MyDiary-UIDesign.md</code></div>
+
+    <div class="toc-inline">
+      <div>Contents</div>
+      <ol>
+        <li><a href="#design-system">Design system</a></li>
+        <li><a href="#screens">Screens</a></li>
+        <li class="h3"><a href="#screen-sign-in-signin">Screen: Sign In (/signin)</a></li>
+        <li class="h3"><a href="#screen-reset-password-reset-password">Screen: Reset Password (/reset-password)</a></li>
+        <li class="h3"><a href="#screen-home-home">Screen: Home (/home)</a></li>
+        <li class="h3"><a href="#screen-on-this-day-on-this-day">Screen: On This Day (/on-this-day)</a></li>
+        <li class="h3"><a href="#screen-write-write">Screen: Write (/write)</a></li>
+        <li class="h3"><a href="#screen-thought-dump-write-dump">Screen: Thought Dump (/write/dump)</a></li>
+        <li class="h3"><a href="#screen-free-flow-write-free">Screen: Free-Flow (/write/free)</a></li>
+        <li class="h3"><a href="#screen-question-sets-sets">Screen: Question Sets (/sets)</a></li>
+        <li class="h3"><a href="#screen-answer-a-set-sets-answer">Screen: Answer a Set (/sets/answer)</a></li>
+        <li class="h3"><a href="#screen-build-a-set-sets-build">Screen: Build a Set (/sets/build)</a></li>
+        <li class="h3"><a href="#screen-timeline-timeline">Screen: Timeline (/timeline)</a></li>
+        <li class="h3"><a href="#screen-calendar-calendar">Screen: Calendar (/calendar)</a></li>
+        <li class="h3"><a href="#screen-entry-entry">Screen: Entry (/entry)</a></li>
+        <li class="h3"><a href="#screen-search-search">Screen: Search (/search)</a></li>
+        <li class="h3"><a href="#screen-ask-ask">Screen: Ask (/ask)</a></li>
+        <li class="h3"><a href="#screen-compare-compare">Screen: Compare (/compare)</a></li>
+        <li class="h3"><a href="#screen-account-account">Screen: Account (/account)</a></li>
+        <li class="h3"><a href="#screen-profile-support-profile">Screen: Profile &amp;amp; Support (/profile)</a></li>
+        <li class="h3"><a href="#screen-settings-settings">Screen: Settings (/settings)</a></li>
+        <li><a href="#click-through-flow">Click-through flow</a></li>
+        <li><a href="#branding-guide">Branding guide</a></li>
+      </ol>
+    </div>
+<table>
+<thead><tr><th></th><th></th></tr></thead>
+<tbody>
+<tr><td>App</td><td>MyDiary</td></tr>
+<tr><td>Kind</td><td>app</td></tr>
+<tr><td>Size</td><td>Medium</td></tr>
+<tr><td>UI library</td><td>TrBlazeUI (<code>TrBlazeUI.Components</code> + <code>TrBlazeUI.Icons.Lucide</code>), reference <code>.trblazeui/TrBlazeUI-AI-Reference.md</code></td></tr>
+<tr><td>Theme</td><td>both — the app follows the system theme; mockups are drawn light</td></tr>
+</tbody>
+</table>
+<h2 id="design-system">Design system<a class="anchor-link" href="#design-system">#</a></h2>
+<ul>
+<li><strong>Layout shell:</strong> one phone-first column, centered and capped at 480px on tablet and desktop (the same screens everywhere, brief #24). A <code>Card</code>-based page body inside a <code>ScrollArea</code>; a top bar (page title, <code>Button Variant="ghost"</code> search icon, <code>Badge</code> for the plan); a bottom <code>NavigationMenu</code> with five items — Home, Timeline, Write (center, emphasized), Ask, Settings. Sign-in screens use <code>CenteredPanel</code> without the bottom nav.
+</li>
+<li><strong>Theme:</strong> TrBlazeUI defaults — OKLCH semantic tokens (<code>--background</code>, <code>--card</code>, <code>--primary</code>, <code>--muted</code>, <code>--destructive</code>, <code>--border</code>, <code>--ring</code>, <code>--radius</code>), neutral primary, dark mode by the <code>.dark</code> class. No custom palette.
+</li>
+<li><strong>Shared controls:</strong> <code>Button</code>, <code>Input</code>, <code>Textarea</code>, <code>Field</code>/<code>FieldLabel</code>/<code>FieldContent</code>, <code>Select</code>, <code>Switch</code>, <code>Checkbox</code>, <code>Card</code>, <code>Badge</code>, <code>Alert</code>, <code>Dialog</code>, <code>AlertDialog</code>, <code>Toast</code> (via <code>ToastService</code>), <code>LucideIcon</code>, <code>Empty</code>, <code>Skeleton</code>, <code>Spinner</code>, <code>Separator</code>, <code>Tabs</code>, <code>DataTable</code>, <code>DatePicker</code>, <code>DateRangePicker</code>, <code>RichTextEditor</code>, <code>FileUpload</code>, <code>ToggleGroup</code>, <code>Stepper</code>, <code>Timeline</code>, <code>StatTile</code>, <code>SortableList</code>, <code>Progress</code>, <code>PasswordStrength</code>.
+</li>
+<li><strong>Rules:</strong> spacing is the library's (4px grid, <code>Card</code> padding 16px, 12px gaps between fields); density comfortable-touch (44px minimum targets); one breakpoint behaviour — the column simply centers above 480px; every list row is a link to its detail; destructive actions always confirm in an <code>AlertDialog</code>; money-free product — no price is ever shown (buying happens in AppManager, brief Out of scope).
+</li>
+</ul>
+<h2 id="screens">Screens<a class="anchor-link" href="#screens">#</a></h2>
+<h3 id="screen-sign-in-signin">Screen: Sign In (<code>/signin</code>)<a class="anchor-link" href="#screen-sign-in-signin">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/signin.html">mockups/signin.html</a> · <strong>Roles:</strong> User (signed out) · <strong>BRD:</strong> BRD-1</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Panel</td><td><code>CenteredPanel</code> + <code>Card</code></td><td>App name, warm one-line welcome</td></tr>
+<tr><td>Mode switch</td><td><code>Tabs</code></td><td>"Sign in" / "Create account"</td></tr>
+<tr><td>Credentials</td><td><code>Field</code> + <code>Input Type="InputType.Email"</code> / <code>InputType.Password</code></td><td>email, password; create mode adds name + confirm</td></tr>
+<tr><td>Submit</td><td><code>Button</code></td><td><code>device-login</code> / <code>device-register</code>; busy state <code>Spinner</code></td></tr>
+<tr><td>Help links</td><td><code>Button Variant="link"</code></td><td>→ Reset Password</td></tr>
+<tr><td>Refusal</td><td><code>AlertDialog</code></td><td>device-refused and grace-expired messages</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Email</td><td>email</td><td>yes</td><td>a valid address</td></tr>
+<tr><td>Password</td><td>password</td><td>yes</td><td>non-empty; rules enforced by AppManager, message shown as-is</td></tr>
+<tr><td>Confirm password</td><td>password</td><td>create only</td><td>must match</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Device refused (free: "a paid licence allows more devices"; paid: how to free a slot); Licence check needed (30 offline days used up — check now).</p>
+<p><strong>States:</strong> empty: n/a · loading: submit <code>Spinner</code>, fields disabled · error: <code>Alert Variant="destructive"</code> with AppManager's <code>message</code> verbatim.</p>
+<h3 id="screen-reset-password-reset-password">Screen: Reset Password (<code>/reset-password</code>)<a class="anchor-link" href="#screen-reset-password-reset-password">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/reset-password.html">mockups/reset-password.html</a> · <strong>Roles:</strong> User (signed out) · <strong>BRD:</strong> BRD-6</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Step 1 request</td><td><code>Card</code> + <code>Field</code> + <code>Input</code> email + <code>Button</code></td><td><code>POST /AuthSvc/forgot-password</code>; success <code>Alert</code> "check your email"</td></tr>
+<tr><td>Step 2 set</td><td><code>Card</code> + <code>Field</code>s: token <code>Input</code>, new password <code>Input</code> + <code>PasswordStrength</code>, confirm</td><td><code>POST /AuthSvc/reset-password</code></td></tr>
+<tr><td>Nav</td><td><code>Button Variant="ghost"</code></td><td>← back to Sign In</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Email</td><td>email</td><td>yes</td><td>valid address</td></tr>
+<tr><td>Reset token</td><td>text</td><td>yes (step 2)</td><td>from the email; invalid/expired shows the server message</td></tr>
+<tr><td>New password</td><td>password</td><td>yes (step 2)</td><td>AppManager rule; refusal message shown as-is</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: n/a · loading: <code>Spinner</code> in the active step's button · error: destructive <code>Alert</code>, server <code>message</code> verbatim.</p>
+<h3 id="screen-home-home">Screen: Home (<code>/home</code>)<a class="anchor-link" href="#screen-home-home">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/home.html">mockups/home.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-10</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Greeting</td><td><code>Typography</code> + <code>Avatar</code></td><td>first name, today's date</td></tr>
+<tr><td>Streak</td><td><code>StatTile</code></td><td>current streak in days, flame icon</td></tr>
+<tr><td>On This Day card</td><td><code>Card</code> (links to <code>/on-this-day</code>)</td><td>first lines of this date's story, years covered <code>Badge</code>s</td></tr>
+<tr><td>Due suggestion</td><td><code>Alert Variant="info"</code> + <code>Button</code></td><td>"Monthly Goals is due" → Answer a Set (only when a set is due)</td></tr>
+<tr><td>Today's entries</td><td><code>Timeline</code> of <code>Card</code> rows</td><td>each row links to Entry; kind icon, title/first line, mood, star</td></tr>
+<tr><td>Bottom nav</td><td><code>NavigationMenu</code></td><td>Home (active), Timeline, Write, Ask, Settings</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(none — a read-only dashboard)</td><td>—</td><td>—</td><td>every row and card is a link; nothing is typed here</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: <code>Empty</code> "Your journal starts today" + Write button (day one, nothing written) · loading: three <code>Skeleton</code> cards · error: destructive <code>Alert</code> with retry.</p>
+<h3 id="screen-on-this-day-on-this-day">Screen: On This Day (<code>/on-this-day</code>)<a class="anchor-link" href="#screen-on-this-day-on-this-day">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/on-this-day.html">mockups/on-this-day.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-15</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Year selector</td><td><code>Select</code></td><td>the past years that have entries around this date</td></tr>
+<tr><td>Story</td><td><code>Card</code> + <code>Prose</code></td><td>the warm generated story for the chosen year — narrative, never a list of entries</td></tr>
+<tr><td>Sources</td><td><code>Item</code> rows</td><td>the entries the story used, each links to Entry</td></tr>
+<tr><td>Regenerate</td><td><code>Button Variant="outline"</code></td><td>makes the story again (model shown in a <code>Badge</code>)</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Year</td><td>select</td><td>no</td><td>the past years that have entries on or around this date</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: <code>Empty</code> "Nothing written on this day yet — come back next year" · loading: <code>Spinner</code> + <code>Skeleton</code> lines while the story generates · error: destructive <code>Alert</code> (offline and no cached story: say so plainly).</p>
+<h3 id="screen-write-write">Screen: Write (<code>/write</code>)<a class="anchor-link" href="#screen-write-write">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/write.html">mockups/write.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-19</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Prompt</td><td><code>Typography</code></td><td>"What are you writing today?"</td></tr>
+<tr><td>Three ways</td><td>three <code>Card</code>s, each a link</td><td>10-Thought Dump → <code>/write/dump</code>; Free-Flow → <code>/write/free</code>; Question set → <code>/sets</code> — icon, name, one-line description each</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(none — a chooser)</td><td>—</td><td>—</td><td>the three cards are links; nothing is typed here</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty/loading/error: none — a static chooser.</p>
+<h3 id="screen-thought-dump-write-dump"><a id="screen-thought-dump-writedump"></a>Screen: Thought Dump (<code>/write/dump</code>)<a class="anchor-link" href="#screen-thought-dump-write-dump">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/thought-dump.html">mockups/thought-dump.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-20</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Lines</td><td>ten numbered <code>Field</code>s + <code>Input</code></td><td>lines 1–10, all optional</td></tr>
+<tr><td>Date</td><td><code>DatePicker</code></td><td>the day it belongs to (default today)</td></tr>
+<tr><td>Mood</td><td><code>ToggleGroup</code> (emoji set)</td><td>optional mood</td></tr>
+<tr><td>Save</td><td><code>Button</code></td><td>drops empty lines, saves, <code>Toast</code>, → Home</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Line 1–10</td><td>text</td><td>no</td><td>at least one non-empty line to save; each ≤ 280 chars</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: all ten lines blank with a hint · loading: <code>Spinner</code> in Save · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-free-flow-write-free"><a id="screen-free-flow-writefree"></a>Screen: Free-Flow (<code>/write/free</code>)<a class="anchor-link" href="#screen-free-flow-write-free">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/free-flow.html">mockups/free-flow.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-23</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><code>Field</code> + <code>Input</code></td><td>optional title</td></tr>
+<tr><td>Body</td><td><code>RichTextEditor</code></td><td>formatted text: bold, italic, lists, headings</td></tr>
+<tr><td>Photos</td><td><code>FileUpload</code> + thumbnails</td><td>images from the device; each with a remove <code>Button</code></td></tr>
+<tr><td>Date / Mood</td><td><code>DatePicker</code> + <code>ToggleGroup</code></td><td>the day, optional mood</td></tr>
+<tr><td>Save</td><td><code>Button</code></td><td>saves, <code>Toast</code>, → Entry</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td>text</td><td>no</td><td>≤ 120 chars</td></tr>
+<tr><td>Body</td><td>rich text</td><td>yes</td><td>non-empty to save</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: editor placeholder "What happened today?" · loading: <code>Spinner</code> in Save, photo upload <code>Progress</code> · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-question-sets-sets">Screen: Question Sets (<code>/sets</code>)<a class="anchor-link" href="#screen-question-sets-sets">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/question-sets.html">mockups/question-sets.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-26</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Built-in</td><td><code>Card</code> list, 7 rows</td><td>Monthly Goals, Yearly Review, Health, Fitness, Weekly Retro, Project Retro, Gratitude; due <code>Badge</code>; each links to Answer a Set</td></tr>
+<tr><td>Custom</td><td><code>Card</code> list</td><td>the user's own sets; each links to Answer a Set; overflow <code>DropdownMenu</code> (drawn open) with Delete</td></tr>
+<tr><td>New set</td><td><code>Button</code></td><td>→ Build a Set</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(none — a list screen)</td><td>—</td><td>—</td><td>rows are links; built-in sets cannot be deleted, customs can</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Delete set (<code>AlertDialog</code>: name, "answers already written stay in the journal", confirm).</p>
+<p><strong>States:</strong> empty (custom section): one line "No sets of your own yet" · loading: <code>Skeleton</code> rows · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-answer-a-set-sets-answer"><a id="screen-answer-a-set-setsanswer"></a>Screen: Answer a Set (<code>/sets/answer</code>)<a class="anchor-link" href="#screen-answer-a-set-sets-answer">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/answer-set.html">mockups/answer-set.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-31</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Set name</td><td><code>Typography</code> + <code>Badge</code></td><td>which set, question x of y</td></tr>
+<tr><td>Progress</td><td><code>Stepper</code> + <code>Progress</code></td><td>position in the set</td></tr>
+<tr><td>Question</td><td><code>Card</code> + <code>Typography</code></td><td>the current question text</td></tr>
+<tr><td>Answer</td><td><code>Textarea</code></td><td>the answer, autosaved per question</td></tr>
+<tr><td>Nav</td><td><code>Button</code>s</td><td>Back, Skip, Next; last question → Finish</td></tr>
+<tr><td>Finish</td><td><code>Button</code></td><td>saves one entry, <code>Toast</code>, → Entry</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Answer</td><td>textarea</td><td>no</td><td>saved per question; a skipped one stays "Skipped" and answerable later</td></tr>
+<tr><td>Date</td><td>read-only</td><td>—</td><td>the day the set is answered</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: a skipped question shows "Skipped" in the stepper · loading: <code>Spinner</code> on Finish · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-build-a-set-sets-build"><a id="screen-build-a-set-setsbuild"></a>Screen: Build a Set (<code>/sets/build</code>)<a class="anchor-link" href="#screen-build-a-set-sets-build">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/build-set.html">mockups/build-set.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-35</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Name</td><td><code>Field</code> + <code>Input</code></td><td>set name</td></tr>
+<tr><td>Due rule</td><td><code>Select</code></td><td>Manual, Weekly, Monthly (day 1), Yearly</td></tr>
+<tr><td>Questions</td><td><code>SortableList</code> of <code>Field</code>s</td><td>question text per row; move up / move down <code>Button</code>s; delete per row</td></tr>
+<tr><td>Add question</td><td><code>Button Variant="outline"</code></td><td>appends a row</td></tr>
+<tr><td>Save</td><td><code>Button</code></td><td>creates the set, <code>Toast</code>, → Question Sets</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Name</td><td>text</td><td>yes</td><td>1–60 chars, not a duplicate of a built-in name</td></tr>
+<tr><td>Question</td><td>text</td><td>at least one</td><td>1–280 chars</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: one blank question row · loading: <code>Spinner</code> in Save · error: destructive <code>Alert</code> (duplicate name).</p>
+<h3 id="screen-timeline-timeline">Screen: Timeline (<code>/timeline</code>)<a class="anchor-link" href="#screen-timeline-timeline">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/timeline.html">mockups/timeline.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-41</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>View switch</td><td><code>ToggleGroup</code></td><td>Timeline (active) / Calendar → <code>/calendar</code></td></tr>
+<tr><td>Quick filters</td><td><code>Badge</code> toggles</td><td>Starred, With photos — narrow the list</td></tr>
+<tr><td>Days</td><td><code>Timeline</code> grouped by <code>DateKey</code></td><td>day headers; entry <code>Card</code> rows: kind icon, title or first line, mood, star, photo count; each links to Entry</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Quick filters</td><td>toggle badges</td><td>no</td><td>Starred / With photos narrow the list; off shows everything</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: <code>Empty</code> "Nothing written yet" + Write button · loading: <code>Skeleton</code> rows · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-calendar-calendar">Screen: Calendar (<code>/calendar</code>)<a class="anchor-link" href="#screen-calendar-calendar">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/calendar.html">mockups/calendar.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-44</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>View switch</td><td><code>ToggleGroup</code></td><td>Timeline → <code>/timeline</code> / Calendar (active)</td></tr>
+<tr><td>Month</td><td><code>Calendar</code></td><td>dots on days that have entries; month back/forward <code>Button</code>s</td></tr>
+<tr><td>Day list</td><td><code>Card</code> rows</td><td>the selected day's entries, each links to Entry</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Selected day</td><td>date (grid tap)</td><td>no</td><td>any day of the shown month; defaults to today</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty (selected day): "Nothing on this day" · loading: <code>Skeleton</code> · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-entry-entry">Screen: Entry (<code>/entry</code>)<a class="anchor-link" href="#screen-entry-entry">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/entry.html">mockups/entry.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-47</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Header</td><td><code>Typography</code> + <code>Badge</code></td><td>date, kind badge (Dump / Free-Flow / set name)</td></tr>
+<tr><td>Body</td><td><code>Prose</code> / numbered lines / question–answer pairs</td><td>rendered per kind; photos in a grid</td></tr>
+<tr><td>Star</td><td><code>Button</code> (star icon, toggles)</td><td>starred state</td></tr>
+<tr><td>Mood</td><td><code>ToggleGroup</code></td><td>the entry's mood, changeable</td></tr>
+<tr><td>Tags</td><td><code>Badge</code> list + Add <code>Button</code></td><td>each tag with a remove ×; Add opens the dialog</td></tr>
+<tr><td>Actions</td><td><code>DropdownMenu</code> (drawn open)</td><td>Edit (→ its write screen), Delete</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Mood</td><td>toggle group</td><td>no</td><td>one of the five moods, or none</td></tr>
+<tr><td>Tag</td><td>text (dialog)</td><td>no</td><td>1–30 characters; existing tags offered for reuse</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Add tag (<code>Dialog</code>: <code>Input</code> + existing-tag suggestions, add); Delete entry (<code>AlertDialog</code>: first line, confirm).</p>
+<p><strong>States:</strong> empty: n/a (an entry exists) · loading: <code>Skeleton</code> body · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-search-search">Screen: Search (<code>/search</code>)<a class="anchor-link" href="#screen-search-search">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/search.html">mockups/search.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-53</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Keyword</td><td><code>Field</code> + <code>Input</code></td><td>the words to find</td></tr>
+<tr><td>Filters</td><td><code>DateRangePicker</code>, <code>MultiSelect</code> (tags), <code>Select</code> (question set), <code>Checkbox</code> (has photo), <code>Checkbox</code> (starred), <code>Select</code> (mood)</td><td>every filter of brief #16</td></tr>
+<tr><td>Results</td><td><code>Card</code> rows</td><td>match with the keyword highlighted, date, kind; each links to Entry; result count <code>Badge</code></td></tr>
+<tr><td>Clear</td><td><code>Button Variant="ghost"</code></td><td>resets keyword and filters</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Keyword</td><td>text</td><td>no</td><td>a keyword or at least one filter must be set to search</td></tr>
+<tr><td>From / To</td><td>dates</td><td>no</td><td>From must not be after To</td></tr>
+<tr><td>Tags</td><td>multi-select</td><td>no</td><td>any of the journal's tags</td></tr>
+<tr><td>Question set</td><td>select</td><td>no</td><td>any set, or "Any"</td></tr>
+<tr><td>Mood</td><td>select</td><td>no</td><td>one of the five moods, or "Any"</td></tr>
+<tr><td>Has photo / Starred</td><td>checkboxes</td><td>no</td><td>narrow to entries with a photo / with a star</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty (no matches): <code>Empty</code> "No entries match" · loading: <code>Skeleton</code> rows · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-ask-ask">Screen: Ask (<code>/ask</code>)<a class="anchor-link" href="#screen-ask-ask">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/ask.html">mockups/ask.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-60</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Question</td><td><code>Field</code> + <code>Input</code> + send <code>Button</code></td><td>plain words, e.g. "how many coffee bottles did I open last year?"</td></tr>
+<tr><td>Model badge</td><td><code>Badge</code></td><td>"On this device" (free) or the paid user's chosen model</td></tr>
+<tr><td>Answer</td><td><code>Card</code> + <code>Prose</code></td><td>the counted answer — a number and its wording</td></tr>
+<tr><td>Sources</td><td><code>Item</code> rows</td><td>every entry the answer used: date, first line; each links to Entry</td></tr>
+<tr><td>Nothing found</td><td><code>Alert Variant="info"</code> (<code>data-tf-state="no-match"</code>)</td><td>"No entry matches that — nothing is made up"</td></tr>
+<tr><td>Compare</td><td><code>Button Variant="outline"</code></td><td>→ Compare for a set question</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Question</td><td>text</td><td>yes</td><td>1–300 characters, plain words</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: example questions as chips · loading: <code>Typing</code> indicator while the answer is written · error: destructive <code>Alert</code> (a model that will not load says why, plainly).</p>
+<h3 id="screen-compare-compare">Screen: Compare (<code>/compare</code>)<a class="anchor-link" href="#screen-compare-compare">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/compare.html">mockups/compare.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-65</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Question picker</td><td><code>Select</code> (set, then question)</td><td>one question from any answered set</td></tr>
+<tr><td>Period</td><td><code>ToggleGroup</code></td><td>Months / Years</td></tr>
+<tr><td>Columns</td><td><code>ScrollArea</code> of <code>Card</code>s side by side</td><td>one card per month or year: period label, that period's answer text; unanswered periods say "not answered"</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Question set</td><td>select</td><td>yes</td><td>a set the user has answered</td></tr>
+<tr><td>Question</td><td>select</td><td>yes</td><td>a question of that set with at least one answer</td></tr>
+<tr><td>Period</td><td>toggle (Months / Years)</td><td>yes</td><td>one of the two</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> none.</p>
+<p><strong>States:</strong> empty: "Pick a question you have answered more than once" · loading: <code>Skeleton</code> columns · error: destructive <code>Alert</code>.</p>
+<h3 id="screen-account-account">Screen: Account (<code>/account</code>)<a class="anchor-link" href="#screen-account-account">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/account.html">mockups/account.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-68</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Plan</td><td><code>Card</code></td><td>plan name (<code>Badge</code>: Free / Pro / Pro-Plus), "ends {date}" or "no end", licence key</td></tr>
+<tr><td>Devices count</td><td><code>StatTile</code></td><td>"{used} of {allowed} devices in use" + <code>Progress</code></td></tr>
+<tr><td>Device list</td><td><code>DataTable</code></td><td>name, platform, last seen, this-device <code>Badge</code>; per row <code>DropdownMenu</code> (drawn open): Forget, Block</td></tr>
+<tr><td>Offline state</td><td><code>Alert Variant="warning"</code> (<code>data-tf-state="offline"</code>)</td><td>"Offline — licence checked {n} days ago; {30−n} days left"</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>(none — a read screen with actions)</td><td>—</td><td>—</td><td>Forget and Block act per device row, each through its confirm dialog</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Forget device (<code>AlertDialog</code>: frees a slot at once); Block device (<code>AlertDialog</code>: its next sign-in is refused).</p>
+<p><strong>States:</strong> empty: n/a (this device is always listed) · loading: <code>Skeleton</code> table · error: destructive <code>Alert</code>; a licence check that cannot be reached inside the grace window shows the offline <code>Alert</code>, not an error.</p>
+<h3 id="screen-profile-support-profile"><a id="screen-profile--support-profile"></a>Screen: Profile &amp; Support (<code>/profile</code>)<a class="anchor-link" href="#screen-profile-support-profile">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/profile.html">mockups/profile.html</a> · <strong>Roles:</strong> User · <strong>BRD:</strong> BRD-75</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Profile</td><td><code>Card</code> + <code>Field</code>s</td><td>first name, last name, mobile number; email read-only (<code>Input Disabled</code>); Save <code>Button</code> (<code>PUT /UserSvc/profile</code>)</td></tr>
+<tr><td>Password</td><td><code>Card</code> + <code>Field</code>s</td><td>current, new + <code>PasswordStrength</code>, confirm; Change <code>Button</code></td></tr>
+<tr><td>Problem report</td><td><code>Card</code> + <code>Button</code></td><td>opens the dialog (<code>POST /IssueSvc</code>)</td></tr>
+<tr><td>My data</td><td><code>Card</code> + two <code>Button</code>s</td><td>"Ask for a copy" (held — AppManager gap AM-001; enabled, badged "held", its tap explains the hold) and "Ask to delete my account" (opens the dialog)</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>First name / Last name</td><td>text</td><td>no</td><td>applied when present and not blank</td></tr>
+<tr><td>Mobile number</td><td>text</td><td>no</td><td>an empty string clears it</td></tr>
+<tr><td>Current password</td><td>password</td><td>yes (to change)</td><td>RSA-encrypted before sending</td></tr>
+<tr><td>New password + confirm</td><td>password</td><td>yes (to change)</td><td>AppManager rule (8+ chars, uppercase, digit, special); its refusal message is shown as-is</td></tr>
+<tr><td>Report title / description</td><td>text</td><td>yes (report)</td><td>non-blank; type and priority from fixed lists</td></tr>
+<tr><td>Confirm email</td><td>email</td><td>yes (deletion)</td><td>must match the account's email exactly, typed by the user</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Problem report (<code>Dialog</code>: title, description, type <code>Select</code>, priority <code>Select</code>, send); Delete account (<code>AlertDialog</code>: type-your-email confirm field, reason, queue <code>Toast</code> — the account keeps working until an admin approves).</p>
+<p><strong>States:</strong> empty: n/a · loading: <code>Spinner</code> per action · error: destructive <code>Alert</code>, AppManager <code>message</code> verbatim (the password rule sentence is shown as-is).</p>
+<h3 id="screen-settings-settings">Screen: Settings (<code>/settings</code>)<a class="anchor-link" href="#screen-settings-settings">#</a></h3>
+<p><strong>Mockup:</strong> <a href="mockups/settings.html">mockups/settings.html</a> · <strong>Roles:</strong> User (paid sections marked) · <strong>BRD:</strong> BRD-80</p>
+<table>
+<thead><tr><th>Region</th><th>Control</th><th>Shows or binds</th></tr></thead>
+<tbody>
+<tr><td>Tab strip</td><td><code>Tabs</code></td><td>AI model · Backup &amp; sync · Export &amp; import · Lock · Reminders (all five panels drawn, stacked)</td></tr>
+<tr><td>AI — model</td><td><code>RadioGroup</code> / <code>Select</code></td><td>free: the built-in model with a <code>Progress</code> download state and terms <code>Button</code>; paid: any TechieRag model, plus "my own key"</td></tr>
+<tr><td>AI — own key</td><td><code>Field</code> + <code>Input Type="Password"</code></td><td>the paid user's online-service key (secure store); route <code>Select</code> from <code>LlmConnectorCatalog.Describe()</code></td></tr>
+<tr><td>AI — warning</td><td><code>Alert Variant="warning"</code></td><td>"Journal text will be sent to {service}" — accepted before the first online answer</td></tr>
+<tr><td>Backup</td><td>provider <code>Select</code> (Drive / OneDrive), Connect, account <code>Badge</code>, Back up now, auto-sync <code>Switch</code>, Restore, last-backup time</td><td>paid; free users see a paid-only note</td></tr>
+<tr><td>Export &amp; import</td><td>three <code>Button</code>s</td><td>Export JSON, Import JSON, Import from Day One — file picker, result <code>Toast</code></td></tr>
+<tr><td>Lock</td><td><code>Switch</code> enable, PIN <code>Field</code>s, fingerprint/face <code>Switch</code></td><td>gates the app on open</td></tr>
+<tr><td>Reminders</td><td><code>Switch</code> enable, <code>TimePicker</code>, day <code>MultiSelect</code></td><td>journaling reminders</td></tr>
+<tr><td>Account links</td><td><code>Item</code> rows</td><td>→ Account, → Profile &amp; Support, Sign out <code>Button</code> (→ Sign In)</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr></thead>
+<tbody>
+<tr><td>Model choice</td><td>radio/select</td><td>no</td><td>free: the built-in model only; paid: any route TechieRag supports</td></tr>
+<tr><td>Own key</td><td>password input</td><td>paid, online route</td><td>secure store only; never in the database or logs</td></tr>
+<tr><td>Provider</td><td>select</td><td>no</td><td>Google Drive or OneDrive; paid only</td></tr>
+<tr><td>Auto-sync</td><td>switch</td><td>no</td><td>paid; off until a provider is connected</td></tr>
+<tr><td>PIN</td><td>password (digits)</td><td>when locking is on</td><td>4–8 digits, kept in the secure store</td></tr>
+<tr><td>Biometric / reminders switches, time, days</td><td>switch, time, day toggles</td><td>no</td><td>reminders need a time when enabled</td></tr>
+</tbody>
+</table>
+<p><strong>Dialogs opened here:</strong> Online AI warning (<code>AlertDialog</code>: service, what leaves the device, accept — recorded); Model terms (<code>Dialog</code>: model, licence, size, accept → <code>Progress</code> download).</p>
+<p><strong>States:</strong> empty: "Not connected" line · loading: <code>Spinner</code>/<code>Progress</code> (model download, backup) · error: destructive <code>Alert</code> per action.</p>
+<h2 id="click-through-flow">Click-through flow<a class="anchor-link" href="#click-through-flow">#</a></h2>
+<div class="diagram">
+  <div class="dt">
+    <button data-zout title="Zoom out">&minus;</button>
+    <span class="zlabel">100%</span>
+    <button data-zin title="Zoom in">+</button>
+    <button data-fit title="Fit to width">Fit</button>
+    <button data-one title="Actual size">1:1</button>
+    <button data-fs title="Fullscreen">&#9166;</button>
+    <button data-pop title="Open in new tab">&#8599;</button>
+  </div>
+  <pre class="mermaid">flowchart LR
+  SI["Sign In"] --&gt; RP["Reset Password"]
+  RP --&gt; SI
+  SI --&gt; H["Home"]
+  H --&gt; OTD["On This Day"]
+  H --&gt; AS["Answer a Set"]
+  H --&gt; E["Entry"]
+  W["Write"] --&gt; TD["Thought Dump"]
+  W --&gt; FF["Free-Flow"]
+  W --&gt; QS["Question Sets"]
+  QS --&gt; AS
+  QS --&gt; BS["Build a Set"]
+  AS --&gt; E
+  TD --&gt; E
+  FF --&gt; E
+  H --&gt; TL["Timeline"]
+  TL --&gt; CA["Calendar"]
+  CA --&gt; TL
+  TL --&gt; E
+  CA --&gt; E
+  H --&gt; SE["Search"]
+  SE --&gt; E
+  H --&gt; AK["Ask"]
+  AK --&gt; E
+  AK --&gt; CP["Compare"]
+  H --&gt; ST["Settings"]
+  ST --&gt; AC["Account"]
+  ST --&gt; PR["Profile &amp; Support"]
+  ST --&gt; SI
+  OTD --&gt; E</pre>
+</div>
+<h2 id="branding-guide">Branding guide<a class="anchor-link" href="#branding-guide">#</a></h2>
+<p>None — TrBlazeUI defaults (neutral OKLCH tokens, library radius and type scale). The mockups draw the light theme; the built app follows the system theme.</p>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+<script>
+// Light/dark toggle. The initial theme was already applied flash-free by the
+// <head> script (saved choice, else time-of-day). Clicking flips it, saves the
+// choice, and reloads so Mermaid re-renders in the matching theme.
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  var relabel = function(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '☀ Light' : '☾ Dark';
+  };
+  relabel();
+  btn.addEventListener('click', function(){
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try{ localStorage.setItem('tf-theme', next); }catch(e){}
+    location.reload();
+  });
+})();
+
+// Copy buttons on every code <pre> — but NEVER on a `pre.mermaid`:
+// mermaid reads the <pre>'s textContent as the diagram source, so a button
+// appended here glues "copy" onto the last line and breaks the parse
+// (flowcharts → "Syntax error"; sequence diagrams silently absorb it).
+// Mermaid blocks get copy/export from their own .diagram toolbar instead.
+document.querySelectorAll('pre:not(.mermaid)').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy';
+  btn.textContent = 'copy';
+  btn.addEventListener('click', () => {
+    const text = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => { btn.textContent = 'copy'; }, 1200);
+    });
+  });
+  pre.appendChild(btn);
+});
+
+// Mermaid init — theme follows the resolved light/dark theme
+if (window.mermaid) {
+  var mermaidTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+  mermaid.initialize({ startOnLoad: true, theme: mermaidTheme, securityLevel: 'loose' });
+}
+
+// Mermaid toolbar wiring — run after mermaid renders
+function wireMermaidToolbars() {
+  document.querySelectorAll('.diagram').forEach(dia => {
+    if (dia.dataset.wired) return;
+    const merm = dia.querySelector('.mermaid');
+    const svg = merm && merm.querySelector('svg');
+    if (!svg) return;
+    dia.dataset.wired = '1';
+    let scale = 1;
+    const label = dia.querySelector('.zlabel');
+    const apply = () => {
+      svg.style.transform = `scale(${scale})`;
+      svg.style.transformOrigin = 'top left';
+      if (label) label.textContent = Math.round(scale * 100) + '%';
+    };
+    const setScale = (s) => { scale = Math.max(0.25, Math.min(4, s)); apply(); };
+    dia.querySelector('[data-zin]').onclick = () => setScale(scale * 1.2);
+    dia.querySelector('[data-zout]').onclick = () => setScale(scale / 1.2);
+    dia.querySelector('[data-fit]').onclick = () => {
+      svg.style.transform = '';
+      svg.removeAttribute('width');
+      svg.style.maxWidth = '100%';
+      svg.style.height = 'auto';
+      scale = 1;
+      if (label) label.textContent = 'Fit';
+    };
+    dia.querySelector('[data-one]').onclick = () => {
+      svg.style.transform = '';
+      svg.style.maxWidth = 'none';
+      svg.style.width = '';
+      svg.style.height = '';
+      scale = 1;
+      if (label) label.textContent = '100%';
+    };
+    dia.querySelector('[data-fs]').onclick = () => {
+      dia.classList.toggle('fs');
+      if (dia.classList.contains('fs')) {
+        document.addEventListener('keydown', escFs);
+      } else {
+        document.removeEventListener('keydown', escFs);
+      }
+    };
+    function escFs(e) { if (e.key === 'Escape') { dia.classList.remove('fs'); document.removeEventListener('keydown', escFs); } }
+    dia.querySelector('[data-pop]').onclick = () => openInNewTab(svg);
+    // Ctrl+wheel zoom
+    merm.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      setScale(scale * (e.deltaY < 0 ? 1.1 : 1/1.1));
+    }, { passive: false });
+  });
+}
+
+function openInNewTab(svg) {
+  const svgSource = new XMLSerializer().serializeToString(svg);
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Diagram</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1115;color:#e6e8ee;font-family:system-ui,sans-serif}
+  .bar{position:fixed;top:0;left:0;right:0;padding:8px 12px;background:#161a22;border-bottom:1px solid #2a3142;display:flex;gap:8px;z-index:10}
+  .bar button{background:#1c2230;color:#9aa3b2;border:1px solid #2a3142;border-radius:6px;padding:5px 12px;font-size:13px;cursor:pointer}
+  .bar button:hover{color:#7cc4ff;border-color:#7cc4ff}
+  .bar .hint{margin-left:auto;color:#9aa3b2;font-size:11.5px;align-self:center}
+  #stage{position:absolute;top:42px;bottom:0;left:0;right:0;overflow:hidden}
+  #stage svg{width:100%;height:100%}
+</style>
+</head><body>
+<div class="bar">
+  <button onclick="zpz.zoomIn()">+</button>
+  <button onclick="zpz.zoomOut()">−</button>
+  <button onclick="zpz.fit();zpz.center()">Fit</button>
+  <button onclick="zpz.resetZoom();zpz.center()">1:1</button>
+  <button onclick="window.print()">Print</button>
+  <button onclick="dlPng()">PNG</button>
+  <button onclick="dlSvg()">SVG</button>
+  <span class="hint">Drag to pan · Ctrl+wheel to zoom · + / − keys</span>
+</div>
+<div id="stage">${svgSource}</div>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"><\/script>
+<script>
+  const el = document.querySelector('#stage svg');
+  const zpz = svgPanZoom(el, { zoomScaleSensitivity: .3, minZoom: .2, maxZoom: 10, controlIconsEnabled: false, fit: true, center: true });
+  document.addEventListener('keydown', e => {
+    if (e.key === '+' || e.key === '=') zpz.zoomIn();
+    if (e.key === '-' || e.key === '_') zpz.zoomOut();
+    if (e.key === '0') { zpz.resetZoom(); zpz.center(); }
+  });
+  function dlSvg() {
+    const blob = new Blob([new XMLSerializer().serializeToString(el)], { type: 'image/svg+xml' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'diagram.svg'; a.click();
+  }
+  function dlPng() {
+    const src = new XMLSerializer().serializeToString(el);
+    const img = new Image();
+    const url = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(src)));
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = el.clientWidth * 2; c.height = el.clientHeight * 2;
+      const ctx = c.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img, 0, 0);
+      c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'diagram.png'; a.click(); });
+    };
+    img.src = url;
+  }
+<\/script>
+</body></html>`;
+  const w = window.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+// Run wiring after mermaid finishes (it renders async)
+if (window.mermaid) {
+  setTimeout(wireMermaidToolbars, 400);
+  setTimeout(wireMermaidToolbars, 1200);  // safety re-run for slow renders
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+{"kind":"session","session_id":"ses_e8e12a4f0ffewZCTyu1WpD490W","model":"opencode-go/qwen3.8-max","duration_s":3889,"input_tokens":504,"output_tokens":134509,"cache_read_tokens":11213102,"cache_creation_tokens":219921,"cost_usd":4.16114,"children_sessions":0,"v":1,"ts":"2026-10-25T08:23:54Z","project_type":"docs","harness":"opencode","app":"MyDiary-QwenMax"}

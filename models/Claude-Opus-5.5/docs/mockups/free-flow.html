@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free-Flow — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item active"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb"><a href="home.html">Write</a> / <span>Free-Flow</span></div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="free-flow-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Free-Flow</h1>
+        <p>Write freely, with formatting and photos.</p>
+      </div>
+
+      <form action="entry.html" class="card" data-testid="free-flow-form">
+        <div class="card-content form" style="padding-top:1.5rem">
+          <div class="form-row">
+            <div class="field" data-testid="ff-title-field">
+              <label class="field-label" for="ff-title">Title</label>
+              <input class="input" id="ff-title" data-testid="ff-title" value="A slow Saturday on the balcony">
+            </div>
+            <div class="field" data-testid="ff-date-field">
+              <label class="field-label" for="ff-date">Date</label>
+              <div class="input-group" data-testid="ff-date"><span class="i i-calendar muted"></span><input class="input" id="ff-date" value="18 October 2026"></div>
+            </div>
+          </div>
+
+          <div class="field" data-testid="ff-body-field">
+            <span class="field-label">Entry</span>
+            <div class="rte" data-testid="ff-editor">
+              <div class="rte-toolbar" data-testid="ff-toolbar">
+                <button type="button" class="tb on" data-testid="ff-bold" aria-label="Bold" onclick="msg('Bold')"><b>B</b></button>
+                <button type="button" class="tb" data-testid="ff-italic" aria-label="Italic" onclick="msg('Italic')"><i>I</i></button>
+                <button type="button" class="tb" data-testid="ff-underline" aria-label="Underline" onclick="msg('Underline')"><u>U</u></button>
+                <button type="button" class="tb" data-testid="ff-bullets" aria-label="Bulleted list" onclick="msg('Bulleted list')"><span class="i i-list"></span></button>
+                <button type="button" class="tb" data-testid="ff-numbers" aria-label="Numbered list" onclick="msg('Numbered list')">1.</button>
+              </div>
+              <div class="rte-body" contenteditable="true" data-testid="ff-body">
+                <p>Woke up late and did not feel guilty about it. <b>First coffee on the balcony</b>, with the basil finally looking happy after last week's repotting.</p>
+                <p>Spent an hour with the Kitchen redo notes. <i>The tiles are still the hard part</i>, but the shelf plan is done.</p>
+                <ul>
+                  <li>Order the corner shelf brackets</li>
+                  <li>Ask Rohan about the electrician</li>
+                  <li>Pick two tile samples, not ten</li>
+                </ul>
+                <p>Evening run by the lake, 5 km. Legs tired, head clear.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="field" data-testid="ff-photos-field">
+            <span class="field-label">Photos</span>
+            <label class="dropzone" data-testid="ff-dropzone">
+              <span class="i i-upload i-lg"></span>
+              <span>Drop photos here or <span class="btn-link">choose files</span></span>
+              <span class="tiny">JPG, PNG or HEIC, up to 10 MB each</span>
+              <input type="file" accept="image/*" multiple hidden data-testid="ff-file-input">
+            </label>
+            <div class="thumbs" data-testid="ff-thumbs">
+              <div class="thumb" data-testid="ff-thumb" title="balcony-basil.jpg">
+                <button type="button" class="btn btn-secondary btn-icon btn-sm" style="position:absolute;top:4px;right:4px;width:1.75rem;height:1.75rem" aria-label="Remove photo" data-testid="ff-thumb-remove" onclick="msg('Photo removed')"><span class="i i-x"></span></button>
+              </div>
+              <div class="thumb b" data-testid="ff-thumb-2" title="lake-evening.jpg">
+                <button type="button" class="btn btn-secondary btn-icon btn-sm" style="position:absolute;top:4px;right:4px;width:1.75rem;height:1.75rem" aria-label="Remove photo" data-testid="ff-thumb-remove-2" onclick="msg('Photo removed')"><span class="i i-x"></span></button>
+              </div>
+            </div>
+            <div class="alert alert-danger" data-tf-state="error" data-testid="ff-photo-error" hidden>
+              <span class="i i-alert i-lg"></span>
+              <div><div class="t">Photo not added</div><div class="d">This photo is too large. Photos up to 10 MB can be added.</div></div>
+            </div>
+          </div>
+
+          <div class="field" data-testid="ff-mood">
+            <span class="field-label">Mood</span>
+            <div class="toggle-group" data-testid="mood-picker">
+              <button type="button" class="toggle" data-testid="mood-great" data-msg="Mood set to Great" onclick="return pick(this)"><span class="mood">😄</span>Great</button>
+              <button type="button" class="toggle" data-testid="mood-good" data-msg="Mood set to Good" onclick="return pick(this)"><span class="mood">😊</span>Good</button>
+              <button type="button" class="toggle on" data-testid="mood-calm" data-msg="Mood set to Calm" onclick="return pick(this)"><span class="mood">😌</span>Calm</button>
+              <button type="button" class="toggle" data-testid="mood-okay" data-msg="Mood set to Okay" onclick="return pick(this)"><span class="mood">😐</span>Okay</button>
+              <button type="button" class="toggle" data-testid="mood-low" data-msg="Mood set to Low" onclick="return pick(this)"><span class="mood">😔</span>Low</button>
+              <button type="button" class="toggle" data-testid="mood-stressed" data-msg="Mood set to Stressed" onclick="return pick(this)"><span class="mood">😣</span>Stressed</button>
+            </div>
+          </div>
+
+          <div class="field" data-testid="ff-tags">
+            <span class="field-label">Tags</span>
+            <div class="input-group" style="flex-wrap:wrap;padding:.3rem .5rem;min-height:2.5rem">
+              <span class="badge badge-secondary" data-testid="tag-chip-health">health <button type="button" style="border:none;background:none;cursor:pointer" aria-label="Remove health" data-testid="tag-remove-health" onclick="return untag(this)"><span class="i i-x" style="width:12px;height:12px"></span></button></span>
+              <span class="badge badge-secondary" data-testid="tag-chip-family">family <button type="button" style="border:none;background:none;cursor:pointer" aria-label="Remove family" data-testid="tag-remove-family" onclick="return untag(this)"><span class="i i-x" style="width:12px;height:12px"></span></button></span>
+              <input class="input" style="flex:1;min-width:8rem;height:2rem" placeholder="Add a tag and press Enter" data-testid="ff-tag-input">
+            </div>
+          </div>
+        </div>
+        <div class="card-footer" style="justify-content:flex-end">
+          <a href="home.html" class="btn btn-outline" data-testid="ff-cancel">Cancel</a>
+          <button type="submit" class="btn" data-testid="ff-save">Save</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+</body>
+</html>

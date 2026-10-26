@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>10-Thought Dump · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .thought-form { max-width: 860px; }
+    .thought-header { align-items: center; }
+    .write-nav-label { margin-top: 18px; }
+    .thought-lines { display: grid; gap: 9px; }
+    .thought-line { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: center; }
+    .thought-number { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 50%; background: var(--muted); color: var(--muted-foreground); font-size: 11px; font-weight: 650; }
+    .thought-line .input { min-height: 40px; font-size: 13px; }
+    .thought-footer { justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .footer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-message { width: 100%; }
+    @media (max-width: 520px) {
+      .thought-line { grid-template-columns: 28px minmax(0, 1fr); gap: 8px; }
+      .thought-number { width: 27px; height: 27px; }
+      .thought-footer { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" data-testid="app-navigation">
+      <a class="brand" href="home.html" data-testid="nav-brand">
+        <span class="brand-mark" aria-hidden="true">m</span>
+        <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little room to reflect</span></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="nav-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="nav-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link" href="question-sets.html" data-testid="nav-question-sets"><span class="nav-icon" aria-hidden="true">☷</span>Question sets</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="nav-ask"><span class="nav-icon" aria-hidden="true">⌕</span>Ask my journal</a>
+        </div>
+        <div class="nav-group-label write-nav-label">Write</div>
+        <div class="nav-list">
+          <a class="nav-link current" href="thought-dump.html" aria-current="page" data-testid="nav-thought-dump"><span class="nav-icon" aria-hidden="true">01</span>10-Thought Dump</a>
+          <a class="nav-link" href="free-flow-entry.html" data-testid="nav-free-flow"><span class="nav-icon" aria-hidden="true">✎</span>Free-Flow entry</a>
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <a class="nav-link" href="profile.html" data-testid="nav-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb"><a href="home.html">Home</a> <span aria-hidden="true">/</span> New entry</div>
+        <div class="top-actions">
+          <a class="button button-outline button-small" href="journal-browse.html" data-testid="thought-dump-open-journal">Open journal</a>
+          <span class="avatar" aria-label="Journal user" data-testid="app-user-avatar" data-tf-sample>JD</span>
+        </div>
+      </header>
+      <nav class="mobile-nav" aria-label="Quick navigation">
+        <a href="home.html" data-testid="mobile-nav-home">Home</a>
+        <a href="journal-browse.html" data-testid="mobile-nav-journal">Journal</a>
+        <a href="thought-dump.html" class="current" aria-current="page" data-testid="mobile-nav-thought-dump">Thought Dump</a>
+        <a href="free-flow-entry.html" data-testid="mobile-nav-free-flow">Free-Flow</a>
+        <a href="question-sets.html" data-testid="mobile-nav-question-sets">Questions</a>
+        <a href="ask-my-journal.html" data-testid="mobile-nav-ask">Ask</a>
+      </nav>
+
+      <main class="main">
+        <div class="page-heading thought-header">
+          <div>
+            <h1 data-testid="thought-dump-page-title">10-Thought Dump</h1>
+            <p>Capture ten small thoughts in one quick entry. Blank lines are skipped when you save.</p>
+          </div>
+          <span class="badge badge-info" data-testid="thought-dump-counter">10 lines available</span>
+        </div>
+
+        <section class="card thought-form" aria-label="Ten quick thoughts">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">A place for whatever is on your mind</h2>
+              <p class="card-description">Use one line for each thought; you can leave any line blank.</p>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="thought-lines" data-testid="thought-dump-fields">
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-1">1</span><input class="input" type="text" aria-label="Thought 1" placeholder="A small thing I noticed today…" data-testid="thought-dump-thought-1" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-2">2</span><input class="input" type="text" aria-label="Thought 2" placeholder="Something I want to remember…" data-testid="thought-dump-thought-2" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-3">3</span><input class="input" type="text" aria-label="Thought 3" placeholder="A moment that made me smile…" data-testid="thought-dump-thought-3" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-4">4</span><input class="input" type="text" aria-label="Thought 4" placeholder="One thing that felt challenging…" data-testid="thought-dump-thought-4" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-5">5</span><input class="input" type="text" aria-label="Thought 5" placeholder="A person I appreciated today…" data-testid="thought-dump-thought-5" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-6">6</span><input class="input" type="text" aria-label="Thought 6" placeholder="Something I am curious about…" data-testid="thought-dump-thought-6" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-7">7</span><input class="input" type="text" aria-label="Thought 7" placeholder="A small win from today…" data-testid="thought-dump-thought-7" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-8">8</span><input class="input" type="text" aria-label="Thought 8" placeholder="Something I would like to try…" data-testid="thought-dump-thought-8" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-9">9</span><input class="input" type="text" aria-label="Thought 9" placeholder="A thought to return to later…" data-testid="thought-dump-thought-9" data-tf-sample></div>
+              <div class="thought-line"><span class="thought-number" aria-hidden="true" data-testid="thought-dump-number-10">10</span><input class="input" type="text" aria-label="Thought 10" placeholder="Anything else on my mind…" data-testid="thought-dump-thought-10" data-tf-sample></div>
+            </div>
+          </div>
+          <div class="card-footer thought-footer">
+            <a class="button button-secondary" href="journal-browse.html" data-testid="thought-dump-cancel">Cancel</a>
+            <div class="footer-actions">
+              <a class="button button-outline" href="free-flow-entry.html" data-testid="thought-dump-switch-to-free-flow">Write a free-flow entry</a>
+              <button class="button" type="button" onclick="showThoughtStatus('Entry saved. Empty thought lines were skipped.')" data-testid="thought-dump-save">Save entry</button>
+            </div>
+            <p class="status-message" id="thought-dump-status" role="status" aria-live="polite" data-testid="thought-dump-status"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showThoughtStatus(message) {
+      document.getElementById('thought-dump-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

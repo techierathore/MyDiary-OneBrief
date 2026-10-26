@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item active"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">Journal</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="home-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Good evening, Asha</h1>
+        <p>Sunday, 18 October 2026</p>
+      </div>
+
+      <!-- Due question set (shown only when a set is due) -->
+      <div class="alert alert-info" data-testid="due-set-alert">
+        <span class="i i-check i-lg"></span>
+        <div style="flex:1">
+          <div class="t">Weekly Retro is due today</div>
+          <div class="d">Five questions about your week. It takes about five minutes.</div>
+        </div>
+        <a href="answer-questions.html" class="btn btn-sm" data-testid="due-set-start">Start</a>
+      </div>
+
+      <!-- Write: the three ways to write -->
+      <div class="grid-3" data-testid="write-actions">
+        <a href="thought-dump.html" class="card" data-testid="write-thought-dump">
+          <div class="card-header"><span class="i i-list i-lg"></span><div class="card-title">Thought Dump</div><div class="card-description">Ten quick lines, no thinking twice.</div></div>
+        </a>
+        <a href="free-flow.html" class="card" data-testid="write-free-flow">
+          <div class="card-header"><span class="i i-pen i-lg"></span><div class="card-title">Free-Flow</div><div class="card-description">Write freely, with formatting and photos.</div></div>
+        </a>
+        <a href="question-sets.html" class="card" data-testid="write-question-sets">
+          <div class="card-header"><span class="i i-check i-lg"></span><div class="card-title">Question sets</div><div class="card-description">Monthly goals, reviews, health and more.</div></div>
+        </a>
+      </div>
+
+      <div class="grid-2">
+        <!-- On This Day card -->
+        <section class="card otd-card" data-testid="on-this-day-card">
+          <div class="card-header row">
+            <div><div class="card-title row"><span class="i i-sun"></span>On This Day</div><div class="card-description">18 October, in past years</div></div>
+            <span class="badge badge-outline" data-testid="otd-years-badge">3 years</span>
+          </div>
+          <div class="card-content stack">
+            <p class="story" data-testid="otd-preview">A year ago today you spent the morning repotting the balcony herbs and called it the calmest Saturday in months. In 2024 you were halfway through the Pune trip…</p>
+            <div class="row"><span class="year-chip">2025</span><span class="year-chip muted">2024</span><span class="year-chip muted">2023</span></div>
+          </div>
+          <div class="card-footer"><a href="on-this-day.html" class="btn btn-outline btn-sm" data-testid="otd-open">Read the stories</a></div>
+        </section>
+
+        <!-- Streak and counts (StatGroup) -->
+        <section class="stack">
+          <div class="stat-group" data-testid="stats">
+            <div class="stat" data-testid="stat-streak"><div class="label"><span class="i i-flame"></span>Streak</div><div class="value">12 days</div><div class="desc">Longest: 41 days</div></div>
+            <div class="stat" data-testid="stat-this-month"><div class="label"><span class="i i-book"></span>This month</div><div class="value">23</div><div class="desc">entries in October</div></div>
+          </div>
+
+          <!-- Today's entries -->
+          <section class="card" data-testid="today-entries">
+            <div class="card-header row"><div class="card-title">Today</div><span class="badge badge-secondary" data-testid="today-count">2 entries</span></div>
+            <div class="card-content stack">
+              <a href="entry.html" class="item" data-testid="today-entry">
+                <span class="mood" title="Happy">😊</span>
+                <div class="item-content">
+                  <div class="item-title">Thought Dump <span class="badge badge-outline">7 lines</span></div>
+                  <div class="item-description">Finish the tax papers · call Mum about Diwali · two coffees again…</div>
+                </div>
+                <span class="tiny muted">8:12 am</span>
+              </a>
+              <a href="entry.html" class="item" data-tf-sample data-testid="today-entry-2">
+                <span class="mood" title="Calm">😌</span>
+                <div class="item-content">
+                  <div class="item-title">Evening walk by the lake <span class="i i-star-fill star-on"></span> <span class="i i-image muted"></span></div>
+                  <div class="item-description">The light over the water was unreal tonight. Three herons, one very loud dog…</div>
+                </div>
+                <span class="tiny muted">7:40 pm</span>
+              </a>
+            </div>
+          </section>
+        </section>
+      </div>
+
+      <!-- Empty state for a new journal (state: empty) -->
+      <div class="empty" data-tf-state="empty" data-testid="home-empty" hidden>
+        <span class="i i-book i-xl"></span>
+        <div class="title">Your journal is empty</div>
+        <div>Write your first Thought Dump. Ten lines, two minutes.</div>
+        <a href="thought-dump.html" class="btn btn-sm">Start writing</a>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

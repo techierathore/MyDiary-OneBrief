@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item active"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">Journal / Browse</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="browse-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Browse</h1>
+        <p>Every entry, newest first, or by day on the calendar.</p>
+      </div>
+
+      <!-- Tabs: Timeline | Calendar (both panels drawn below) -->
+      <div class="tabs-list" data-testid="browse-tabs">
+        <a href="#browse-timeline-panel" class="tabs-trigger active" data-testid="browse-tab-timeline"><span class="i i-list"></span>Timeline</a>
+        <a href="#browse-calendar-panel" class="tabs-trigger" data-testid="browse-tab-calendar"><span class="i i-calendar"></span>Calendar</a>
+      </div>
+
+      <div class="grid-2">
+        <!-- Timeline panel (BRD-41) -->
+        <section class="stack" id="browse-timeline-panel" data-testid="browse-timeline-panel">
+          <h2 class="card-title">Timeline</h2>
+
+          <div class="day-heading" data-testid="timeline-day-heading">Today · Sunday 18 October</div>
+          <a href="entry.html" class="item" data-testid="timeline-entry">
+            <span class="mood" title="Good">😊</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary" data-testid="timeline-entry-type">Thought Dump</span> <span class="tiny muted">8:12 am</span></div>
+              <div class="item-description">Finish the tax papers · call Mum about Diwali · two coffees again, need to cut back…</div>
+              <div class="row"><span class="badge badge-outline" data-testid="timeline-entry-tag">coffee</span><span class="badge badge-outline">family</span></div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="timeline-entry-2">
+            <span class="mood" title="Calm">😌</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Free-Flow</span> Evening on the balcony <span class="i i-star-fill star-on" data-testid="timeline-entry-star"></span> <span class="i i-image muted" data-testid="timeline-entry-photo"></span></div>
+              <div class="item-description">The basil finally came back after the heat. Picked the first mint for chai and sat out till the lights came on…</div>
+              <div class="row"><span class="badge badge-outline">herb garden</span><span class="tiny muted">7:40 pm</span></div>
+            </div>
+          </a>
+
+          <div class="day-heading" data-tf-sample>Saturday 17 October</div>
+          <a href="entry.html" class="item" data-tf-sample data-testid="timeline-entry-3">
+            <span class="mood" title="Great">😄</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Free-Flow</span> 10 km, no walking breaks <span class="i i-star-fill star-on"></span></div>
+              <div class="item-description">First proper long run since the knee. Coffee at the corner place after, felt like I had earned it…</div>
+              <div class="row"><span class="badge badge-outline">running</span><span class="tiny muted">7:05 am</span></div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="timeline-entry-4">
+            <span class="mood" title="Stressed">😣</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Weekly Retro</span></div>
+              <div class="item-description">Kitchen redo slipped again: the tiles are on back-order till November. Good week for running though…</div>
+              <div class="row"><span class="badge badge-outline">Kitchen redo</span><span class="tiny muted">9:30 pm</span></div>
+            </div>
+          </a>
+
+          <div class="day-heading" data-tf-sample>Thursday 15 October</div>
+          <a href="entry.html" class="item" data-tf-sample data-testid="timeline-entry-5">
+            <span class="mood" title="Okay">😐</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Thought Dump</span> <span class="i i-image muted"></span></div>
+              <div class="item-description">Booked the train to Pune for November · opened a new bottle of coffee · rain all evening…</div>
+              <div class="row"><span class="badge badge-outline">Pune trip</span><span class="badge badge-outline">coffee</span><span class="tiny muted">10:48 pm</span></div>
+            </div>
+          </a>
+
+          <!-- Loading more (state: loading) -->
+          <div class="stack" data-tf-state="loading" data-testid="timeline-loading" hidden>
+            <div class="skeleton" style="height:4rem"></div>
+            <div class="skeleton" style="height:4rem"></div>
+          </div>
+        </section>
+
+        <!-- Calendar panel (BRD-42, BRD-43) -->
+        <section class="stack" id="browse-calendar-panel" data-testid="browse-calendar-panel">
+          <h2 class="card-title">Calendar</h2>
+
+          <div class="calendar" data-testid="browse-calendar">
+            <div class="calendar-head">
+              <button class="btn btn-ghost btn-icon btn-sm" data-testid="calendar-prev" aria-label="Previous month" onclick="msg('Showing September 2026')"><span class="i i-back"></span></button>
+              <span data-testid="calendar-month">October 2026</span>
+              <button class="btn btn-ghost btn-icon btn-sm" data-testid="calendar-next" aria-label="Next month" onclick="msg('November 2026 has no entries yet')"><span class="i i-back" style="transform:rotate(180deg)"></span></button>
+            </div>
+            <div class="calendar-grid">
+              <div class="dow">Mo</div><div class="dow">Tu</div><div class="dow">We</div><div class="dow">Th</div><div class="dow">Fr</div><div class="dow">Sa</div><div class="dow">Su</div>
+              <div class="day out">28</div><div class="day out">29</div><div class="day out">30</div>
+              <div class="day has">1</div><div class="day has">2</div><div class="day">3</div><div class="day has">4</div>
+              <div class="day has">5</div><div class="day has">6</div><div class="day">7</div><div class="day has">8</div><div class="day has">9</div><div class="day has">10</div><div class="day has">11</div>
+              <div class="day has">12</div><div class="day has">13</div><div class="day has">14</div><div class="day has">15</div><div class="day">16</div><div class="day has selected" data-testid="calendar-day-selected">17</div><div class="day has today" data-testid="calendar-day-today">18</div>
+              <div class="day">19</div><div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day">25</div>
+              <div class="day">26</div><div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day">31</div><div class="day out">1</div>
+            </div>
+          </div>
+          <p class="tiny muted">A dot marks a day with entries.</p>
+
+          <div class="day-heading" data-testid="calendar-day-heading">Saturday 17 October</div>
+          <a href="entry.html" class="item" data-testid="calendar-day-entry">
+            <span class="mood" title="Great">😄</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Free-Flow</span> 10 km, no walking breaks <span class="i i-star-fill star-on"></span></div>
+              <div class="item-description">First proper long run since the knee. Coffee at the corner place after…</div>
+            </div>
+            <span class="tiny muted">7:05 am</span>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="calendar-day-entry-2">
+            <span class="mood" title="Stressed">😣</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Weekly Retro</span></div>
+              <div class="item-description">Kitchen redo slipped again: the tiles are on back-order till November…</div>
+            </div>
+            <span class="tiny muted">9:30 pm</span>
+          </a>
+
+          <!-- A day with no entries (state: empty-day) -->
+          <p class="small muted" data-tf-state="empty-day" data-testid="calendar-day-empty" hidden>Nothing written on this day.</p>
+        </section>
+      </div>
+
+      <!-- Empty journal (state: empty) -->
+      <div class="empty" data-tf-state="empty" data-testid="browse-empty" hidden>
+        <span class="i i-calendar i-xl"></span>
+        <div class="title">No entries yet</div>
+        <div>Your entries will show here, newest first.</div>
+        <a href="thought-dump.html" class="btn btn-sm">Write a Thought Dump</a>
+      </div>
+
+      <!-- Could not read the journal (state: error) -->
+      <div class="alert alert-danger" data-tf-state="error" data-testid="browse-error" hidden>
+        <span class="i i-alert i-lg"></span>
+        <div><div class="t">Could not load your entries</div><div class="d">Close MyDiary and open it again. Your journal is safe on this device.</div></div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

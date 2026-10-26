@@ -1,0 +1,1 @@
+Run *day1-greenfield MyDiary, stage 1 only. App name: MyDiary. The concept is the whole of MyDiary-Brief.md in 'docs' folder: read all of it, never summarise it. Hints: none. Stack answer set, open stack questions and size: as the brief states; where the brief is silent, take the answer set's default and record the choice. Finish when stage 1 is complete and tf-doc-check passes.

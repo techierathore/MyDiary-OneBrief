@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Ask your journal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="ask-app-bar">
+      <div class="app-bar-title">Ask your journal</div>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="ask-input-card">
+        <label class="field-label">Ask anything about your journal</label>
+        <textarea class="textarea" placeholder="For example: how many coffee bottles did I open last year?" data-testid="ask-question-input" style="min-height: 90px;">How many coffee bottles did I open last year?</textarea>
+        <button class="btn btn-primary btn-block" data-testid="ask-submit-button" onclick="alert('Answer generated');">
+          <span>✨</span><span>Ask</span>
+        </button>
+      </div>
+
+      <div class="card answer-card" data-testid="ask-answer-card" data-tf-sample="sample">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span class="badge badge-primary" data-testid="ask-model-badge">Local model</span>
+        </div>
+        <div class="answer-count" data-testid="ask-answer-count">23</div>
+        <p class="card-subtitle" data-testid="ask-answer-text">You mentioned opening a coffee bottle 23 times last year.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Source entries</div>
+        <a href="entry.html" class="list-item" data-testid="ask-source-item">
+          <div class="list-item-content">
+            <div class="list-item-title">Morning reflection</div>
+            <div class="list-item-subtitle">15 Mar 2026 · Free-Flow</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+        <a href="dump.html" class="list-item" data-testid="ask-source-item">
+          <div class="list-item-content">
+            <div class="list-item-title">10-Thought Dump</div>
+            <div class="list-item-subtitle">2 Apr 2026 · Dump</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+      </div>
+
+      <a href="ask-compare.html" class="btn btn-secondary btn-block" data-testid="ask-compare-link">Compare this question over time</a>
+    </div>
+
+    <div class="bottom-nav" data-testid="ask-bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+      <a href="timeline.html" class="nav-item"><span class="nav-icon">📜</span>Timeline</a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span>Calendar</a>
+      <a href="ask.html" class="nav-item active"><span class="nav-icon">✨</span>Ask</a>
+      <a href="account.html" class="nav-item"><span class="nav-icon">👤</span>Account</a>
+    </div>
+  </div>
+</body>
+</html>

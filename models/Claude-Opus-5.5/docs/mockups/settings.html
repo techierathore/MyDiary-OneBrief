@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item active"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">You / Settings</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="settings-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Settings</h1>
+        <p>The AI model, the app lock and your writing reminders.</p>
+      </div>
+
+      <div class="tabs-list" data-testid="settings-tabs">
+        <a href="#settings-ai" class="tabs-trigger active" data-testid="settings-tab-ai"><span class="i i-sparkles"></span>AI model</a>
+        <a href="#settings-lock" class="tabs-trigger" data-testid="settings-tab-lock"><span class="i i-lock"></span>Lock</a>
+        <a href="#settings-reminders" class="tabs-trigger" data-testid="settings-tab-reminders"><span class="i i-bell"></span>Reminders</a>
+      </div>
+
+      <!-- AI model (BRD-80, BRD-81, BRD-82) -->
+      <section class="card" id="settings-ai" data-testid="settings-ai-card">
+        <div class="card-header">
+          <div class="card-title">AI model</div>
+          <div class="card-description">Used by Ask and by the On This Day stories.</div>
+        </div>
+        <div class="card-content stack">
+          <div class="stack" role="radiogroup" data-testid="ai-model-choice">
+            <div class="radio-card selected" data-testid="ai-model-builtin">
+              <span class="radio on"></span>
+              <div><div class="t" style="font-weight:600">Built-in model (on this device)</div><div class="small muted">Small, private, works offline. Qwen 0.5B, installed with MyDiary.</div></div>
+            </div>
+            <div class="radio-card" data-testid="ai-model-larger">
+              <span class="radio"></span>
+              <div style="flex:1"><div class="t" style="font-weight:600">Larger on-device model (Phi-3 mini, 2.7 GB)</div><div class="small muted">Better answers and stories. Still private and offline. Downloads once over Wi-Fi.</div></div>
+            </div>
+            <div class="radio-card" data-testid="ai-model-online">
+              <span class="radio"></span>
+              <div style="flex:1"><div class="t" style="font-weight:600">Online AI service — use your own key</div><div class="small muted">Your journal text is sent to the service you pick.</div></div>
+            </div>
+          </div>
+          <div class="row"><button class="btn" data-testid="ai-model-save" onclick="return msg('Saved: ' + selectedRadioTitle('ai-model-choice'))">Save</button></div>
+
+          <!-- Free plan variant (state: free-plan) -->
+          <div class="stack mock-note" data-tf-state="free-plan" data-testid="ai-model-free-plan">
+            <div>On the free plan the two other choices are locked:</div>
+            <div class="radio-card locked">
+              <span class="radio"></span>
+              <div style="flex:1"><div class="t" style="font-weight:600">Larger on-device model (Phi-3 mini, 2.7 GB)</div></div>
+              <span class="badge badge-warning" data-testid="ai-model-locked-badge"><span class="i i-lock" style="width:12px;height:12px"></span>Needs a paid licence</span>
+            </div>
+            <div class="radio-card locked">
+              <span class="radio"></span>
+              <div style="flex:1"><div class="t" style="font-weight:600">Online AI service — use your own key</div></div>
+              <span class="badge badge-warning"><span class="i i-lock" style="width:12px;height:12px"></span>Needs a paid licence</span>
+            </div>
+          </div>
+
+          <div class="separator"></div>
+
+          <!-- Online service fields (BRD-82) -->
+          <div class="form" data-testid="ai-online-fields">
+            <div class="field" data-testid="ai-online-service">
+              <label class="field-label">Service</label>
+              <div class="toggle-group" data-name="service">
+                <button class="toggle on" data-msg="OpenAI selected" onclick="return pick(this)">OpenAI</button>
+                <button class="toggle" data-msg="Anthropic selected" onclick="return pick(this)">Anthropic</button>
+                <button class="toggle" data-msg="Gemini selected" onclick="return pick(this)">Gemini</button>
+                <button class="toggle" data-msg="Mistral selected" onclick="return pick(this)">Mistral</button>
+                <button class="toggle" data-msg="Other service: enter its address and key" onclick="return pick(this)">Other</button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="apikey">API key</label>
+              <input class="input" id="apikey" type="password" value="sk-proj-xxxxxxxxxxxxxxxx" data-testid="ai-online-key">
+              <div class="field-description">Kept only on this device. MyDiary never sends it to AppManager.</div>
+              <div class="field-error" data-tf-state="error" data-testid="ai-online-key-error" hidden><span data-show="service">OpenAI</span> did not accept this key. Check it and try again.</div>
+            </div>
+            <div class="row"><a href="#dlg-online-warning" class="btn btn-outline" data-testid="ai-online-use">Use this service</a></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lock (BRD-83, BRD-84) -->
+      <section class="card" id="settings-lock" data-testid="settings-lock-card">
+        <div class="card-header">
+          <div class="card-title">Lock</div>
+          <div class="card-description">Ask for a PIN whenever MyDiary opens.</div>
+        </div>
+        <div class="card-content">
+          <div class="setting-row" data-testid="lock-pin">
+            <div><div class="t">Lock with a PIN</div><div class="d">Six digits. Locks after 1 minute in the background.</div></div>
+            <div class="row"><a href="#dlg-set-pin" class="btn btn-outline btn-sm" data-testid="lock-change-pin">Change PIN</a><span class="switch on" role="switch" aria-checked="true" data-testid="lock-pin-switch"></span></div>
+          </div>
+          <div class="setting-row" data-testid="lock-biometric">
+            <div><div class="t">Unlock with fingerprint or face</div><div class="d">The PIN still works if this fails.</div></div>
+            <span class="switch on" role="switch" aria-checked="true" data-testid="lock-biometric-switch"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reminders (BRD-85) -->
+      <section class="card" id="settings-reminders" data-testid="settings-reminders-card">
+        <div class="card-header">
+          <div class="card-title">Reminders</div>
+          <div class="card-description">A gentle nudge to write.</div>
+        </div>
+        <div class="card-content form">
+          <div class="setting-row" data-testid="reminder-on">
+            <div class="t">Remind me to write</div>
+            <span class="switch on" role="switch" aria-checked="true" data-testid="reminder-switch"></span>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label class="field-label" for="rtime">Time</label>
+              <input class="input" id="rtime" type="text" value="9:00 pm" data-testid="reminder-time">
+            </div>
+            <div class="field">
+              <label class="field-label" for="rmsg">Message</label>
+              <input class="input" id="rmsg" type="text" value="Time to write" data-testid="reminder-message">
+            </div>
+          </div>
+          <div class="field" data-testid="reminder-days">
+            <label class="field-label">Days</label>
+            <div class="toggle-group" data-multiple>
+              <button class="toggle on" onclick="return pick(this)">Mon</button>
+              <button class="toggle on" onclick="return pick(this)">Tue</button>
+              <button class="toggle on" onclick="return pick(this)">Wed</button>
+              <button class="toggle on" onclick="return pick(this)">Thu</button>
+              <button class="toggle on" onclick="return pick(this)">Fri</button>
+              <button class="toggle" onclick="return pick(this)">Sat</button>
+              <button class="toggle" onclick="return pick(this)">Sun</button>
+            </div>
+          </div>
+          <div class="row"><button class="btn" data-testid="reminder-save" onclick="return msg('Reminder set for ' + document.getElementById('rtime').value + ' on ' + (Array.prototype.map.call(document.querySelectorAll('[data-testid=reminder-days] .toggle.on'), labelOf).join(', ') || 'no days'))">Save</button></div>
+        </div>
+      </section>
+
+      <!-- Appearance -->
+      <section class="card" data-testid="settings-appearance-card">
+        <div class="card-header"><div class="card-title">Appearance</div></div>
+        <div class="card-content">
+          <div class="field" data-testid="appearance-theme">
+            <label class="field-label">Theme</label>
+            <div class="toggle-group joined">
+              <button class="toggle" data-theme-set="light" data-msg="Light theme on" onclick="return pick(this)"><span class="i i-sun"></span>Light</button>
+              <button class="toggle" data-theme-set="dark" data-msg="Dark theme on" onclick="return pick(this)">Dark</button>
+              <button class="toggle on" data-theme-set="system" data-msg="Following the device theme" onclick="return pick(this)">System</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Saving (state: loading) -->
+      <div class="row small muted" data-tf-state="loading" data-testid="settings-loading" hidden><span class="i i-download"></span>Downloading Phi-3 mini…<div class="progress" style="flex:1"><span style="width:38%"></span></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- Online AI warning (Dialog) -->
+<div class="dialog-overlay" id="dlg-online-warning" data-testid="dlg-online-warning">
+  <div class="dialog">
+    <div class="dialog-header">
+      <div class="dialog-title">Send your journal to <span data-show="service">OpenAI</span>?</div>
+    </div>
+    <div class="dialog-body">
+      <div class="alert alert-warning" data-testid="online-warning-text">
+        <span class="i i-alert i-lg"></span>
+        <div class="d">Your journal text will be sent to <span data-show="service">OpenAI</span>. Answers and stories will be written by <span data-show="service">OpenAI</span> using your key. MyDiary never sends text anywhere else.</div>
+      </div>
+      <label class="row" data-testid="online-warning-understand"><span class="checkbox"></span>I understand</label>
+    </div>
+    <div class="dialog-footer">
+      <a href="settings.html" class="btn btn-outline" data-testid="online-warning-cancel">Cancel</a>
+      <button class="btn btn-destructive" data-testid="online-warning-confirm" onclick="return msg('Ask and stories now use ' + shown('service') + ' with your key')">Send my journal text to <span data-show="service">OpenAI</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Set PIN (Dialog) -->
+<div class="dialog-overlay" id="dlg-set-pin" data-testid="dlg-set-pin">
+  <div class="dialog">
+    <div class="dialog-header">
+      <div class="dialog-title">Set a new PIN</div>
+      <div class="card-description">Six digits. You will need it to open MyDiary.</div>
+    </div>
+    <div class="dialog-body">
+      <div class="field">
+        <label class="field-label">New PIN</label>
+        <div class="otp" data-testid="set-pin-new">
+          <span class="otp-slot filled">•</span><span class="otp-slot filled">•</span><span class="otp-slot filled">•</span><span class="otp-slot filled">•</span><span class="otp-slot filled">•</span><span class="otp-slot filled">•</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Type it again</label>
+        <div class="otp" data-testid="set-pin-confirm">
+          <span class="otp-slot filled">•</span><span class="otp-slot filled">•</span><span class="otp-slot filled">•</span><span class="otp-slot"></span><span class="otp-slot"></span><span class="otp-slot"></span>
+        </div>
+        <div class="field-error" data-tf-state="error" data-testid="set-pin-error" hidden>The two PINs are not the same.</div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <a href="settings.html" class="btn btn-outline" data-testid="set-pin-cancel">Cancel</a>
+      <button class="btn" data-testid="set-pin-save" onclick="msg('PIN changed')">Save PIN</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

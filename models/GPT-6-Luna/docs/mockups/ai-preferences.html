@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI preferences · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .eyebrow { margin-bottom: 5px; color: var(--primary); font-size: 10px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+    .field-stack { display: grid; gap: 16px; }
+    .choice-line { display: flex; align-items: flex-start; gap: 9px; font-size: 12px; }
+    .choice-line input { margin-top: 3px; accent-color: var(--primary); }
+    .status-panel { margin-top: 18px; }
+    .form-actions { display: flex; justify-content: flex-end; margin-top: 18px; }
+    @media (max-width: 720px) { .form-actions .button { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <nav class="sidebar" aria-label="Primary navigation" data-testid="home-nav">
+      <a class="brand" href="home.html" data-testid="nav-brand"><span class="brand-mark" aria-hidden="true">M</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span></a>
+      <div><div class="nav-group-label">Journal</div><div class="nav-list"><a class="nav-link" href="home.html" data-testid="nav-home">Home</a><a class="nav-link" href="journal-browse.html" data-testid="nav-journal">Journal</a></div></div>
+      <div><div class="nav-group-label">Account</div><div class="nav-list">
+        <a class="nav-link" href="profile.html" data-testid="nav-profile">Profile</a>
+        <a class="nav-link" href="plan-and-devices.html" data-testid="nav-plan">Plan and devices</a>
+        <a class="nav-link" href="account-data.html" data-testid="nav-account-data">Account data</a>
+        <a class="nav-link current" href="ai-preferences.html" aria-current="page" data-testid="nav-ai">AI preferences</a>
+        <a class="nav-link" href="backup-and-sync.html" data-testid="nav-backup">Backup and sync</a>
+        <a class="nav-link" href="import-and-export.html" data-testid="nav-transfer">Import and export</a>
+        <a class="nav-link" href="privacy-and-reminders.html" data-testid="nav-privacy">Privacy and reminders</a>
+      </div></div>
+      <div class="sidebar-bottom nav-list"><a class="nav-link" href="problem-report.html" data-testid="nav-support">Problem report</a></div>
+    </nav>
+    <div class="workspace">
+      <header class="topbar" data-testid="page-header">
+        <div class="crumb"><a href="home.html" data-testid="breadcrumb-home">Home</a> <span aria-hidden="true">/</span> <a href="profile.html" data-testid="breadcrumb-profile">Profile</a> <span aria-hidden="true">/</span> AI preferences</div>
+        <div class="top-actions"><a class="button button-outline button-small" href="profile.html" data-testid="return-to-profile">Back to profile</a></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Compact navigation" data-testid="responsive-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a><a href="profile.html" data-testid="mobile-profile">Profile</a>
+        <a href="account-data.html" data-testid="mobile-account-data">Account data</a><a href="ai-preferences.html" class="current" aria-current="page" data-testid="mobile-ai">AI</a>
+        <a href="backup-and-sync.html" data-testid="mobile-backup">Backup</a><a href="import-and-export.html" data-testid="mobile-transfer">Transfer</a><a href="privacy-and-reminders.html" data-testid="mobile-privacy">Privacy</a>
+      </nav>
+      <main class="main">
+        <div class="page-heading">
+          <div><div class="eyebrow">Personalize AI</div><h1 data-testid="screen-title">AI preferences</h1><p data-testid="screen-intro">Choose a supported model and decide whether to use your own online-service key.</p></div>
+          <span class="badge badge-outline" data-testid="ai-plan-badge" data-tf-sample="true">Paid plan</span>
+        </div>
+
+        <section class="card" aria-labelledby="ai-settings-title">
+          <div class="card-header">
+            <div><h2 class="card-title" id="ai-settings-title">Model and service</h2><p class="card-description">Options are limited to models and providers available through TechieRag.</p></div>
+            <span class="badge badge-info" data-testid="ai-current-model" data-tf-sample="true">Online service selected</span>
+          </div>
+          <div class="card-content">
+            <div class="field-stack">
+              <div class="field" data-testid="ai-model-picker">
+                <span class="label">AI model</span>
+                <div class="popup-group">
+                  <button class="select" type="button" aria-label="Choose an AI model" aria-haspopup="listbox" aria-expanded="true" data-testid="ai-model-select" onclick="showStatus('Choose a model from the open TechieRag model list.')"><span>Online service · OpenAI GPT model</span><span aria-hidden="true">⌄</span></button>
+                  <div class="popup-panel" role="listbox" aria-label="Supported AI models" data-testid="ai-model-options" data-tf-state="popup-open">
+                    <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="ai-model-local-option" onclick="showStatus('The bundled on-device model is selected in this preview.')">On-device · Qwen2.5 0.5B <span class="badge badge-outline">Free option</span></button>
+                    <button class="popup-option selected" type="button" role="option" aria-selected="true" data-testid="ai-model-online-option" data-tf-sample="true" onclick="showStatus('A supported online model is selected in this preview.')">Online service · OpenAI GPT model</button>
+                  </div>
+                </div>
+                <span class="hint" id="model-help">Free AI stays on this device. Online models require a paid licence and your service key.</span>
+              </div>
+
+              <div class="field" data-testid="ai-service-key">
+                <label class="label" for="service-key">Online service key</label>
+                <input class="input" id="service-key" type="password" placeholder="Enter your service key" autocomplete="off" data-testid="ai-key-input">
+                <span class="hint">The key is stored using secure platform storage. It is never shown in full after saving.</span>
+              </div>
+
+              <div class="alert alert-warning" role="note" data-testid="ai-data-warning">
+                <span aria-hidden="true">!</span>
+                <div><strong>Journal text will be sent online</strong><div class="small">When you use an online AI service, the relevant journal text is sent to that provider to prepare its response. Free, on-device AI does not send journal text online.</div></div>
+              </div>
+
+              <label class="choice-line" for="online-consent">
+                <input id="online-consent" type="checkbox" data-testid="ai-data-consent">
+                <span>I understand that using an online service sends journal text to that service.</span>
+              </label>
+            </div>
+            <div class="form-actions"><button class="button" type="button" data-testid="ai-save" onclick="showStatus('AI preference changes saved in this mockup. Online use requires a supported model, service key, and acknowledgement.')">Save AI preferences</button></div>
+            <div class="status-message" role="status" aria-live="polite" id="action-status" data-testid="ai-status"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      document.getElementById('action-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

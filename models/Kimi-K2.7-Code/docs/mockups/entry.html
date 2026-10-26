@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Free-Flow entry</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="entry-app-bar">
+      <a href="home.html" class="icon-btn" data-testid="entry-back" aria-label="Back">←</a>
+      <div class="app-bar-title">Free-Flow</div>
+      <div class="app-bar-actions">
+        <button class="icon-btn" data-testid="entry-star" onclick="alert('Entry starred');" aria-label="Star">⭐</button>
+        <a href="home.html" class="btn btn-sm btn-primary" data-testid="entry-save" style="padding: 8px 16px;">Save</a>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="entry-title-card">
+        <input type="text" class="input" placeholder="Title" value="Morning reflection" data-testid="entry-title-input" style="font-size: 1.125rem; font-weight: 700;">
+      </div>
+
+      <div class="card" data-testid="entry-body-card">
+        <div class="toolbar" data-testid="entry-toolbar">
+          <button class="tool-btn" data-testid="entry-bold" onclick="alert('Bold applied');" title="Bold">B</button>
+          <button class="tool-btn" data-testid="entry-italic" onclick="alert('Italic applied');" title="Italic" style="font-style: italic;">I</button>
+          <button class="tool-btn" data-testid="entry-heading" onclick="alert('Heading applied');" title="Heading">H</button>
+          <a href="#photo" class="tool-btn" data-testid="entry-photo-btn" title="Photo" style="text-decoration: none; color: inherit;">📷</a>
+          <a href="#tag" class="tool-btn" data-testid="entry-tag-btn" title="Tag" style="text-decoration: none; color: inherit;">#</a>
+          <a href="#mood" class="tool-btn" data-testid="entry-mood-btn" title="Mood" style="text-decoration: none; color: inherit;">😊</a>
+        </div>
+        <textarea class="textarea" placeholder="Start writing..." data-testid="entry-body-textarea">The coffee was good this morning. I feel ready for the week.</textarea>
+      </div>
+
+      <div class="card" data-testid="entry-photos-card">
+        <div class="section-title">Photos</div>
+        <div class="photo-grid">
+          <div class="photo" data-testid="entry-photo" data-tf-sample="sample">🖼️</div>
+        </div>
+      </div>
+
+      <div class="card" data-testid="entry-tags-card">
+        <div class="section-title">Tags</div>
+        <div class="chips">
+          <span class="chip" data-testid="entry-tag" data-tf-sample="sample">morning</span>
+          <span class="chip chip-add" data-testid="entry-add-tag">+ add</span>
+        </div>
+      </div>
+
+      <div class="card" data-testid="entry-mood-card">
+        <div class="section-title">Mood</div>
+        <div class="mood-grid" data-testid="entry-mood-row">
+          <span class="mood-item selected" data-testid="entry-mood-happy">😊</span>
+          <span class="mood-item" data-testid="entry-mood-calm">🙂</span>
+          <span class="mood-item" data-testid="entry-mood-tired">😴</span>
+          <span class="mood-item" data-testid="entry-mood-sad">😔</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="photo" data-tf-state="popup-open" data-testid="entry-photo-dialog">
+      <div class="sheet">
+        <div class="sheet-title">Add photo</div>
+        <a href="#" class="sheet-option" data-testid="entry-photo-camera" onclick="alert('Camera opened');">
+          <span class="sheet-option-icon">📷</span><span>Take photo</span>
+        </a>
+        <a href="#" class="sheet-option" data-testid="entry-photo-library" onclick="alert('Library opened');">
+          <span class="sheet-option-icon">🖼️</span><span>Choose from library</span>
+        </a>
+        <div class="field mt-3">
+          <label class="field-label">Caption</label>
+          <input type="text" class="input" placeholder="Add a caption..." data-testid="entry-photo-caption">
+        </div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="entry-photo-add" onclick="alert('Photo added');">Add</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="entry-photo-cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="tag" data-tf-state="popup-open" data-testid="entry-tag-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Add tag</div>
+        <div class="field">
+          <input type="text" class="input" placeholder="New or existing tag" data-testid="entry-tag-input">
+        </div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="entry-tag-add" onclick="alert('Tag added');">Add tag</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="entry-tag-cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="mood" data-tf-state="popup-open" data-testid="entry-mood-dialog">
+      <div class="sheet">
+        <div class="sheet-title">How are you feeling?</div>
+        <div class="mood-grid" style="justify-content: space-around; padding: 16px 0;">
+          <a href="#" class="mood-item selected" data-testid="entry-mood-dialog-happy">😊</a>
+          <a href="#" class="mood-item" data-testid="entry-mood-dialog-calm">🙂</a>
+          <a href="#" class="mood-item" data-testid="entry-mood-dialog-tired">😴</a>
+          <a href="#" class="mood-item" data-testid="entry-mood-dialog-sad">😔</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

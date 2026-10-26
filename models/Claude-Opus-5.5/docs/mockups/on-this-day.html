@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>On This Day — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item active"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb"><a href="home.html">Journal</a> / <span>On This Day</span></div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="on-this-day-page">
+      <div class="row between" data-testid="otd-head">
+        <div class="page-head">
+          <h1 data-testid="page-title">On This Day</h1>
+          <p data-testid="otd-date">18 October, in past years</p>
+        </div>
+        <div class="row" data-testid="otd-day-nav">
+          <a href="on-this-day.html" class="btn btn-outline btn-sm" data-testid="otd-prev-day"><span class="i i-back"></span>17 Oct</a>
+          <a href="on-this-day.html" class="btn btn-outline btn-sm" data-testid="otd-next-day">19 Oct<span class="i i-back" style="transform:rotate(180deg)"></span></a>
+        </div>
+      </div>
+
+      <section class="stack" data-testid="otd-stories">
+        <!-- 2025 -->
+        <article class="card otd-card" data-testid="otd-story-2025">
+          <div class="card-header row">
+            <span class="year-chip" data-testid="otd-year-2025">2025</span>
+            <span class="badge badge-secondary" data-testid="otd-when-2025">One year ago</span>
+          </div>
+          <div class="card-content stack">
+            <p class="story" data-testid="otd-story-text-2025">A year ago today was a slow, sunny Saturday. You spent the morning on the balcony repotting the basil and mint, which had finally outgrown their pots, and you called it the calmest day in months. In the evening you went for a short run along the lake, came home with sore legs and a good mood, and made a second coffee you knew you didn't need.</p>
+            <details data-testid="otd-sources-2025">
+              <summary class="small muted" style="cursor:pointer" data-testid="otd-sources-toggle-2025">Based on 2 entries</summary>
+              <div class="stack" style="margin-top:.6rem">
+                <a href="entry.html" class="item" data-testid="otd-source-row">
+                  <span class="mood">😌</span>
+                  <div class="item-content"><div class="item-title">Repotting the herbs <span class="badge badge-outline">Free-Flow</span></div><div class="item-description">18 Oct 2025 · 10:15 am · The mint has taken over half the balcony…</div></div>
+                </a>
+                <a href="entry.html" class="item" data-testid="otd-source-row-2">
+                  <span class="mood">😊</span>
+                  <div class="item-content"><div class="item-title">Thought Dump <span class="badge badge-outline">6 lines</span></div><div class="item-description">18 Oct 2025 · 9:02 pm · 5 km run, slow but done · second coffee at 6, oops…</div></div>
+                </a>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 2024 -->
+        <article class="card otd-card" data-tf-sample data-testid="otd-story-2024">
+          <div class="card-header row">
+            <span class="year-chip" data-testid="otd-year-2024">2024</span>
+            <span class="badge badge-secondary">Two years ago</span>
+          </div>
+          <div class="card-content stack">
+            <p class="story" data-testid="otd-story-text-2024">Two years ago you were halfway through the Pune trip. You walked the old lanes near Shaniwar Wada in the morning, ate far too much misal pav at lunch, and wrote that the city felt busier and kinder than you remembered. That night you sat with your cousins until late, talking about growing up, and fell asleep happy and very full.</p>
+            <details data-testid="otd-sources-2024">
+              <summary class="small muted" style="cursor:pointer">Based on 2 entries</summary>
+              <div class="stack" style="margin-top:.6rem">
+                <a href="entry.html" class="item"><span class="mood">😄</span><div class="item-content"><div class="item-title">Pune, day three <span class="badge badge-outline">Free-Flow</span> <span class="i i-image muted"></span></div><div class="item-description">18 Oct 2024 · 1:40 pm · Shaniwar Wada in the morning, then the best misal…</div></div></a>
+                <a href="entry.html" class="item"><span class="mood">😊</span><div class="item-content"><div class="item-title">Thought Dump <span class="badge badge-outline">8 lines</span></div><div class="item-description">18 Oct 2024 · 11:20 pm · Late chat with Riya and Kabir · call Mum tomorrow…</div></div></a>
+              </div>
+            </details>
+          </div>
+        </article>
+
+        <!-- 2023: nothing on 18 Oct, so the story comes from 16 Oct -->
+        <article class="card otd-card" data-tf-sample data-testid="otd-story-2023">
+          <div class="card-header row">
+            <span class="year-chip" data-testid="otd-year-2023">2023</span>
+            <span class="badge badge-outline" data-testid="otd-around-badge">Around this date · 16 Oct</span>
+          </div>
+          <div class="card-content stack">
+            <p class="story" data-testid="otd-story-text-2023">Three years ago, just before this date, the Kitchen redo was only an idea. You spent a rainy Monday evening with a tape measure and a notebook, sketching where the new shelves might go, and wrote that you were nervous about the cost but excited to finally start. You also signed up for your first 10 km run, half as a dare to yourself.</p>
+            <details data-testid="otd-sources-2023">
+              <summary class="small muted" style="cursor:pointer">Based on 2 entries</summary>
+              <div class="stack" style="margin-top:.6rem">
+                <a href="entry.html" class="item"><span class="mood">😊</span><div class="item-content"><div class="item-title">Kitchen redo, first sketches <span class="badge badge-outline">Free-Flow</span></div><div class="item-description">16 Oct 2023 · 8:30 pm · Measured everything twice. The corner shelf might work…</div></div></a>
+                <a href="entry.html" class="item"><span class="mood">😐</span><div class="item-content"><div class="item-title">Thought Dump <span class="badge badge-outline">5 lines</span></div><div class="item-description">16 Oct 2023 · 10:05 pm · Signed up for the 10 km · rain all day · budget for kitchen?…</div></div></a>
+              </div>
+            </details>
+          </div>
+        </article>
+      </section>
+
+      <!-- Empty state: no past entries on or around this date (state: empty) -->
+      <div class="empty" data-tf-state="empty" data-testid="otd-empty" hidden>
+        <span class="i i-sun i-xl"></span>
+        <div class="title">No stories yet</div>
+        <div>Nothing written on this date in past years yet. Your first story appears next year.</div>
+        <a href="free-flow.html" class="btn btn-sm">Write today's entry</a>
+      </div>
+
+      <!-- Loading state: stories being written (state: loading) -->
+      <div class="card" data-tf-state="loading" data-testid="otd-loading" hidden>
+        <div class="card-content stack" style="padding-top:1.5rem">
+          <div class="skeleton" style="width:4rem;height:1.5rem"></div>
+          <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton" style="width:60%"></div>
+        </div>
+      </div>
+
+      <!-- Error state: model not ready (state: error) -->
+      <div class="alert alert-warning" data-tf-state="error" data-testid="otd-error" hidden>
+        <span class="i i-alert i-lg"></span>
+        <div><div class="t">Stories are not ready yet</div><div class="d">Stories will appear once the AI model is ready. Your entries are safe; you can still open them from Browse.</div></div>
+      </div>
+
+      <p class="tiny muted row" data-testid="otd-ai-note"><span class="i i-sparkles"></span>Stories are written on this device by MyDiary's built-in AI model.</p>
+    </main>
+  </div>
+</div>
+</body>
+</html>

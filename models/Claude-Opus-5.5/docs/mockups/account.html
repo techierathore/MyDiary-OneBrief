@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item active"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">You / Account</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="account-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Account</h1>
+        <p>Your profile, password, problem reports and account data.</p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Profile (BRD-64) -->
+        <section class="card" data-testid="profile-card">
+          <div class="card-header">
+            <div class="card-title">Profile</div>
+            <div class="card-description">How MyDiary greets you.</div>
+          </div>
+          <div class="card-content form">
+            <div class="form-row">
+              <div class="field">
+                <label class="field-label" for="first">First name</label>
+                <input class="input" id="first" type="text" value="Asha" data-testid="profile-first-name">
+              </div>
+              <div class="field">
+                <label class="field-label" for="last">Last name</label>
+                <input class="input" id="last" type="text" value="Verma" data-testid="profile-last-name">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="mobile">Mobile number <span class="muted small">(optional)</span></label>
+              <input class="input" id="mobile" type="tel" value="+91 98200 41736" data-testid="profile-mobile">
+            </div>
+            <div class="field">
+              <label class="field-label" for="email">Email</label>
+              <input class="input" id="email" type="email" value="asha.verma@example.com" readonly data-testid="profile-email">
+              <div class="field-description">Your email is your sign-in and cannot be changed here.</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn" type="button" onclick="msg('Profile saved')" data-testid="profile-save">Save</button>
+          </div>
+        </section>
+
+        <!-- Change password (BRD-65, BRD-66) -->
+        <form class="card" action="signin.html" data-testid="password-card">
+          <div class="card-header">
+            <div class="card-title">Change password</div>
+            <div class="card-description">You will sign in again after saving.</div>
+          </div>
+          <div class="card-content form">
+            <div class="alert alert-danger" data-tf-state="error" data-testid="password-error" hidden>
+              <span class="i i-alert"></span>
+              <div><div class="t">Current password is wrong</div><div class="d">Check it and try again.</div></div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="cur">Current password</label>
+              <input class="input" id="cur" type="password" value="••••••••••" data-testid="password-current">
+            </div>
+            <div class="field">
+              <label class="field-label" for="new">New password</label>
+              <input class="input" id="new" type="password" value="•••••••••••" data-testid="password-new">
+              <div class="row between tiny" data-testid="password-strength">
+                <div class="progress" style="flex:1"><span style="width:75%"></span></div>
+                <span class="muted">Strong</span>
+              </div>
+              <div class="field-description">At least 8 characters, with an uppercase letter, a digit and a symbol.</div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="new2">Confirm new password</label>
+              <input class="input" id="new2" type="password" value="•••••••••••" data-testid="password-confirm">
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn" type="submit" data-testid="password-save">Save</button>
+            <span class="small muted" data-testid="password-note">You will sign in again.</span>
+          </div>
+        </form>
+
+        <!-- Report a problem (BRD-67, BRD-68) -->
+        <section class="card" data-testid="report-card">
+          <div class="card-header">
+            <div class="card-title">Report a problem</div>
+            <div class="card-description">Something not working? Tell the MyDiary owner.</div>
+          </div>
+          <div class="card-content small muted">A report holds what you type plus the app version and device type. It never holds any journal text.</div>
+          <div class="card-footer">
+            <a href="#dlg-report" class="btn btn-outline" data-testid="report-open">Report a problem</a>
+          </div>
+        </section>
+
+        <!-- My account data (BRD-69, BRD-70) -->
+        <section class="card" data-testid="account-data-card">
+          <div class="card-header">
+            <div class="card-title">My account data</div>
+            <div class="card-description">Your name, email, devices and plan, as held by MyDiary's account service.</div>
+          </div>
+          <div class="card-content small muted">Your journal is not part of this. To keep a copy of your journal, use <a href="backup.html" class="btn-link" data-testid="account-data-export-link">Backup and data</a>.</div>
+          <div class="card-footer">
+            <button class="btn btn-outline" type="button" onclick="msg('Your copy will be emailed to you within 24 hours.')" data-testid="account-data-copy">Ask for a copy</button>
+            <a href="#dlg-delete-data" class="btn btn-ghost" style="color:var(--destructive)" data-testid="account-data-delete">Ask for deletion</a>
+          </div>
+        </section>
+      </div>
+
+      <!-- Sign out (BRD-71) -->
+      <section class="card" data-testid="signout-card">
+        <div class="card-header row">
+          <div><div class="card-title">Sign out</div><div class="card-description">Signed in as asha.verma@example.com. Your journal stays on this device.</div></div>
+          <a href="signin.html" class="btn btn-outline" data-testid="account-sign-out"><span class="i i-logout"></span>Sign out</a>
+        </div>
+      </section>
+
+      <!-- Dialog: Report a problem -->
+      <div class="dialog-overlay" id="dlg-report" data-testid="dlg-report">
+        <div class="dialog">
+          <div class="dialog-header">
+            <div class="dialog-title">Report a problem</div>
+            <div class="card-description">The MyDiary owner reads every report.</div>
+          </div>
+          <div class="dialog-body">
+            <div class="field">
+              <label class="field-label" for="subj">Subject</label>
+              <input class="input" id="subj" type="text" value="Reminder came an hour late" data-testid="report-subject">
+            </div>
+            <div class="field">
+              <label class="field-label" for="what">What happened</label>
+              <textarea class="textarea" id="what" data-testid="report-description">My 9 pm journaling reminder showed up at 10 pm on Thursday and Friday. My phone's clock is right.</textarea>
+            </div>
+            <div class="alert alert-info" data-testid="report-what-is-sent">
+              <span class="i i-alert"></span>
+              <div>
+                <div class="t">What is sent</div>
+                <div class="d">Your subject and description · app version 1.0.0 · device type and system (Android 15, Pixel 8). Never any journal text.</div>
+              </div>
+            </div>
+          </div>
+          <div class="dialog-footer">
+            <a href="account.html" class="btn btn-outline" data-testid="report-cancel">Cancel</a>
+            <button class="btn" type="button" onclick="msg('Report sent. Its number is #1042.')" data-testid="report-send">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dialog: Ask for deletion (AlertDialog) -->
+      <div class="dialog-overlay" id="dlg-delete-data" data-testid="dlg-delete-data">
+        <div class="dialog">
+          <div class="dialog-header">
+            <div class="dialog-title">Delete your account data?</div>
+          </div>
+          <div class="dialog-body">
+            <p class="small">This deletes your MyDiary account and the data AppManager holds about you (name, email, devices, plan) in about 7 days. You will not be able to sign in with this account again.</p>
+            <p class="small">The journal on this device is not touched. If you want a copy first, <a href="backup.html" class="btn-link" data-testid="delete-export-link">export your journal</a>.</p>
+            <div class="field">
+              <label class="field-label" for="confirm-email">Type your email to confirm</label>
+              <input class="input" id="confirm-email" type="email" value="" placeholder="asha.verma@example.com" data-testid="delete-confirm-email">
+              <div class="field-error" data-tf-state="error" data-testid="delete-confirm-error" hidden>That is not the email on this account.</div>
+            </div>
+          </div>
+          <div class="dialog-footer">
+            <a href="account.html" class="btn btn-outline" data-testid="delete-cancel">Cancel</a>
+            <button class="btn btn-destructive" type="button" onclick="msg('Deletion requested. It takes about 7 days.')" data-testid="delete-confirm">Ask for deletion</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Timeline</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="timeline-app-bar">
+      <div class="app-bar-title">Timeline</div>
+      <button class="icon-btn" data-testid="timeline-filter-toggle" onclick="alert('Filters toggled');" aria-label="Filter">⚙</button>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="timeline-filters-card">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <label class="field-label">From</label>
+            <input type="date" class="input" data-testid="timeline-date-from">
+          </div>
+          <div>
+            <label class="field-label">To</label>
+            <input type="date" class="input" data-testid="timeline-date-to">
+          </div>
+          <div>
+            <label class="field-label">Tag</label>
+            <select class="select" data-testid="timeline-tag-select"><option>All</option><option>morning</option></select>
+          </div>
+          <div>
+            <label class="field-label">Mood</label>
+            <select class="select" data-testid="timeline-mood-select"><option>All</option><option>😊</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <a href="entry.html" class="list-item" data-testid="timeline-entry" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">Morning reflection</div>
+            <div class="list-item-subtitle">18 Oct 2026 · Free-Flow · ⭐</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+        <a href="dump.html" class="list-item" data-testid="timeline-entry" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">10-Thought Dump</div>
+            <div class="list-item-subtitle">17 Oct 2026 · Dump</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+        <a href="question-set.html" class="list-item" data-testid="timeline-entry" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">Monthly Goals</div>
+            <div class="list-item-subtitle">1 Oct 2026 · Questions</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="bottom-nav" data-testid="timeline-bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+      <a href="timeline.html" class="nav-item active"><span class="nav-icon">📜</span>Timeline</a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span>Calendar</a>
+      <a href="ask.html" class="nav-item"><span class="nav-icon">✨</span>Ask</a>
+      <a href="account.html" class="nav-item"><span class="nav-icon">👤</span>Account</a>
+    </div>
+  </div>
+</body>
+</html>

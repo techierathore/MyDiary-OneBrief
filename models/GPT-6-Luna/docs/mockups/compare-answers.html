@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compare answers · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .main { max-width: 1180px; }
+    .compare-controls { display: grid; grid-template-columns: minmax(240px, 1fr) auto; gap: 18px; align-items: end; }
+    .compare-table { min-width: 660px; table-layout: fixed; }
+    .compare-table td { vertical-align: top; }
+    .answer-cell { line-height: 1.55; }
+    .answer-cell p { margin: 0; }
+    .answer-sources { display: grid; gap: 5px; margin-top: 12px; }
+    .compare-table-wrap { margin-top: 14px; }
+    .compare-sources { margin-top: 14px; }
+    .answer-sources a { color: var(--primary); font-size: 10px; font-weight: 600; }
+    .period-label { display: block; color: var(--muted-foreground); font-size: 10px; font-weight: 500; }
+    .question-value { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 18px; line-height: 1.4; }
+    .sample-callout { margin-top: 15px; }
+    @media (max-width: 720px) {
+      .compare-controls { grid-template-columns: 1fr; align-items: start; }
+      .compare-table { min-width: 100%; width: 100%; }
+      .hide-phone { display: none; }
+      .question-value { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="home.html" data-testid="brand-home">
+        <span class="brand-mark" aria-hidden="true">m</span>
+        <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span>
+      </a>
+      <nav aria-label="Journal" data-testid="sidebar-nav">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="sidebar-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="sidebar-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="sidebar-ask"><span class="nav-icon" aria-hidden="true">✧</span>Ask my journal</a>
+          <a class="nav-link current" href="compare-answers.html" aria-current="page" data-testid="sidebar-compare"><span class="nav-icon" aria-hidden="true">↔</span>Compare answers</a>
+        </div>
+      </nav>
+      <nav class="sidebar-bottom" aria-label="Account" data-testid="account-nav">
+        <a class="nav-link" href="profile.html" data-testid="sidebar-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a>
+        <a class="nav-link" href="plan-and-devices.html" data-testid="sidebar-plan"><span class="nav-icon" aria-hidden="true">▣</span>Plan and devices</a>
+        <a class="nav-link" href="problem-report.html" data-testid="sidebar-support"><span class="nav-icon" aria-hidden="true">?</span>Problem report</a>
+      </nav>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb">Journal <span aria-hidden="true">/</span> Compare answers</div>
+        <div class="top-actions"><span class="muted small">Review over time</span><span class="avatar" aria-label="Profile" data-testid="avatar-initials" data-tf-sample="true">AS</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Screens" data-testid="mobile-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a>
+        <a href="journal-browse.html" data-testid="mobile-journal">Journal</a>
+        <a href="ask-my-journal.html" data-testid="mobile-ask">Ask</a>
+        <a class="current" href="compare-answers.html" aria-current="page" data-testid="mobile-compare">Compare</a>
+        <a href="profile.html" data-testid="mobile-profile">Profile</a>
+        <a href="plan-and-devices.html" data-testid="mobile-plan">Plan</a>
+        <a href="problem-report.html" data-testid="mobile-support">Support</a>
+      </nav>
+
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <h1>Compare answers</h1>
+            <p>See how your response to one question changes across selected periods.</p>
+          </div>
+        </div>
+
+        <section class="card" aria-label="Comparison options">
+          <div class="card-content">
+            <div class="compare-controls">
+              <div class="field" data-testid="compare-question">
+                <span class="label">Question</span>
+                <div class="popup-group">
+                  <button class="select" type="button" aria-label="Choose a question" aria-haspopup="listbox" aria-expanded="true" data-testid="compare-question-control" onclick="showStatus('compare-status', 'Choose one question from the open list.')"><span>What helped me protect time for rest?</span><span aria-hidden="true">⌄</span></button>
+                  <div class="popup-panel" role="listbox" aria-label="Journal questions" data-testid="compare-question-options" data-tf-state="popup-open">
+                    <button class="popup-option selected" type="button" role="option" aria-selected="true" data-testid="compare-question-option-1" data-tf-sample="true" onclick="showStatus('compare-status', 'This sample question is selected.')">What helped me protect time for rest?</button>
+                    <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="compare-question-option-2" data-tf-sample="true" onclick="showStatus('compare-status', 'This sample question is selected.')">What felt meaningful this month?</button>
+                    <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="compare-question-option-3" data-tf-sample="true" onclick="showStatus('compare-status', 'This sample question is selected.')">What would I like to carry forward?</button>
+                  </div>
+                </div>
+              </div>
+              <div class="field" data-testid="compare-period-tabs">
+                <span class="label">Compare by</span>
+                <div class="tabs" role="tablist" aria-label="Comparison period">
+                  <button class="tab active" type="button" role="tab" aria-selected="true" data-testid="compare-period-month" onclick="showStatus('compare-status', 'This is a static preview; no comparison was run.')">Month</button>
+                  <button class="tab" type="button" role="tab" aria-selected="false" data-testid="compare-period-year" onclick="showStatus('compare-status', 'This is a static preview; no comparison was run.')">Year</button>
+                </div>
+              </div>
+            </div>
+            <p class="status-message" id="compare-status" role="status" aria-live="polite" data-testid="compare-status"></p>
+          </div>
+        </section>
+
+        <section class="card sample-callout" aria-label="Sample comparison" data-testid="compare-results">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Answers across three months</h2>
+              <p class="card-description">Illustrative entries shown side by side; this comparison has not been run.</p>
+            </div>
+            <span class="badge badge-info">Sample</span>
+          </div>
+          <div class="card-content">
+            <p class="question-value" data-testid="compare-question-value" data-tf-sample="true">“What helped me protect time for rest?”</p>
+            <div class="table-wrap compare-table-wrap">
+              <table class="compare-table" data-testid="compare-table">
+                <thead>
+                  <tr>
+                    <th scope="col" data-testid="compare-period-jan" data-tf-sample="true">January 2026</th>
+                    <th scope="col" class="hide-phone" data-testid="compare-period-may" data-tf-sample="true">May 2026</th>
+                    <th scope="col" data-testid="compare-period-sep" data-tf-sample="true">September 2026</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-testid="compare-answer-row">
+                    <td>
+                      <div class="answer-cell" data-testid="compare-answer-jan" data-tf-sample="true">
+                        <p>A short walk after work helped me leave the day behind.</p>
+                        <span class="period-label">Sample answer</span>
+                      </div>
+                    </td>
+                    <td class="hide-phone">
+                      <div class="answer-cell" data-testid="compare-answer-may" data-tf-sample="true">
+                        <p>Keeping one evening unscheduled made the week feel lighter.</p>
+                        <span class="period-label">Sample answer</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="answer-cell" data-testid="compare-answer-sep" data-tf-sample="true">
+                        <p>Putting my phone away early gave me a quieter end to the day.</p>
+                        <span class="period-label">Sample answer</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="grid grid-3 compare-sources" data-testid="compare-sources" aria-label="Source entries">
+              <a class="card" href="entry-details.html" data-testid="compare-source-jan">
+                <div class="card-content"><span class="period-label">January source</span><strong data-tf-sample="true">Walk home after work</strong><span class="small muted" data-tf-sample="true">18 January 2026</span></div>
+              </a>
+              <a class="card hide-phone" href="entry-details.html" data-testid="compare-source-may">
+                <div class="card-content"><span class="period-label">May source</span><strong data-tf-sample="true">A week with more breathing room</strong><span class="small muted" data-tf-sample="true">12 May 2026</span></div>
+              </a>
+              <a class="card" href="entry-details.html" data-testid="compare-source-sep">
+                <div class="card-content"><span class="period-label">September source</span><strong data-tf-sample="true">A softer landing at night</strong><span class="small muted" data-tf-sample="true">6 September 2026</span></div>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <div class="screen-links" aria-label="Continue to another screen">
+          <a href="ask-my-journal.html" data-testid="return-ask-link">Ask my journal</a>
+          <a href="journal-browse.html" data-testid="journal-link">Journal</a>
+          <a href="home.html" data-testid="return-home-link">Home</a>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(id, message) {
+      const status = document.getElementById(id);
+      if (status) status.textContent = message;
+    }
+  </script>
+</body>
+</html>

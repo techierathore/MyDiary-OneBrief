@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDiary — Sign in</title>
+<link rel="stylesheet" href="mockup.css">
+</head>
+<body class="auth">
+<div class="auth-card" data-testid="signin-card">
+  <div class="auth-logo" data-testid="app-logo">MD</div>
+  <h1 data-testid="page-title">Welcome back</h1>
+  <p class="muted small">Sign in to your journal.</p>
+  <div class="stack mt">
+    <label class="field">
+      <span class="field-label">Email</span>
+      <input class="input" type="email" placeholder="you@example.com" data-testid="email-input">
+    </label>
+    <label class="field">
+      <span class="field-label">Password</span>
+      <input class="input" type="password" placeholder="••••••••" data-testid="password-input">
+    </label>
+    <a class="btn" href="home.html" data-testid="signin-submit">Sign in</a>
+    <div class="flex" style="justify-content:space-between">
+      <a class="btn-link small" href="register.html" data-testid="link-create-account">Create account</a>
+      <a class="btn-link small" href="forgot-password.html" data-testid="link-forgot-password">Forgot password?</a>
+    </div>
+  </div>
+</div>
+<script>function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}</script>
+</body>
+</html>

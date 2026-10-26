@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item active"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">Journal / Search</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="search-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Search</h1>
+        <p>Find entries by a word, then narrow them down.</p>
+      </div>
+
+      <!-- Keyword (BRD-50) -->
+      <div class="input-group" data-testid="search-keyword-group">
+        <span class="i i-search muted"></span>
+        <input class="input" type="search" value="coffee" aria-label="Search words" data-testid="search-keyword">
+      </div>
+
+      <div class="grid-2">
+        <!-- Filters panel -->
+        <section class="card" data-testid="search-filters">
+          <div class="card-header row">
+            <div class="card-title">Filters</div>
+            <button class="btn btn-ghost btn-sm" data-testid="search-clear-filters" onclick="msg('Filters cleared')">Clear filters</button>
+          </div>
+          <div class="card-content form">
+            <!-- BRD-51 date range -->
+            <div class="field" data-testid="filter-date-range">
+              <label class="field-label">Dates</label>
+              <div class="row" style="flex-wrap:nowrap">
+                <input class="input" type="text" value="1 Jan 2025" aria-label="From" data-testid="filter-date-from">
+                <span class="muted">–</span>
+                <input class="input" type="text" value="31 Dec 2025" aria-label="To" data-testid="filter-date-to">
+              </div>
+            </div>
+
+            <!-- BRD-52 tags (MultiSelect chips) -->
+            <div class="field" data-testid="filter-tags">
+              <label class="field-label">Tags</label>
+              <div class="input-group" style="padding:.35rem .5rem;flex-wrap:wrap;min-height:2.5rem">
+                <span class="badge badge-secondary" data-testid="filter-tag-chip">coffee <span class="i i-x" style="width:12px;height:12px"></span></span>
+                <span class="badge badge-secondary">Pune trip <span class="i i-x" style="width:12px;height:12px"></span></span>
+                <span class="small muted">Add a tag…</span>
+              </div>
+            </div>
+
+            <!-- BRD-53 question set -->
+            <div class="field" data-testid="filter-question-set">
+              <label class="field-label">Question set</label>
+              <div class="toggle-group" data-multiple>
+                <button class="toggle" onclick="return pick(this)">Monthly Goals</button>
+                <button class="toggle on" onclick="return pick(this)">Weekly Retro</button>
+                <button class="toggle" onclick="return pick(this)">Health</button>
+                <button class="toggle" onclick="return pick(this)">Fitness</button>
+                <button class="toggle" onclick="return pick(this)">Gratitude</button>
+              </div>
+            </div>
+
+            <!-- BRD-54, BRD-55 switches -->
+            <div>
+              <div class="setting-row" data-testid="filter-has-photo"><div class="t">Has a photo</div><span class="switch" role="switch" aria-checked="false"></span></div>
+              <div class="setting-row" data-testid="filter-starred"><div class="t">Starred only</div><span class="switch" role="switch" aria-checked="false"></span></div>
+            </div>
+
+            <!-- BRD-56 mood -->
+            <div class="field" data-testid="filter-mood">
+              <label class="field-label">Mood</label>
+              <div class="toggle-group" data-multiple>
+                <button class="toggle on" title="Great" onclick="return pick(this)"><span class="mood">😄</span></button>
+                <button class="toggle on" title="Good" onclick="return pick(this)"><span class="mood">😊</span></button>
+                <button class="toggle" title="Calm" onclick="return pick(this)"><span class="mood">😌</span></button>
+                <button class="toggle" title="Okay" onclick="return pick(this)"><span class="mood">😐</span></button>
+                <button class="toggle" title="Low" onclick="return pick(this)"><span class="mood">😔</span></button>
+                <button class="toggle" title="Stressed" onclick="return pick(this)"><span class="mood">😣</span></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Results -->
+        <section class="stack" data-testid="search-results">
+          <div class="row between">
+            <span class="badge badge-secondary" data-testid="search-result-count">14 entries match</span>
+            <a href="ask.html" class="btn btn-link" data-testid="search-ask-link"><span class="i i-ask"></span>Ask a question instead</a>
+          </div>
+
+          <a href="entry.html" class="item" data-testid="search-result">
+            <span class="mood" title="Great">😄</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Weekly Retro</span> <span class="tiny muted">28 Dec 2025</span></div>
+              <div class="item-description">Best thing this week: the Pune trip café with the cold <mark>coffee</mark> in a clay cup. Want to find that bean…</div>
+              <div class="row"><span class="badge badge-outline">coffee</span><span class="badge badge-outline">Pune trip</span></div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="search-result-2">
+            <span class="mood" title="Good">😊</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Weekly Retro</span> <span class="i i-star-fill star-on"></span> <span class="tiny muted">9 Nov 2025</span></div>
+              <div class="item-description">Kept the running streak all week. Cut down to one <mark>coffee</mark> a day and slept better for it…</div>
+              <div class="row"><span class="badge badge-outline">coffee</span><span class="badge badge-outline">running</span></div>
+            </div>
+          </a>
+          <a href="entry.html" class="item" data-tf-sample data-testid="search-result-3">
+            <span class="mood" title="Great">😄</span>
+            <div class="item-content">
+              <div class="item-title"><span class="badge badge-secondary">Weekly Retro</span> <span class="i i-image muted"></span> <span class="tiny muted">13 Apr 2025</span></div>
+              <div class="item-description">Morning <mark>coffee</mark> on the balcony with the new thyme pots. The herb garden is finally a garden…</div>
+              <div class="row"><span class="badge badge-outline">coffee</span></div>
+            </div>
+          </a>
+
+          <!-- Searching (state: loading) -->
+          <div class="stack" data-tf-state="loading" data-testid="search-loading" hidden>
+            <div class="skeleton" style="height:4rem"></div>
+            <div class="skeleton" style="height:4rem"></div>
+          </div>
+
+          <!-- No results (state: empty, BRD-57) -->
+          <div class="empty" data-tf-state="empty" data-testid="search-empty" hidden>
+            <span class="i i-search i-xl"></span>
+            <div class="title">No entries match. Try fewer filters.</div>
+            <button class="btn btn-outline btn-sm" data-testid="search-empty-clear" onclick="msg('Filters cleared')">Clear filters</button>
+          </div>
+
+          <!-- Search failed (state: error) -->
+          <div class="alert alert-danger" data-tf-state="error" data-testid="search-error" hidden>
+            <span class="i i-alert i-lg"></span>
+            <div><div class="t">Search did not finish</div><div class="d">Try again. If it keeps happening, send a problem report from Account.</div></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

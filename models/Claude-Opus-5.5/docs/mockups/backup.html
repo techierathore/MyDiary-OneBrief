@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backup and data — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item active"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">You / Backup and data</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="backup-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Backup and data</h1>
+        <p>Keep a copy of your journal, move it between devices, or bring entries in.</p>
+      </div>
+
+      <!-- Backup and sync (paid: BRD-86 .. BRD-89) -->
+      <section class="card" data-testid="backup-sync-card">
+        <div class="card-header row">
+          <div><div class="card-title">Backup and sync</div><div class="card-description">Saved to your own cloud storage. MyDiary has no server.</div></div>
+          <span class="badge badge-secondary">Pro</span>
+        </div>
+        <div class="card-content">
+          <!-- Free variant (state: free-plan, BRD-89) -->
+          <div class="alert alert-warning" data-tf-state="free-plan" data-testid="backup-free-plan" style="margin-bottom:1rem">
+            <span class="i i-lock i-lg"></span>
+            <div><div class="t">Free plan</div><div class="d">Backup and sync need a paid licence. Your journal is kept only on this device; export it regularly.</div></div>
+          </div>
+
+          <div class="setting-row" data-testid="backup-service">
+            <div>
+              <div class="t row">Google Drive <span class="badge badge-success" data-testid="backup-service-status">Connected as asha.verma@gmail.com</span></div>
+              <div class="d" data-testid="backup-last">Last backup: today 7:42 pm</div>
+            </div>
+            <button class="btn btn-sm" data-testid="backup-now" onclick="msg('Backup finished')"><span class="i i-upload"></span>Back up now</button>
+          </div>
+          <div class="setting-row" data-testid="backup-onedrive">
+            <div><div class="t">OneDrive</div><div class="d">Not connected</div></div>
+            <button class="btn btn-outline btn-sm" data-testid="backup-connect-onedrive" onclick="msg('Opening Microsoft sign-in for OneDrive')">Connect OneDrive</button>
+          </div>
+          <div class="setting-row" data-testid="sync-row">
+            <div>
+              <div class="t row">Sync between my devices <span class="badge badge-outline" data-testid="sync-devices">2 devices</span></div>
+              <div class="d" data-testid="sync-last">Last synced 2 minutes ago</div>
+            </div>
+            <span class="switch on" role="switch" aria-checked="true" data-testid="sync-switch"></span>
+          </div>
+          <div class="setting-row" data-testid="restore-row">
+            <div><div class="t">Restore from a backup</div><div class="d">Use this on a new phone or after reinstalling.</div></div>
+            <a href="#dlg-restore" class="btn btn-outline btn-sm" data-testid="restore-open"><span class="i i-download"></span>Restore from a backup</a>
+          </div>
+
+          <!-- Backup failed (state: error) -->
+          <div class="alert alert-danger" data-tf-state="error" data-testid="backup-error" hidden>
+            <span class="i i-alert i-lg"></span>
+            <div><div class="t">Backup did not finish</div><div class="d">Google Drive could not be reached. MyDiary will try again when you are online.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Export and import (everyone: BRD-90 .. BRD-92) -->
+      <section class="card" data-testid="export-import-card">
+        <div class="card-header">
+          <div class="card-title">Export and import</div>
+          <div class="card-description">Free on every plan.</div>
+        </div>
+        <div class="card-content form">
+          <div class="setting-row" data-testid="export-row">
+            <div><div class="t">Export my journal</div><div class="d">One JSON file with every entry, tag and photo.</div></div>
+            <button class="btn btn-outline btn-sm" data-testid="export-button" onclick="msg('Saved MyDiary-2026-10-18.json')"><span class="i i-download"></span>Export</button>
+          </div>
+
+          <div class="field" data-testid="import-format">
+            <label class="field-label">Import from</label>
+            <div class="toggle-group joined">
+              <button class="toggle on" data-msg="MyDiary file selected" onclick="return pick(this)">MyDiary file</button>
+              <button class="toggle" data-msg="Day One export selected" onclick="return pick(this)">Day One export</button>
+            </div>
+          </div>
+
+          <div class="dropzone" data-testid="import-file">
+            <span class="i i-upload i-lg"></span>
+            <div>Drop a .json or .zip file here</div>
+            <button class="btn btn-outline btn-sm" data-testid="import-choose" onclick="msg('Choose a .json or .zip file')">Choose file</button>
+            <div class="tiny">Picked: MyDiary-2026-06-01.json (3.4 MB)</div>
+          </div>
+          <div class="field-error" data-tf-state="error" data-testid="import-error" hidden>This file is not a MyDiary or Day One export.</div>
+
+          <!-- Import in progress (state: loading) -->
+          <div class="field" data-tf-state="loading" data-testid="import-progress" hidden>
+            <div class="small muted">Importing… 120 of 217 entries</div>
+            <div class="progress"><span style="width:55%"></span></div>
+          </div>
+
+          <div class="row"><button class="btn" data-testid="import-button" onclick="msg('Imported 214 entries. 3 were already in your journal and were skipped.')"><span class="i i-upload"></span>Import</button></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Restore journal (AlertDialog) -->
+<div class="dialog-overlay" id="dlg-restore" data-testid="dlg-restore">
+  <div class="dialog">
+    <div class="dialog-header">
+      <div class="dialog-title">Restore your journal</div>
+      <div class="card-description">Pick a backup from Google Drive.</div>
+    </div>
+    <div class="dialog-body">
+      <div class="stack" role="radiogroup" data-testid="restore-choice">
+        <div class="radio-card selected" data-testid="restore-option"><span class="radio on"></span><div><div style="font-weight:600">Today, 7:42 pm</div><div class="small muted">1,284 entries · Pixel 8</div></div></div>
+        <div class="radio-card" data-tf-sample><span class="radio"></span><div><div style="font-weight:600">Sunday 11 October, 9:15 pm</div><div class="small muted">1,261 entries · Pixel 8</div></div></div>
+        <div class="radio-card" data-tf-sample><span class="radio"></span><div><div style="font-weight:600">Sunday 4 October, 8:58 pm</div><div class="small muted">1,240 entries · Windows laptop</div></div></div>
+      </div>
+      <div class="alert alert-warning" data-testid="restore-warning">
+        <span class="i i-alert i-lg"></span>
+        <div class="d">Restoring replaces the journal on this device.</div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <a href="backup.html" class="btn btn-outline" data-testid="restore-cancel">Cancel</a>
+      <a href="browse.html" class="btn btn-destructive" data-testid="restore-confirm">Restore</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

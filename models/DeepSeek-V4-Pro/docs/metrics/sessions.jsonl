@@ -1,0 +1,1 @@
+{"kind":"session","session_id":"ses_e8eaa7a8bffecX0QXimFdZrqzi","model":"opencode-go/deepseek-v4-pro","duration_s":1009,"input_tokens":137855,"output_tokens":43439,"cache_read_tokens":8283648,"cache_creation_tokens":0,"cost_usd":0.471815,"children_sessions":0,"v":1,"ts":"2026-10-25T04:50:38Z","project_type":"docs","harness":"opencode","app":"MyDiary-Deepseek"}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Calendar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="calendar-app-bar">
+      <a href="#" class="icon-btn" data-testid="calendar-prev" aria-label="Previous">‹</a>
+      <div class="app-bar-title" data-testid="calendar-month">October 2026</div>
+      <a href="#" class="icon-btn" data-testid="calendar-next" aria-label="Next">›</a>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="calendar-grid-card">
+        <div class="calendar-grid" data-testid="calendar-grid">
+          <div class="day-label">Mon</div><div class="day-label">Tue</div><div class="day-label">Wed</div><div class="day-label">Thu</div><div class="day-label">Fri</div><div class="day-label">Sat</div><div class="day-label">Sun</div>
+          <div class="day other-month"></div><div class="day other-month"></div><div class="day">1<div class="day-dot"></div></div><div class="day">2</div><div class="day">3</div><div class="day">4<div class="day-dot"></div></div><div class="day">5</div>
+          <div class="day">6</div><div class="day">7<div class="day-dot"></div></div><div class="day">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day">12<div class="day-dot"></div></div>
+          <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day selected">18<div class="day-dot"></div></div><div class="day">19</div>
+          <div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day">25</div><div class="day">26</div>
+          <div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day">31</div><div class="day other-month"></div><div class="day other-month"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">18 October 2026</div>
+        <a href="entry.html" class="list-item" data-testid="calendar-entry" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">Morning reflection</div>
+            <div class="list-item-subtitle">08:14 · Free-Flow</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+        <a href="dump.html" class="list-item" data-testid="calendar-entry" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">10-Thought Dump</div>
+            <div class="list-item-subtitle">07:42 · Dump</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="bottom-nav" data-testid="calendar-bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+      <a href="timeline.html" class="nav-item"><span class="nav-icon">📜</span>Timeline</a>
+      <a href="calendar.html" class="nav-item active"><span class="nav-icon">📅</span>Calendar</a>
+      <a href="ask.html" class="nav-item"><span class="nav-icon">✨</span>Ask</a>
+      <a href="account.html" class="nav-item"><span class="nav-icon">👤</span>Account</a>
+    </div>
+  </div>
+</body>
+</html>

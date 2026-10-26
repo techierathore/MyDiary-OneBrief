@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyDiary — Architecture</title>
+<script>
+/* Resolve the theme BEFORE first paint (no flash). Saved choice wins; otherwise
+   pick by time of day — light 07:00–19:00 local, softened dark at night. */
+(function(){
+  try{
+    var t = localStorage.getItem('tf-theme');
+    if(t!=='light' && t!=='dark'){ var h = new Date().getHours(); t = (h>=7 && h<19) ? 'light' : 'dark'; }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){ document.documentElement.setAttribute('data-theme','light'); }
+})();
+</script>
+<style>
+/* LIGHT is the default theme — a warm off-white, easy on the eyes (never bright white). */
+:root{
+  --bg:#f4f1e9; --panel:#efe9db; --panel2:#e7e0cd; --line:#d8cfb6;
+  --ink:#2e2a22; --muted:#6f6857; --accent:#2f6f9f; --accent2:#3f7d54;
+  --warn:#9a6b15; --danger:#b03a52; --ok:#3f7d54;
+  --code-bg:#ece5d3; --code-ink:#332f26; --row-alt:#eae2cf;
+  --h3:#3a352b; --h4:#2f6f9f; --quote:#4a4537; --cta-bg:#e6eef5;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+/* DARK — softened near-black (warmer / less harsh than pure #0f1115). */
+html[data-theme="dark"]{
+  --bg:#11141a; --panel:#171b23; --panel2:#1e2430; --line:#2b3240;
+  --ink:#dfe3ea; --muted:#99a2b1; --accent:#7cc4ff; --accent2:#a6e3a1;
+  --warn:#f9c74f; --danger:#f38ba8; --ok:#a6e3a1;
+  --code-bg:#0c1016; --code-ink:#d8dde8; --row-alt:#141821;
+  --h3:#cfd5e3; --h4:#7cc4ff; --quote:#cfd5e3; --cta-bg:#0d2030;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:13px;background:var(--code-bg);color:var(--code-ink);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+pre{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;color:var(--code-ink);position:relative}
+pre code{background:none;border:none;padding:0}
+.copy{position:absolute;top:8px;right:8px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;font-family:var(--sans);cursor:pointer}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+/* floating light/dark toggle (top-right) */
+.theme-toggle{position:fixed;top:12px;right:14px;z-index:10000;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;font-family:var(--sans);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.theme-toggle:hover{color:var(--accent);border-color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.layout.no-toc{grid-template-columns:1fr}
+nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding:18px 14px}
+nav.side h1{font-size:14px;margin:0 0 4px;letter-spacing:.5px;color:var(--ink)}
+nav.side .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+nav.side ol,nav.side ul{list-style:none;padding:0;margin:0}
+nav.side li{font-size:13px;margin:2px 0}
+nav.side li a{display:block;padding:5px 8px;color:var(--ink);border-radius:6px}
+nav.side li a:hover{background:var(--panel2);text-decoration:none}
+nav.side li.h3 a{padding-left:22px;font-size:12.5px;color:var(--h3)}
+nav.side .group{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:14px 8px 4px}
+
+main{padding:28px 40px 80px;max-width:1100px}
+.layout.no-toc main{margin:0 auto}
+
+h1{font-size:28px;margin:0 0 6px}
+h2{font-size:22px;margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+h3{font-size:17px;margin:22px 0 6px;color:var(--h3);scroll-margin-top:16px}
+h4{font-size:14px;margin:14px 0 4px;color:var(--h4);scroll-margin-top:16px}
+.subtitle{color:var(--muted);font-size:14px;margin-top:-4px;margin-bottom:18px}
+p{margin:6px 0 10px}
+blockquote{border-left:3px solid var(--accent);background:var(--panel);margin:8px 0;padding:8px 14px;color:var(--quote)}
+ul,ol{padding-left:22px}
+li{margin:2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--panel2);color:var(--h3);font-weight:600}
+tr:nth-child(even) td{background:var(--row-alt)}
+
+hr{border:none;border-top:1px solid var(--line);margin:24px 0}
+.anchor-link{color:var(--muted);font-weight:400;font-size:0.85em;margin-left:8px;opacity:0;transition:opacity .15s;text-decoration:none}
+h2:hover .anchor-link,h3:hover .anchor-link,h4:hover .anchor-link{opacity:1}
+
+/* inline TOC at top of main content */
+.toc-inline{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:14px 0 24px}
+.toc-inline > div{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.toc-inline ol,.toc-inline ul{margin:4px 0;padding-left:18px}
+.toc-inline li{font-size:13px;margin:1px 0}
+.toc-inline a{color:var(--h3)}
+
+/* mermaid diagram wrapper + toolbar */
+.diagram{position:relative;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);margin:14px 0;overflow:hidden}
+.diagram .mermaid{padding:14px;margin:0;background:transparent;border:none;overflow:auto}
+.diagram .dt{display:flex;gap:6px;justify-content:flex-end;padding:6px 8px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.diagram .dt button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 10px;font-size:12px;font-family:var(--sans);cursor:pointer;min-width:30px}
+.diagram .dt button:hover{color:var(--accent);border-color:var(--accent)}
+.diagram .dt .zlabel{padding:3px 6px;font-size:11px;color:var(--muted);font-family:var(--mono);align-self:center}
+.diagram.fs{position:fixed;inset:0;z-index:9999;border-radius:0;border:none}
+.diagram.fs .mermaid{height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto}}
+</style>
+</head>
+<body>
+<button id="themeToggle" class="theme-toggle" title="Toggle light / dark">&#9790; Dark</button>
+<div class="layout">
+  <nav class="side">
+    <h1>MyDiary — Architecture</h1>
+    <div class="sub">Last rendered: 2026-10-18</div>
+    <div class="group">Contents</div>
+    <ol>
+        <li><a href="#stack-decisions">1. Stack decisions</a></li>
+        <li><a href="#solution-structure">2. Solution structure</a></li>
+        <li><a href="#component-map">3. Component map</a></li>
+        <li><a href="#data-model">4. Data model</a></li>
+        <li><a href="#cross-cutting">5. Cross-cutting</a></li>
+        <li><a href="#decisions-log">6. Decisions log</a></li>
+        <li><a href="#module-responsibilities">7. Module responsibilities</a></li>
+        <li><a href="#open-questions">8. Open questions</a></li>
+    </ol>
+  </nav>
+  <main>
+    <h1>MyDiary — Architecture</h1>
+    <div class="subtitle">Rendered 2026-10-18 &middot; source <code>MyDiary-Architecture.md</code></div>
+
+    <div class="toc-inline">
+      <div>Contents</div>
+      <ol>
+        <li><a href="#stack-decisions">1. Stack decisions</a></li>
+        <li><a href="#solution-structure">2. Solution structure</a></li>
+        <li><a href="#component-map">3. Component map</a></li>
+        <li><a href="#data-model">4. Data model</a></li>
+        <li><a href="#cross-cutting">5. Cross-cutting</a></li>
+        <li><a href="#decisions-log">6. Decisions log</a></li>
+        <li><a href="#module-responsibilities">7. Module responsibilities</a></li>
+        <li><a href="#open-questions">8. Open questions</a></li>
+      </ol>
+    </div>
+<table>
+<thead><tr><th></th><th></th></tr></thead>
+<tbody>
+<tr><td>App</td><td>MyDiary</td></tr>
+<tr><td>Kind</td><td>app</td></tr>
+<tr><td>Size</td><td>Medium</td></tr>
+<tr><td>Stack answer set</td><td>dotnet (<code>.tfcore/templates/stack-defaults/dotnet.md</code>)</td></tr>
+<tr><td>Date</td><td>2026-10-18</td></tr>
+</tbody>
+</table>
+<p>Source of every product fact here: the owner's brief, <code>docs/MyDiary-Brief.md</code> (2026-10-18). Source of every AppManager fact: <code>docs/AppManager-api-usage-guide.md</code> (version 1.6, 2026-10-04). TechieRag facts come from its AI reference (<code>TechieRag-AI-Reference.md</code>, v3, updated 2026-10-11). TrBlazeUI facts come from its AI reference (<code>TrBlazeUI-AI-Reference.md</code>, 2026-10-15). The owner gave no other notes at day-1 ("Hints: none").</p>
+<h2 id="stack-decisions"><a id="1-stack-decisions"></a>1. Stack decisions<a class="anchor-link" href="#stack-decisions">#</a></h2>
+<p>One row per stack question. The owner's instruction at day-1 was: take the stack answers, open questions and size as the brief states them; where the brief is silent, take the answer set's default and record the choice. "brief" below means a fixed choice stated in the brief.</p>
+<table>
+<thead><tr><th>Q</th><th>Topic</th><th>Decision</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Q1</td><td>Configuration</td><td><code>appsettings.json</code> embedded in the MAUI head, layered by <code>appsettings.{Environment}.json</code>; it holds the AppManager base address (<code>AppManager:ApiUrl</code>) and the installed-app key (<code>AppManager:InstalledAppKey</code>, a <code>pk_live_</code> key, which is public by design). Per-user choices (AI model, lock, reminders, zoom) live in MAUI <code>Preferences</code>, which is the user's state, not configuration. No other configuration mechanism.</td><td>answer set: dotnet; AppManager guide §2.1.1</td></tr>
+<tr><td>Q2</td><td>Secrets in development</td><td>Project user secrets for the developer's own values (for example a test online-AI key). <code>appsettings.Development.json</code> holds no real secret. <code>secrets.example.json</code> lists every key read. On the device, tokens, the PIN and a paid user's online-AI key are kept in MAUI <code>SecureStorage</code>, never in <code>Preferences</code> or the database.</td><td>answer set: dotnet; device storage inferred from the brief's privacy rule &lt;!-- inferred — please verify --&gt;</td></tr>
+<tr><td>Q3</td><td>Database</td><td><strong>Overrides the answer set.</strong> SQLite on each device, one file under <code>FileSystem.AppDataDirectory</code>; no PostgreSQL and no Docker. The answer set's PostgreSQL default cannot hold here: the brief says MyDiary has no server of its own and a free user's journal stays on the device. TechieRag keeps its search index in its own SQLite file next to it.</td><td>brief ("no server of its own", "everything stays on that device"); recorded as the one deviation from the answer set</td></tr>
+<tr><td>Q4</td><td>Authentication</td><td>AppManager, through its installed-app key (<code>X-Api-Key: pk_live_…</code> plus a stable <code>X-Device-Id</code> per install), using device-bound register and sign-in (<code>/AuthSvc/device-register</code>, <code>/AuthSvc/device-login</code>). AppManager owns accounts, devices, licences, problem reports and account-data requests.</td><td>brief (fixed choice)</td></tr>
+<tr><td>Q4a</td><td>Test users</td><td>Three test users registered under MyDiary's application id through AppManager's register call, by a script in <code>tests/</code>; passwords only in git-ignored secrets. Written at stage 2 in the UsageGuide.</td><td>answer set: dotnet</td></tr>
+<tr><td>Q5</td><td>Logging</td><td>Serilog, wired first in <code>MauiProgram</code>, rolling daily file under <code>FileSystem.AppDataDirectory/logs</code>, 14 files kept. Journal text, PINs, passwords, tokens and AI keys are never logged.</td><td>answer set: dotnet; the never-logged list is inferred from the brief's privacy rule &lt;!-- inferred — please verify --&gt;</td></tr>
+<tr><td>Q6</td><td>Tests</td><td>xUnit; <code>MyDiary.Tests</code> exists from day-1. Unit tests for the licence and device-limit rules, the 30-day offline rule, the Thought Dump save rule, imports, and the counting behind Ask. Screen checks run against the Windows head.</td><td>answer set: dotnet</td></tr>
+<tr><td>Q7</td><td>Layout and naming</td><td><code>src/</code> and <code>tests/</code> at the root. Primary head <code>src/MyDiary/MyDiary.csproj</code>. Satellites <code>MyDiaryUI</code> (Razor class library), <code>MyDiary.Core</code>, <code>MyDiaryDb</code>, <code>MyDiary.Tests</code>.</td><td>answer set: dotnet</td></tr>
+<tr><td>Q8</td><td>User interface</td><td>One MAUI Blazor Hybrid head targeting Android, iOS (iPhone and iPad), Mac Catalyst and Windows; every screen built with TrBlazeUI (<code>TrBlazeUI.Components</code>, which brings <code>TrBlazeUI.Primitives</code>; icons from <code>TrBlazeUI.Icons.Lucide</code>). Rendering mode: Blazor Hybrid in a <code>BlazorWebView</code>, interactive in process, which is the only mode a Hybrid head has. Zoom on the Windows and Mac heads as in the stack's coding standards §9b.</td><td>brief (TrBlazeUI, the five platforms); rendering mode: answer set leaves it open, the Hybrid head allows one</td></tr>
+<tr><td>Q9</td><td>Hosting</td><td>Not yet asked (UAT). The apps are distributed as device packages; there is no server to host.</td><td>answer set: asked at UAT</td></tr>
+<tr><td>Q10</td><td>Production secrets</td><td>Not yet asked (production).</td><td>answer set: asked after UAT</td></tr>
+<tr><td>Q11</td><td>Standing rules</td><td>The answer set's seven rules, unchanged: 1. no NuGet package without a line here saying why; 2. no second configuration mechanism; 3. a gap in TechieFlow, TrBlazeUI, TechieRag or AppManager is recorded in that library's feedback file and the feature waits, never a workaround; 4. data access is always Dapper; 5. migrations live in <code>MyDiaryDb</code> using DbUp, run by the app at startup; 6. log files under the build output folder (on a device, under the app data folder), never at the repository root; 7. no extra folders at the repository root. Added from the brief: 8. MyDiary writes no AI code of its own; every AI feature goes through TechieRag; 9. no journal text is ever sent to AppManager; 10. no journal text leaves a free user's device.</td><td>answer set: dotnet; rules 8 to 10: brief</td></tr>
+</tbody>
+</table>
+<p>Required packages: <code>TrBlazeUI.Components</code></p>
+<h2 id="solution-structure"><a id="2-solution-structure"></a>2. Solution structure<a class="anchor-link" href="#solution-structure">#</a></h2>
+<table>
+<thead><tr><th>Project</th><th>Kind</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>MyDiary</code></td><td>MAUI Blazor Hybrid app (Android, iOS, Mac Catalyst, Windows)</td><td>The primary head. Hosts the <code>BlazorWebView</code>, Serilog, dependency injection, platform services (secure storage, biometrics, notifications, file pickers, cloud-drive sign-in) and runs the <code>MyDiaryDb</code> migrations at startup.</td></tr>
+<tr><td><code>MyDiaryUI</code></td><td>Razor class library</td><td>Every screen, dialog and the app shell, built only from TrBlazeUI components. No data access.</td></tr>
+<tr><td><code>MyDiary.Core</code></td><td>class library</td><td>The journal, question sets, search, On This Day, Ask, Compare, licence and device rules, backup and sync, import and export, the AppManager client, and the calls into TechieRag.</td></tr>
+<tr><td><code>MyDiaryDb</code></td><td>class library (DbUp migrations)</td><td>SQLite schema scripts as embedded resources, applied in order at app startup.</td></tr>
+<tr><td><code>MyDiary.Tests</code></td><td>xUnit test project</td><td>Unit tests for <code>MyDiary.Core</code>, migration tests on a temporary SQLite file, and the screen checks run against the Windows head.</td></tr>
+</tbody>
+</table>
+<h2 id="component-map"><a id="3-component-map"></a>3. Component map<a class="anchor-link" href="#component-map">#</a></h2>
+<div class="diagram">
+  <div class="dt">
+    <button data-zout title="Zoom out">&minus;</button>
+    <span class="zlabel">100%</span>
+    <button data-zin title="Zoom in">+</button>
+    <button data-fit title="Fit to width">Fit</button>
+    <button data-one title="Actual size">1:1</button>
+    <button data-fs title="Fullscreen">&#9166;</button>
+    <button data-pop title="Open in new tab">&#8599;</button>
+  </div>
+  <pre class="mermaid">flowchart TB
+  subgraph Device["The user's device"]
+    UI["MyDiaryUI screens (TrBlazeUI)"] --&gt; Svc["MyDiary.Core services"]
+    Svc --&gt; Repo["Dapper repositories"]
+    Repo --&gt; DB[("SQLite journal file")]
+    Svc --&gt; Rag["TechieRag (on-device model and search index)"]
+    Rag --&gt; RagDB[("TechieRag SQLite index")]
+    Svc --&gt; Plat["Platform services: secure storage, biometrics, notifications, file pickers"]
+  end
+  Svc --&gt;|"accounts, devices, licence check, problem reports"| AM["AppManager API"]
+  Svc --&gt;|"paid only: backup, sync, restore"| Drive["User's Google Drive or OneDrive"]
+  Rag --&gt;|"paid only, user's own key"| Online["Online AI service"]</pre>
+</div>
+<p><strong>How a request travels</strong> (one typical request, in words; per-screen detail is in the DevGuide):</p>
+<ol>
+<li>On the Ask screen the user types "how many coffee bottles did I open last year?" and presses Ask.
+</li>
+<li><code>AskService</code> in <code>MyDiary.Core</code> hands the question to TechieRag with the journal search index, which runs on the chosen model: the built-in on-device model for a free user, or the paid user's chosen model or online service.
+</li>
+<li>TechieRag finds the matching entries in its index; the entry ids lead back to <code>EntryRepository</code>, which reads them from the SQLite journal through Dapper.
+</li>
+<li>The screen shows the counted answer and lists every entry it used, each opening on the Entry screen. When nothing matches, it says so and shows no number.
+</li>
+</ol>
+<p>Starting the app follows its own path. The head runs the migrations, opens the journal, and reads the cached licence result. If the last successful licence check is under 30 days old, Home opens (after Unlock when a lock is set). Otherwise the app calls <code>POST /LicenseSvc/validate</code>, and Access stopped is shown when the check cannot be made or the device is over its limit.</p>
+<h2 id="data-model"><a id="4-data-model"></a>4. Data model<a class="anchor-link" href="#data-model">#</a></h2>
+<p>All tables live in the one SQLite file on the device. Account, device and licence facts belong to AppManager; MyDiary keeps only a cached copy of the last licence check.</p>
+<div class="diagram">
+  <div class="dt">
+    <button data-zout title="Zoom out">&minus;</button>
+    <span class="zlabel">100%</span>
+    <button data-zin title="Zoom in">+</button>
+    <button data-fit title="Fit to width">Fit</button>
+    <button data-one title="Actual size">1:1</button>
+    <button data-fs title="Fullscreen">&#9166;</button>
+    <button data-pop title="Open in new tab">&#8599;</button>
+  </div>
+  <pre class="mermaid">erDiagram
+  ENTRY ||--o{ ENTRY_PHOTO : "has"
+  ENTRY ||--o{ ENTRY_TAG : "is tagged"
+  TAG ||--o{ ENTRY_TAG : "labels"
+  ENTRY ||--o{ THOUGHT_LINE : "dump lines"
+  ENTRY ||--o{ ANSWER : "set answers"
+  QUESTION_SET ||--o{ QUESTION : "contains"
+  QUESTION ||--o{ ANSWER : "answered by"
+  QUESTION_SET ||--o{ ENTRY : "answered in"
+  ENTRY {
+    string EntryId PK
+    string EntryType
+    datetime EntryDate
+    string Title
+    string BodyHtml
+    string Mood
+    bool IsStarred
+    string QuestionSetId FK
+    string PeriodKey
+    datetime CreatedAt
+    datetime UpdatedAt
+    datetime DeletedAt
+  }
+  THOUGHT_LINE {
+    string EntryId FK
+    int LineNo
+    string Text
+  }
+  ENTRY_PHOTO {
+    string PhotoId PK
+    string EntryId FK
+    string FilePath
+    int SortOrder
+  }
+  TAG {
+    string TagId PK
+    string Name
+  }
+  ENTRY_TAG {
+    string EntryId FK
+    string TagId FK
+  }
+  QUESTION_SET {
+    string QuestionSetId PK
+    string Name
+    bool IsBuiltIn
+    string Schedule
+  }
+  QUESTION {
+    string QuestionId PK
+    string QuestionSetId FK
+    int SortOrder
+    string Text
+  }
+  ANSWER {
+    string AnswerId PK
+    string EntryId FK
+    string QuestionId FK
+    string Text
+  }
+  LICENCE_CACHE {
+    string LicenceKey
+    string LicenceName
+    int DevicesAllowed
+    datetime ExpiryDate
+    datetime LastCheckedAt
+  }
+  STORY_CACHE {
+    string MonthDay PK
+    int Year PK
+    string StoryText
+    string SourceEntryIds
+  }</pre>
+</div>
+<table>
+<thead><tr><th>Entity</th><th>Key fields</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Entry</td><td><code>EntryId</code> (GUID text), <code>EntryType</code> (<code>dump</code>, <code>free</code>, <code>questions</code>), <code>EntryDate</code>, <code>Mood</code>, <code>IsStarred</code></td><td>One journal per user, so there is no Journal table. GUID ids keep sync and import free of clashes. <code>DeletedAt</code> marks a deletion so sync can carry it to other devices.</td></tr>
+<tr><td>Thought line</td><td><code>EntryId</code>, <code>LineNo</code> 1 to 10</td><td>Only filled lines are saved (brief, Must do 10).</td></tr>
+<tr><td>Entry photo</td><td><code>PhotoId</code>, <code>FilePath</code></td><td>The photo file sits in the app data folder; the row points to it.</td></tr>
+<tr><td>Tag, Entry tag</td><td><code>Name</code> unique, case-insensitive</td><td>Free tags, shared across entry types.</td></tr>
+<tr><td>Question set, Question</td><td><code>IsBuiltIn</code>, <code>Schedule</code> (<code>monthly-1st</code>, <code>yearly</code>, <code>weekly</code>, <code>none</code>)</td><td>Seven built-in sets are seeded by a migration: Monthly Goals, Yearly Review, Health, Fitness, Weekly Retro, Project Retro, Gratitude. Built-in sets cannot be deleted.</td></tr>
+<tr><td>Answer</td><td><code>EntryId</code>, <code>QuestionId</code></td><td><code>Entry.PeriodKey</code> (for example <code>2026-10</code> or <code>2026</code>) lets Compare line the same question up across months or years.</td></tr>
+<tr><td>Licence cache</td><td><code>LicenceName</code>, <code>DevicesAllowed</code>, <code>LastCheckedAt</code></td><td>The last successful <code>POST /LicenseSvc/validate</code>. <code>LastCheckedAt</code> drives the 30-day offline rule.</td></tr>
+<tr><td>Story cache</td><td><code>MonthDay</code>, <code>Year</code></td><td>A written On This Day story is kept so Home opens fast and offline; rewritten when an entry of that date changes.</td></tr>
+</tbody>
+</table>
+<h2 id="cross-cutting"><a id="5-cross-cutting"></a>5. Cross-cutting<a class="anchor-link" href="#cross-cutting">#</a></h2>
+<ul>
+<li><strong>Identity:</strong> AppManager through the installed-app key, with device-bound register and sign-in (guide §2.1.1, §3.1). Passwords are encrypted with AppManager's public key before sending, as the guide requires (§2.4). The access and refresh tokens are kept in <code>SecureStorage</code>; the refresh token renews the access token through <code>POST /AuthSvc/refresh</code>.
+</li>
+<li><strong>Licence and devices:</strong> after sign-in and at each licence check, <code>LicenceService</code> reads <code>POST /LicenseSvc/validate</code>. Paid or free comes from the returned licence key and licence name: "Pro" allows 2 devices; "Pro-Plus" allows the <code>devicesAllowed</code> set on the licence; no valid paid licence means free, with 1 device. AppManager reports a device over the cap but does not refuse it (guide L659), so MyDiary enforces the limit itself from <code>deviceCap.isOverCap</code>, <code>devicesUsed</code> and <code>devicesAllowed</code>, as the guide directs. For a free user AppManager returns no cap, so MyDiary counts the signed-in devices from <code>GET /AuthSvc/devices</code>. Logged as AppManager feedback AM-002.
+</li>
+<li><strong>Offline rule:</strong> the app works offline while the last successful licence check is under 30 days old; after that it must check online before the journal opens (brief, Must do 2). A device clock set backwards does not extend the period; the newest time seen is kept with the cache. &lt;!-- inferred — please verify --&gt;
+</li>
+<li><strong>Paid licence ends:</strong> paid-only features lock (backup, sync, model choice, online AI); the journal and every free feature stay on the device, and the AI setting falls back to the built-in model (brief, Must do 8).
+</li>
+<li><strong>AI:</strong> TechieRag only. A free user gets the smallest built-in on-device model (TechieRag's <code>Qwen25Instruct05B</code> with the phone search model, pinned on every platform so indexes match between devices). A paid user may pick another TechieRag model or enter their own key for an online service TechieRag supports; the key is kept in <code>SecureStorage</code>. Each entry is added to TechieRag's index under its <code>EntryId</code> when saved and replaced when edited. Three gaps are logged as TechieRag feedback: counting across every matching entry (TR-RAG-001), choosing entries by date (TR-RAG-002) and shipping the model inside the app (TR-RAG-003). The features that need them wait for TechieRag.
+</li>
+<li><strong>Backup and sync (paid):</strong> the journal file and photos are packed into one backup file in the user's own Google Drive or OneDrive app folder. Sync merges entries by <code>EntryId</code> and <code>UpdatedAt</code>, newest wins, deletions carried by <code>DeletedAt</code>. Restore replaces the journal on a new device after a confirmation. &lt;!-- inferred — please verify --&gt;
+</li>
+<li><strong>Export and import:</strong> a MyDiary JSON file holds every entry, its lines, answers, tags, mood, star and photos (as embedded data). Import reads MyDiary JSON and a Day One JSON export, matching on <code>EntryId</code> so a second import adds nothing twice.
+</li>
+<li><strong>Lock and reminders:</strong> a PIN (stored as a hash in <code>SecureStorage</code>) or the platform's fingerprint/face check guards opening the app; reminders are local notifications on the chosen days and time.
+</li>
+<li><strong>Configuration:</strong> <code>appsettings.json</code> in the head (Q1); per-user choices in MAUI <code>Preferences</code>; secrets on the device in <code>SecureStorage</code>.
+</li>
+<li><strong>Logging:</strong> Serilog to a rolling file under the app data folder, wired before anything else; no journal text, PIN, password, token or key in any log line.
+</li>
+<li><strong>Errors:</strong> every AppManager call goes through one client that maps the guide's error body (<code>error</code>, <code>message</code>, <code>statusCode</code>) to a plain message on the screen; a <code>401</code> after a password change returns to Sign in. The stock Blazor error bar stays. Network failures fall back to offline use within the 30-day rule.
+</li>
+</ul>
+<h2 id="decisions-log"><a id="6-decisions-log"></a>6. Decisions log<a class="anchor-link" href="#decisions-log">#</a></h2>
+<p>One row per decision. Every package added to the project has a row saying why.</p>
+<table>
+<thead><tr><th>Date</th><th>Decision</th><th>Why</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>2026-10-18</td><td>One MAUI Blazor Hybrid head for Android, iOS, iPadOS, Mac Catalyst and Windows</td><td>The brief requires the same screens on all five; TrBlazeUI is a Blazor library</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Package <code>TrBlazeUI.Components</code> (and <code>TrBlazeUI.Icons.Lucide</code>)</td><td>Brief: screens are built with TrBlazeUI; answer set Q8</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Packages <code>TechieRag</code>, <code>TechieRag.Embedded</code>, <code>TechieRag.Local</code></td><td>Brief: every AI feature goes through TechieRag; on-device model for free users</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Package <code>Microsoft.Data.Sqlite</code> and SQLite on the device instead of PostgreSQL</td><td>No server of its own; the journal stays on the device (brief)</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Package <code>Dapper</code></td><td>Answer set Q11.4: data access is always Dapper</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Package <code>dbup-sqlite</code> in <code>MyDiaryDb</code></td><td>Answer set Q11.5: migrations with DbUp in a dedicated project, run at startup</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Packages <code>Serilog.Extensions.Logging</code>, <code>Serilog.Sinks.File</code></td><td>Answer set Q5: Serilog file logging</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Packages <code>xunit</code>, <code>xunit.runner.visualstudio</code>, <code>Microsoft.NET.Test.Sdk</code></td><td>Answer set Q6</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Package <code>Plugin.Fingerprint</code> for fingerprint/face unlock</td><td>MAUI has no built-in biometric check; Must do 23</td><td>planned &lt;!-- inferred — please verify --&gt;</td></tr>
+<tr><td>2026-10-18</td><td>Package <code>Plugin.LocalNotification</code> for reminders</td><td>MAUI has no built-in scheduled local notification; Must do 23</td><td>planned &lt;!-- inferred — please verify --&gt;</td></tr>
+<tr><td>2026-10-18</td><td>Packages <code>Microsoft.Identity.Client</code> (OneDrive) and <code>Google.Apis.Drive.v3</code> with <code>Google.Apis.Auth</code> (Google Drive)</td><td>Backup to the user's own drive (Must do 21)</td><td>planned &lt;!-- inferred — please verify --&gt;</td></tr>
+<tr><td>2026-10-18</td><td>MyDiary enforces the device limit itself from AppManager's licence check</td><td>AppManager reports a device over the cap but does not refuse it (guide L659: "enforce it client-side")</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Medium size, 20 screens</td><td>20 routed pages counted from the brief, one signed-in role; within Medium</td><td>decided</td></tr>
+<tr><td>2026-10-18</td><td>Ask, data copy and data deletion are held until their upstream gaps are fixed</td><td>Answer set Q11.3: never work around a library gap (TR-RAG-001, AM-001)</td><td>decided</td></tr>
+</tbody>
+</table>
+<h2 id="module-responsibilities"><a id="7-module-responsibilities"></a>7. Module responsibilities<a class="anchor-link" href="#module-responsibilities">#</a></h2>
+<table>
+<thead><tr><th>Module</th><th>Responsibility</th><th>Depends on</th></tr></thead>
+<tbody>
+<tr><td><code>MyDiary</code> head</td><td>Startup, Serilog, DI, migrations, platform services, zoom on Windows and Mac</td><td><code>MyDiaryUI</code>, <code>MyDiary.Core</code>, <code>MyDiaryDb</code></td></tr>
+<tr><td><code>MyDiaryUI</code> shell</td><td>Navigation (TrBlazeUI <code>Sidebar</code>: a slide-out sheet below 768px on phones, a fixed sidebar on tablets and computers), lock gate, access gate</td><td>TrBlazeUI, <code>MyDiary.Core</code> service interfaces</td></tr>
+<tr><td><code>AccountService</code></td><td>Register, sign in and out, reset and change password, profile, problem reports, data requests</td><td>AppManager API</td></tr>
+<tr><td><code>LicenceService</code></td><td>Licence check, paid or free, device limit, 30-day offline rule, licence cache</td><td>AppManager API, SQLite</td></tr>
+<tr><td><code>DeviceService</code></td><td>Device list, forget and block</td><td>AppManager API</td></tr>
+<tr><td><code>JournalService</code></td><td>Thought Dump, Free-Flow, answers, tags, mood, star, delete, streak</td><td>Dapper repositories</td></tr>
+<tr><td><code>QuestionSetService</code></td><td>Built-in and own sets, due suggestions</td><td>Dapper repositories</td></tr>
+<tr><td><code>SearchService</code></td><td>Keyword search and filters</td><td>Dapper repositories (SQLite full-text search)</td></tr>
+<tr><td><code>OnThisDayService</code></td><td>Picks past entries for the date, asks TechieRag for each year's story, caches it</td><td><code>JournalService</code>, TechieRag</td></tr>
+<tr><td><code>AskService</code></td><td>Plain questions, counted answers, source entries, no-match reply</td><td>TechieRag, <code>JournalService</code></td></tr>
+<tr><td><code>CompareService</code></td><td>One question's answers across periods</td><td>Dapper repositories</td></tr>
+<tr><td><code>AiSettingsService</code></td><td>Model choice, online key, warning, fallback when a licence ends</td><td>TechieRag, <code>LicenceService</code>, <code>SecureStorage</code></td></tr>
+<tr><td><code>BackupService</code></td><td>Backup, sync, restore to Google Drive or OneDrive</td><td><code>LicenceService</code>, cloud drive clients</td></tr>
+<tr><td><code>TransferService</code></td><td>Export and import, including Day One</td><td><code>JournalService</code></td></tr>
+<tr><td><code>LockService</code>, <code>ReminderService</code></td><td>PIN and biometric lock; reminder notifications</td><td>Platform services</td></tr>
+</tbody>
+</table>
+<h2 id="open-questions"><a id="8-open-questions"></a>8. Open questions<a class="anchor-link" href="#open-questions">#</a></h2>
+<ul>
+<li>AppManager has no "free tier" device cap: a user with no licence gets no cap from the licence check. MyDiary counts devices itself (AM-002). The owner may prefer a free licence type with one device assigned to every new account.
+</li>
+<li>The installed-app key may not call AppManager's data-copy and data-deletion endpoints (guide L226), so Must do 3's data requests wait for AppManager (AM-001). AppManager's copy covers only account data; the journal itself is copied through Export.
+</li>
+<li>TechieRag downloads its on-device model on first use and does not ship it inside the app (TR-RAG-003); Must do 19 says "installed with the app". Until that changes, the first launch downloads about 420 MB (the 333 MB language model and the 91 MB search model).
+</li>
+<li>"Pro" and "Pro-Plus" are licence types the owner creates in AppManager; their names must match exactly.
+</li>
+</ul>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+<script>
+// Light/dark toggle. The initial theme was already applied flash-free by the
+// <head> script (saved choice, else time-of-day). Clicking flips it, saves the
+// choice, and reloads so Mermaid re-renders in the matching theme.
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  var relabel = function(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '☀ Light' : '☾ Dark';
+  };
+  relabel();
+  btn.addEventListener('click', function(){
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try{ localStorage.setItem('tf-theme', next); }catch(e){}
+    location.reload();
+  });
+})();
+
+// Copy buttons on every code <pre> — but NEVER on a `pre.mermaid`:
+// mermaid reads the <pre>'s textContent as the diagram source, so a button
+// appended here glues "copy" onto the last line and breaks the parse
+// (flowcharts → "Syntax error"; sequence diagrams silently absorb it).
+// Mermaid blocks get copy/export from their own .diagram toolbar instead.
+document.querySelectorAll('pre:not(.mermaid)').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy';
+  btn.textContent = 'copy';
+  btn.addEventListener('click', () => {
+    const text = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => { btn.textContent = 'copy'; }, 1200);
+    });
+  });
+  pre.appendChild(btn);
+});
+
+// Mermaid init — theme follows the resolved light/dark theme
+if (window.mermaid) {
+  var mermaidTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+  mermaid.initialize({ startOnLoad: true, theme: mermaidTheme, securityLevel: 'loose' });
+}
+
+// Mermaid toolbar wiring — run after mermaid renders
+function wireMermaidToolbars() {
+  document.querySelectorAll('.diagram').forEach(dia => {
+    if (dia.dataset.wired) return;
+    const merm = dia.querySelector('.mermaid');
+    const svg = merm && merm.querySelector('svg');
+    if (!svg) return;
+    dia.dataset.wired = '1';
+    let scale = 1;
+    const label = dia.querySelector('.zlabel');
+    const apply = () => {
+      svg.style.transform = `scale(${scale})`;
+      svg.style.transformOrigin = 'top left';
+      if (label) label.textContent = Math.round(scale * 100) + '%';
+    };
+    const setScale = (s) => { scale = Math.max(0.25, Math.min(4, s)); apply(); };
+    dia.querySelector('[data-zin]').onclick = () => setScale(scale * 1.2);
+    dia.querySelector('[data-zout]').onclick = () => setScale(scale / 1.2);
+    dia.querySelector('[data-fit]').onclick = () => {
+      svg.style.transform = '';
+      svg.removeAttribute('width');
+      svg.style.maxWidth = '100%';
+      svg.style.height = 'auto';
+      scale = 1;
+      if (label) label.textContent = 'Fit';
+    };
+    dia.querySelector('[data-one]').onclick = () => {
+      svg.style.transform = '';
+      svg.style.maxWidth = 'none';
+      svg.style.width = '';
+      svg.style.height = '';
+      scale = 1;
+      if (label) label.textContent = '100%';
+    };
+    dia.querySelector('[data-fs]').onclick = () => {
+      dia.classList.toggle('fs');
+      if (dia.classList.contains('fs')) {
+        document.addEventListener('keydown', escFs);
+      } else {
+        document.removeEventListener('keydown', escFs);
+      }
+    };
+    function escFs(e) { if (e.key === 'Escape') { dia.classList.remove('fs'); document.removeEventListener('keydown', escFs); } }
+    dia.querySelector('[data-pop]').onclick = () => openInNewTab(svg);
+    // Ctrl+wheel zoom
+    merm.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      setScale(scale * (e.deltaY < 0 ? 1.1 : 1/1.1));
+    }, { passive: false });
+  });
+}
+
+function openInNewTab(svg) {
+  const svgSource = new XMLSerializer().serializeToString(svg);
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Diagram</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1115;color:#e6e8ee;font-family:system-ui,sans-serif}
+  .bar{position:fixed;top:0;left:0;right:0;padding:8px 12px;background:#161a22;border-bottom:1px solid #2a3142;display:flex;gap:8px;z-index:10}
+  .bar button{background:#1c2230;color:#9aa3b2;border:1px solid #2a3142;border-radius:6px;padding:5px 12px;font-size:13px;cursor:pointer}
+  .bar button:hover{color:#7cc4ff;border-color:#7cc4ff}
+  .bar .hint{margin-left:auto;color:#9aa3b2;font-size:11.5px;align-self:center}
+  #stage{position:absolute;top:42px;bottom:0;left:0;right:0;overflow:hidden}
+  #stage svg{width:100%;height:100%}
+</style>
+</head><body>
+<div class="bar">
+  <button onclick="zpz.zoomIn()">+</button>
+  <button onclick="zpz.zoomOut()">−</button>
+  <button onclick="zpz.fit();zpz.center()">Fit</button>
+  <button onclick="zpz.resetZoom();zpz.center()">1:1</button>
+  <button onclick="window.print()">Print</button>
+  <button onclick="dlPng()">PNG</button>
+  <button onclick="dlSvg()">SVG</button>
+  <span class="hint">Drag to pan · Ctrl+wheel to zoom · + / − keys</span>
+</div>
+<div id="stage">${svgSource}</div>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"><\/script>
+<script>
+  const el = document.querySelector('#stage svg');
+  const zpz = svgPanZoom(el, { zoomScaleSensitivity: .3, minZoom: .2, maxZoom: 10, controlIconsEnabled: false, fit: true, center: true });
+  document.addEventListener('keydown', e => {
+    if (e.key === '+' || e.key === '=') zpz.zoomIn();
+    if (e.key === '-' || e.key === '_') zpz.zoomOut();
+    if (e.key === '0') { zpz.resetZoom(); zpz.center(); }
+  });
+  function dlSvg() {
+    const blob = new Blob([new XMLSerializer().serializeToString(el)], { type: 'image/svg+xml' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'diagram.svg'; a.click();
+  }
+  function dlPng() {
+    const src = new XMLSerializer().serializeToString(el);
+    const img = new Image();
+    const url = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(src)));
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = el.clientWidth * 2; c.height = el.clientHeight * 2;
+      const ctx = c.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img, 0, 0);
+      c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'diagram.png'; a.click(); });
+    };
+    img.src = url;
+  }
+<\/script>
+</body></html>`;
+  const w = window.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+// Run wiring after mermaid finishes (it renders async)
+if (window.mermaid) {
+  setTimeout(wireMermaidToolbars, 400);
+  setTimeout(wireMermaidToolbars, 1200);  // safety re-run for slow renders
+}
+</script>
+</body>
+</html>

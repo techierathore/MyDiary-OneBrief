@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>Entry details · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .nav-region { display: contents; }
+    .entry-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(260px, .8fr); gap: 16px; align-items: start; }
+    .entry-main-column, .entry-side-column { display: grid; gap: 16px; min-width: 0; }
+    .entry-headline { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
+    .entry-headline h2 { margin: 0; font-size: 21px; line-height: 1.25; letter-spacing: -.03em; }
+    .entry-date { display: block; margin-top: 6px; color: var(--muted-foreground); font-size: 11px; }
+    .entry-body { color: var(--card-foreground); font-family: Georgia, "Times New Roman", serif; font-size: 15px; line-height: 1.8; }
+    .entry-body p { margin: 0 0 14px; }
+    .entry-body p:last-child { margin-bottom: 0; }
+    .entry-body blockquote { margin: 18px 0; padding-left: 15px; border-left: 2px solid var(--primary); color: var(--muted-foreground); font-style: italic; }
+    .entry-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .star-button[aria-pressed="true"] { color: var(--primary); border-color: var(--primary); background: var(--accent); }
+    .tag-list { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 13px; }
+    .tag-editor { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+    .photo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .photo-tile { min-height: 122px; overflow: hidden; border: 1px solid var(--border); border-radius: 8px; background: var(--muted); }
+    .photo-art { display: grid; place-items: center; min-height: 93px; color: rgb(255 255 255 / .9); font-size: 24px; }
+    .photo-art-one { background: linear-gradient(135deg, #a9b79c, #64796a 55%, #d1b18a); }
+    .photo-art-two { background: linear-gradient(145deg, #d9c8aa, #9e987a 50%, #66765e); }
+    .photo-caption { padding: 6px 8px; color: var(--muted-foreground); font-size: 9px; }
+    .mood-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mood-option { display: flex; align-items: center; gap: 7px; min-height: 36px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 7px; background: var(--card); font-size: 11px; }
+    .mood-option.selected { border-color: var(--primary); background: var(--accent); color: var(--primary); }
+    .mood-option input { accent-color: var(--primary); }
+    .edit-note { margin: 12px 0 0; color: var(--muted-foreground); font-size: 10px; }
+    @media (max-width: 820px) { .entry-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) {
+      .entry-headline { flex-direction: column; }
+      .entry-headline h2 { font-size: 19px; }
+      .photo-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="nav-region" data-testid="entry-nav" role="navigation" aria-label="MyDiary navigation">
+      <aside class="sidebar">
+        <a class="brand" href="home.html" aria-label="MyDiary home"><span class="brand-mark" aria-hidden="true">✦</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">Your private journal</span></span></a>
+        <div><div class="nav-group-label">Journal</div><nav class="nav-list" aria-label="Journal screens">
+          <a class="nav-link" href="home.html"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link current" href="journal-browse.html" aria-current="page"><span class="nav-icon" aria-hidden="true">▤</span>Browse journal</a>
+          <a class="nav-link" href="entry-details.html"><span class="nav-icon" aria-hidden="true">▧</span>Entry details</a>
+        </nav></div>
+        <div class="sidebar-bottom"><a class="nav-link" href="sign-in-and-account.html"><span class="nav-icon" aria-hidden="true">◉</span>Account &amp; sign in</a></div>
+      </aside>
+      <nav class="mobile-nav" aria-label="Journal screens"><a href="home.html">Home</a><a href="journal-browse.html">Browse journal</a><a class="current" href="entry-details.html" aria-current="page">Entry details</a><a href="sign-in-and-account.html">Account</a></nav>
+    </div>
+    <div class="workspace">
+      <header class="topbar"><span class="crumb"><a href="journal-browse.html">Your journal</a> <span aria-hidden="true">/</span> Entry details</span><div class="top-actions"><span class="badge badge-info">Private entry</span><a class="avatar" href="sign-in-and-account.html" aria-label="Account and sign in" data-testid="entry-account-avatar" data-tf-sample>JD</a></div></header>
+      <main class="main">
+        <div class="page-heading">
+          <div><h1>Entry details</h1><p>Read your saved entry and keep its personal markers close.</p></div>
+          <div class="heading-actions"><a class="button button-secondary" href="journal-browse.html" data-testid="entry-back-to-journal">← Back to journal</a></div>
+        </div>
+
+        <div class="entry-layout">
+          <div class="entry-main-column">
+            <article class="card" data-testid="entry-content" aria-labelledby="entry-title">
+              <div class="card-header">
+                <div class="entry-headline">
+                  <div>
+                    <h2 id="entry-title" data-testid="entry-title-value" data-tf-sample>A walk without a plan</h2>
+                    <time class="entry-date" datetime="2026-10-24T20:18" data-testid="entry-date" data-tf-sample>Saturday, October 24, 2026 · 8:18 pm</time>
+                  </div>
+                  <span class="badge badge-outline" data-testid="entry-type" data-tf-sample>Free-flow</span>
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="entry-body" data-testid="entry-text" data-tf-sample>
+                  <p>I left the afternoon open on purpose. The air was cool enough for a jacket, and the river path was quieter than I expected.</p>
+                  <p>We walked without checking the time. There were yellow leaves caught along the edge of the water, and a dog kept trying to carry a stick that was much too big.</p>
+                  <blockquote>“I don’t have to turn every quiet day into a plan.”</blockquote>
+                  <p>On the way home we stopped for tea. Nothing extraordinary happened, which might be why I want to remember it.</p>
+                </div>
+                <hr class="separator">
+                <div class="entry-actions">
+                  <span class="small muted" data-testid="entry-word-count" data-tf-sample>86 words</span>
+                  <div class="toggle-group" role="group" aria-label="Star this entry" data-testid="entry-star">
+                    <button class="button button-outline button-small star-button" type="button" aria-pressed="true" data-testid="entry-star-toggle" onclick="showStatus('This entry is marked as starred.')"><span aria-hidden="true">★</span> Starred</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <section class="card" data-testid="entry-photos" aria-labelledby="entry-photos-heading">
+              <div class="card-header"><div><h2 class="card-title" id="entry-photos-heading">Photos</h2><p class="card-description">Images saved with this entry.</p></div><span class="badge" data-testid="entry-photo-count" data-tf-sample>2 photos</span></div>
+              <div class="card-content">
+                <div class="photo-grid" role="group" aria-label="Attached photo previews">
+                  <figure class="photo-tile" data-tf-sample><div class="photo-art photo-art-one" role="img" aria-label="Placeholder preview of a quiet riverside walk">◌</div><figcaption class="photo-caption" data-testid="entry-photo-1-caption">Riverside, late afternoon</figcaption></figure>
+                  <figure class="photo-tile" data-tf-sample><div class="photo-art photo-art-two" role="img" aria-label="Placeholder preview of a cup of tea">◌</div><figcaption class="photo-caption" data-testid="entry-photo-2-caption">Tea on the way home</figcaption></figure>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="entry-side-column" aria-label="Entry markers">
+            <section class="card" data-testid="entry-tags" aria-labelledby="entry-tags-heading">
+              <div class="card-header"><div><h2 class="card-title" id="entry-tags-heading">Tags</h2><p class="card-description">A few words to help you find this later.</p></div></div>
+              <div class="card-content">
+                <div class="tag-list" aria-label="Saved tags">
+                  <span class="badge badge-outline" data-testid="entry-tag-1" data-tf-sample>outside</span>
+                  <span class="badge badge-outline" data-testid="entry-tag-2" data-tf-sample>slow days</span>
+                  <span class="badge badge-outline" data-testid="entry-tag-3" data-tf-sample>small joys</span>
+                </div>
+                <div class="tag-editor popup-group" data-testid="entry-tags-dropdown">
+                  <button class="button button-secondary button-small" type="button" aria-haspopup="listbox" aria-expanded="true" data-testid="entry-tags-edit" onclick="showStatus('Choose one or more saved tags from the open list.')">Edit tags <span aria-hidden="true">⌄</span></button>
+                  <div class="popup-panel" role="listbox" aria-label="Saved tags" aria-multiselectable="true" data-testid="entry-tags-options" data-tf-state="popup-open">
+                    <button class="popup-option selected" type="button" role="option" aria-selected="true" data-testid="entry-tags-option-outside" data-tf-sample onclick="showStatus('Outside tag selected in this preview.')">Outside</button>
+                    <button class="popup-option selected" type="button" role="option" aria-selected="true" data-testid="entry-tags-option-small-joys" data-tf-sample onclick="showStatus('Small joys tag selected in this preview.')">Small joys</button>
+                    <button class="popup-option" type="button" role="option" aria-selected="false" data-testid="entry-tags-option-work" data-tf-sample onclick="showStatus('Work tag selected in this preview.')">Work</button>
+                  </div>
+                  <span class="hint">Changes are saved with this entry.</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="card" data-testid="entry-mood" aria-labelledby="entry-mood-heading">
+              <div class="card-header"><div><h2 class="card-title" id="entry-mood-heading">How did this feel?</h2><p class="card-description">Choose one mood for this entry.</p></div></div>
+              <div class="card-content">
+                <div class="mood-options" role="radiogroup" aria-labelledby="entry-mood-heading">
+                  <label class="mood-option" data-tf-sample><input type="radio" name="mood" value="calm" data-testid="entry-mood-calm"> Calm</label>
+                  <label class="mood-option" data-tf-sample><input type="radio" name="mood" value="grateful" data-testid="entry-mood-grateful"> Grateful</label>
+                  <label class="mood-option" data-tf-sample><input type="radio" name="mood" value="hopeful" data-testid="entry-mood-hopeful"> Hopeful</label>
+                  <label class="mood-option selected" data-tf-sample><input type="radio" name="mood" value="reflective" checked data-testid="entry-mood-reflective"> Reflective</label>
+                </div>
+                <p class="edit-note">Your mood is private and can be changed at any time.</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+        <p class="status-message" id="page-status" data-testid="page-status" role="status" aria-live="polite" hidden></p>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      const status = document.querySelector('[data-testid="page-status"]');
+      status.textContent = message;
+      status.hidden = false;
+    }
+  </script>
+</body>
+</html>

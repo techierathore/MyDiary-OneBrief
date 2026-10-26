@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan and devices — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item active"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">You / Plan and devices</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="plan-devices-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Plan and devices</h1>
+        <p>Your plan, when it ends, and every device signed in to your account.</p>
+      </div>
+
+      <!-- BRD-79: paid licence has ended -->
+      <div class="alert alert-warning" data-tf-state="licence-ended" data-testid="licence-ended-alert" hidden>
+        <span class="i i-alert i-lg"></span>
+        <div>
+          <div class="t">Your Pro licence ended on 31 March 2027</div>
+          <div class="d">Your Pro licence ended on 31 March 2027. You are on Free now. Your whole journal stays on this device; backup, sync and model choice are paused.</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Plan (BRD-72, BRD-75) -->
+        <section class="card" data-testid="plan-card">
+          <div class="card-header row">
+            <div><div class="card-title">Your plan</div><div class="card-description">Set by your licence</div></div>
+            <span class="badge" data-testid="plan-badge">Pro</span>
+          </div>
+          <div class="card-content stack">
+            <div class="row between"><span class="muted">Ends</span><span data-testid="plan-ends">31 March 2027</span></div>
+            <div class="row between"><span class="muted">From licence key</span><span class="small" data-testid="plan-licence-key">PRO-7Q2K-…</span></div>
+            <div class="row between"><span class="muted">Devices allowed</span><span data-testid="plan-device-note">Pro allows 2 devices</span></div>
+            <div class="row between"><span class="muted">Last licence check</span><span>Today, 8:12 am</span></div>
+            <!-- BRD-76: Pro-Plus variant -->
+            <div class="mock-note" data-tf-state="pro-plus" data-testid="plan-pro-plus-note">Pro-Plus · 5 devices, set on your licence</div>
+          </div>
+        </section>
+
+        <!-- Plan, free variant (BRD-73) -->
+        <section class="card" data-tf-state="free-plan" data-testid="plan-card-free">
+          <div class="card-header row">
+            <div><div class="card-title">Your plan</div><div class="card-description">No paid licence on this account</div></div>
+            <span class="badge badge-secondary" data-testid="plan-badge-free">Free</span>
+          </div>
+          <div class="card-content stack">
+            <p>Free — one device. Your whole journal stays on this device, with the built-in AI model.</p>
+            <p class="small muted">Paid licences are assigned by the MyDiary owner.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Devices (BRD-74, BRD-77, BRD-78) -->
+      <section class="card" data-testid="devices-card">
+        <div class="card-header row">
+          <div><div class="card-title">Devices</div><div class="card-description">Every device signed in to this account</div></div>
+          <span class="badge badge-warning" data-testid="devices-count-badge">2 of 2 devices in use</span>
+        </div>
+        <div class="card-content stack">
+          <div class="progress" data-testid="devices-progress"><span style="width:100%"></span></div>
+          <div class="table-wrap">
+            <table class="table" data-testid="devices-table">
+              <thead><tr><th>Device</th><th>Type and system</th><th>Last seen</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr data-testid="device-row">
+                  <td><div class="row"><span class="i i-phone"></span>Asha's Pixel 8</div></td>
+                  <td>Phone · Android 15</td>
+                  <td>Now</td>
+                  <td><span class="badge badge-info" data-testid="device-status">This device</span></td>
+                  <td></td>
+                </tr>
+                <tr data-tf-sample data-testid="device-row-2">
+                  <td><div class="row"><span class="i i-phone"></span>Asha's iPad</div></td>
+                  <td>Tablet · iPadOS 19</td>
+                  <td>2 October 2026</td>
+                  <td><span class="badge badge-success" data-testid="device-status-2">Active</span></td>
+                  <td><div class="item-actions">
+                    <a href="#dlg-forget" class="btn btn-outline btn-sm" data-testid="device-forget">Forget</a>
+                    <a href="#dlg-block" class="btn btn-ghost btn-sm" data-testid="device-block">Block</a>
+                  </div></td>
+                </tr>
+                <tr data-tf-sample data-testid="device-row-3">
+                  <td><div class="row"><span class="i i-phone"></span>Asha's old phone</div></td>
+                  <td>Phone · Android 13</td>
+                  <td>14 June 2026</td>
+                  <td><span class="badge badge-danger" data-testid="device-status-3">Blocked</span></td>
+                  <td><div class="item-actions">
+                    <button class="btn btn-outline btn-sm" type="button" onclick="msg('Asha’s old phone is unblocked. It can sign in again if a slot is free.')" data-testid="device-unblock">Unblock</button>
+                  </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted" data-testid="devices-note">Pro allows 2 devices. Blocked devices do not use a slot. Forgetting or blocking a device signs it out; its journal stays on it.</p>
+        </div>
+      </section>
+
+      <!-- Dialog: Forget device -->
+      <div class="dialog-overlay" id="dlg-forget" data-testid="dlg-forget">
+        <div class="dialog">
+          <div class="dialog-header">
+            <div class="dialog-title">Forget Asha's iPad?</div>
+          </div>
+          <div class="dialog-body">
+            <p class="small">Forget Asha's iPad? It is signed out and frees a slot. Its journal stays on it.</p>
+          </div>
+          <div class="dialog-footer">
+            <a href="plan-devices.html" class="btn btn-outline" data-testid="forget-cancel">Cancel</a>
+            <button class="btn" type="button" onclick="msg('Device forgotten. 1 of 2 devices in use.')" data-testid="forget-confirm">Forget device</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dialog: Block device (AlertDialog) -->
+      <div class="dialog-overlay" id="dlg-block" data-testid="dlg-block">
+        <div class="dialog">
+          <div class="dialog-header">
+            <div class="dialog-title">Block Asha's iPad?</div>
+          </div>
+          <div class="dialog-body">
+            <p class="small">Block Asha's iPad? It is signed out and cannot sign in again until you unblock it from another device.</p>
+          </div>
+          <div class="dialog-footer">
+            <a href="plan-devices.html" class="btn btn-outline" data-testid="block-cancel">Cancel</a>
+            <button class="btn btn-destructive" type="button" onclick="msg('Device blocked. It cannot sign in until you unblock it.')" data-testid="block-confirm">Block device</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

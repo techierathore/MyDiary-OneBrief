@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>Sign in · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .account-page { min-height: 100vh; display: grid; place-items: center; padding: 28px 16px; }
+    .account-wrap { width: min(100%, 456px); }
+    .account-brand { display: flex; align-items: center; justify-content: center; gap: 11px; margin-bottom: 22px; }
+    .account-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: var(--primary); color: var(--primary-foreground); font-size: 19px; }
+    .account-title { margin: 0; font-size: 20px; line-height: 1.15; letter-spacing: -.035em; }
+    .account-subtitle { margin: 4px 0 0; color: var(--muted-foreground); font-size: 12px; }
+    .account-card { overflow: hidden; }
+    .account-card > .card-header { display: block; padding: 22px 24px 12px; }
+    .account-card > .card-content { padding: 10px 24px 21px; }
+    .account-tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; margin-bottom: 20px; }
+    .account-tabs .tab { min-height: 36px; }
+    .account-fields { display: grid; gap: 14px; }
+    .account-fields .field + .field { margin-top: 0; }
+    .account-help { margin-top: 6px; }
+    .account-actions { display: grid; gap: 12px; margin-top: 19px; }
+    .account-actions .button { width: 100%; min-height: 40px; }
+    .account-reset { text-align: center; color: var(--primary); font-size: 12px; font-weight: 550; }
+    .account-limit { margin-top: 16px; align-items: flex-start; }
+    .account-limit-icon { color: var(--warning); font-size: 15px; line-height: 1; }
+    .account-limit strong { display: block; margin-bottom: 2px; font-size: 11px; }
+    .account-limit p { margin: 0; color: var(--muted-foreground); font-size: 11px; }
+    .account-privacy { margin: 18px 8px 0; text-align: center; color: var(--muted-foreground); font-size: 10px; }
+    .status-message { text-align: center; }
+    @media (max-width: 480px) {
+      .account-page { padding: 20px 12px; }
+      .account-card > .card-header { padding: 18px 17px 10px; }
+      .account-card > .card-content { padding: 10px 17px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="account-page">
+    <div class="account-wrap" data-testid="account-panel">
+      <header class="account-brand">
+        <div class="account-mark" aria-hidden="true">✦</div>
+        <div>
+          <p class="account-title">MyDiary</p>
+          <p class="account-subtitle">A private place for your thoughts</p>
+        </div>
+      </header>
+
+      <section class="card account-card" aria-labelledby="account-heading">
+        <div class="card-header">
+          <div>
+            <h1 class="card-title" id="account-heading">Welcome back</h1>
+            <p class="card-description">Sign in to open your journal, or create an account to get started.</p>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="tabs account-tabs" role="tablist" aria-label="Account access" data-testid="account-tabs">
+            <button class="tab active" type="button" role="tab" aria-selected="true" data-testid="account-tab-sign-in" onclick="showStatus('Sign in is selected. Enter your account details below.')">Sign in</button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-testid="account-tab-create" onclick="showStatus('Create an account with your AppManager account details.')">Create account</button>
+          </div>
+
+          <form aria-label="Sign in or create a MyDiary account" onsubmit="return false">
+            <div class="account-fields">
+              <div class="field" data-testid="account-email">
+                <label class="label" for="account-email-input">Email</label>
+                <input class="input" id="account-email-input" name="email" type="email" autocomplete="email" placeholder="name@example.com" required data-testid="account-email-input">
+              </div>
+              <div class="field" data-testid="account-password">
+                <label class="label" for="account-password-input">Password</label>
+                <input class="input" id="account-password-input" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required data-testid="account-password-input">
+              </div>
+            </div>
+
+            <div class="account-actions">
+              <a class="button" href="home.html" data-testid="account-submit">Sign in to MyDiary <span aria-hidden="true">→</span></a>
+              <a class="account-reset" href="password-reset.html" data-testid="account-forgot-password">Forgot your password?</a>
+            </div>
+          </form>
+          <p class="status-message" id="page-status" data-testid="page-status" role="status" aria-live="polite" hidden></p>
+        </div>
+      </section>
+
+      <aside class="alert alert-warning account-limit" data-testid="account-device-limit" aria-label="Device limit information">
+        <span class="account-limit-icon" aria-hidden="true">ⓘ</span>
+        <div>
+          <strong>About device limits</strong>
+          <p>If a sign-in is refused because all device slots are in use, free a slot on another device. Free plans include one device; paid licences allow more.</p>
+        </div>
+      </aside>
+      <p class="account-privacy">Your journal stays private and is never included in account sign-in requests.</p>
+    </div>
+  </main>
+  <script>
+    function showStatus(message) {
+      const status = document.querySelector('[data-testid="page-status"]');
+      status.textContent = message;
+      status.hidden = false;
+    }
+  </script>
+</body>
+</html>

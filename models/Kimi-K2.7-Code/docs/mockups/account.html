@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Account</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="account-app-bar">
+      <div class="app-bar-title">Account</div>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="account-profile-card">
+        <div class="profile-header">
+          <div class="avatar" data-testid="account-avatar">JD</div>
+          <div>
+            <div class="profile-name" style="font-weight: 700; font-size: 1.125rem; color: var(--slate-900);" data-testid="account-name">Jane Doe</div>
+            <div style="font-size: 0.875rem; color: var(--slate-500);" data-testid="account-email">jane@example.com</div>
+          </div>
+        </div>
+        <a href="#edit-profile" class="btn btn-secondary btn-block mt-3" data-testid="account-edit-profile">Edit profile</a>
+      </div>
+
+      <div class="card" data-testid="account-plan-card">
+        <div class="section-title">Plan</div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--slate-100);">
+          <span style="font-size: 0.9375rem; color: var(--slate-600);">Current plan</span>
+          <span style="font-weight: 700;" data-testid="account-plan-name">Pro</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--slate-100);">
+          <span style="font-size: 0.9375rem; color: var(--slate-600);">Expires</span>
+          <span style="font-weight: 500;" data-testid="account-plan-expiry">18 Oct 2027</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 0;">
+          <span style="font-size: 0.9375rem; color: var(--slate-600);">Devices</span>
+          <span style="font-weight: 500;" data-testid="account-device-count">1 of 2</span>
+        </div>
+      </div>
+
+      <div class="card" data-testid="account-devices-card">
+        <div class="section-title">Devices</div>
+        <div class="device-item" data-testid="account-device">
+          <div class="device-icon">📱</div>
+          <div class="device-info">
+            <div class="device-name">Jane's Phone</div>
+            <div class="device-meta">Android · last seen today</div>
+          </div>
+          <div class="device-actions">
+            <a href="#" data-testid="account-forget-device" onclick="alert('Device forgotten');">Forget</a>
+            <a href="#" class="danger" data-testid="account-block-device" onclick="alert('Device blocked');">Block</a>
+          </div>
+        </div>
+        <div class="device-item" data-testid="account-device" data-tf-sample="sample">
+          <div class="device-icon">💻</div>
+          <div class="device-info">
+            <div class="device-name">Jane's Laptop</div>
+            <div class="device-meta">Windows · last seen yesterday</div>
+          </div>
+          <div class="device-actions">
+            <a href="#" data-testid="account-forget-device" onclick="alert('Device forgotten');">Forget</a>
+            <a href="#" class="danger" data-testid="account-block-device" onclick="alert('Device blocked');">Block</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-testid="account-actions-card">
+        <div class="section-title">Actions</div>
+        <a href="#change-password" class="btn btn-secondary btn-block mb-2" data-testid="account-change-password">Change password</a>
+        <a href="settings.html" class="btn btn-secondary btn-block mb-2" data-testid="account-settings-link">Settings</a>
+        <a href="backup.html" class="btn btn-secondary btn-block mb-2" data-testid="account-backup-link">Backup & Restore</a>
+        <a href="export.html" class="btn btn-secondary btn-block mb-2" data-testid="account-export-link">Export & Import</a>
+        <a href="#problem-report" class="btn btn-secondary btn-block mb-2" data-testid="account-problem-report">Report a problem</a>
+        <a href="#data-request" class="btn btn-secondary btn-block mb-2" data-testid="account-data-request">Request account data</a>
+        <a href="#delete-request" class="btn btn-danger btn-block mb-2" data-testid="account-delete-request">Request account deletion</a>
+        <a href="sign-in.html" class="btn btn-ghost btn-block" data-testid="account-sign-out">Sign out</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="edit-profile" data-tf-state="popup-open" data-testid="account-edit-profile-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Edit profile</div>
+        <div class="field"><input type="text" class="input" value="Jane" data-testid="account-edit-firstname"></div>
+        <div class="field"><input type="text" class="input" value="Doe" data-testid="account-edit-lastname"></div>
+        <div class="field"><input type="tel" class="input" value="+1234567890" data-testid="account-edit-mobile"></div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="account-edit-save" onclick="alert('Profile saved');">Save</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="account-edit-cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="change-password" data-tf-state="popup-open" data-testid="account-change-password-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Change password</div>
+        <div class="field"><input type="password" class="input" placeholder="Current password" data-testid="account-current-password"></div>
+        <div class="field"><input type="password" class="input" placeholder="New password" data-testid="account-new-password"></div>
+        <div class="field"><input type="password" class="input" placeholder="Confirm new password" data-testid="account-confirm-password"></div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="account-change-password-save" onclick="alert('Password changed');">Change</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="account-change-password-cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="problem-report" data-tf-state="popup-open" data-testid="account-problem-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Report a problem</div>
+        <div class="field"><input type="text" class="input" placeholder="Title" data-testid="account-problem-title"></div>
+        <div class="field"><textarea class="textarea" placeholder="What happened?" data-testid="account-problem-description" style="min-height: 80px;"></textarea></div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="account-problem-submit" onclick="alert('Problem reported');">Submit</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="account-problem-cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="data-request" data-tf-state="popup-open" data-testid="account-data-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Request account data</div>
+        <div class="field">
+          <select class="select" data-testid="account-data-action"><option>Send me a copy</option><option>Delete my data</option></select>
+        </div>
+        <div class="field"><input type="text" class="input" placeholder="Type DELETE to confirm" data-testid="account-data-confirm"></div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="account-data-submit" onclick="alert('Data request submitted');">Request</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="account-data-cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="delete-request" data-tf-state="popup-open" data-testid="account-delete-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Request account deletion</div>
+        <p style="font-size: 0.875rem; color: var(--slate-500); margin-bottom: 16px;">This requests deletion through AppManager. Your journal on this device will remain until deletion is confirmed.</p>
+        <div class="field"><input type="text" class="input" placeholder="Type DELETE to confirm" data-testid="account-delete-confirm"></div>
+        <a href="#" class="btn btn-danger btn-block" data-testid="account-delete-submit" onclick="alert('Deletion requested');">Request deletion</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="account-delete-cancel">Cancel</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

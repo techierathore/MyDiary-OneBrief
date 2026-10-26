@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDiary — Create account</title>
+<link rel="stylesheet" href="mockup.css">
+</head>
+<body class="auth">
+<div class="auth-card" data-testid="register-card">
+  <div class="auth-logo" data-testid="app-logo">MD</div>
+  <h1 data-testid="page-title">Create your account</h1>
+  <p class="muted small">Your journal stays on this device.</p>
+  <div class="stack mt">
+    <div class="row">
+      <label class="field col">
+        <span class="field-label">First name</span>
+        <input class="input" type="text" placeholder="Ada" data-testid="first-name-input">
+      </label>
+      <label class="field col">
+        <span class="field-label">Last name</span>
+        <input class="input" type="text" placeholder="Lovelace" data-testid="last-name-input">
+      </label>
+    </div>
+    <label class="field">
+      <span class="field-label">Email</span>
+      <input class="input" type="email" placeholder="you@example.com" data-testid="email-input">
+    </label>
+    <label class="field">
+      <span class="field-label">Password</span>
+      <input class="input" type="password" placeholder="••••••••" data-testid="password-input">
+    </label>
+    <label class="field">
+      <span class="field-label">Confirm password</span>
+      <input class="input" type="password" placeholder="••••••••" data-testid="confirm-password-input">
+    </label>
+    <a class="btn" href="home.html" data-testid="register-submit">Create account</a>
+    <a class="btn-link small" href="signin.html" data-testid="link-back-signin">Already have an account? Sign in</a>
+  </div>
+</div>
+<script>function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question sets — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item active"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb"><a href="home.html">Write</a> / <span>Question sets</span></div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="question-sets-page">
+      <div class="row between">
+        <div class="page-head">
+          <h1 data-testid="page-title">Question sets</h1>
+          <p>Answer the same questions over time and see how your answers change.</p>
+        </div>
+        <a href="#dlg-build-set" class="btn" data-testid="qs-build"><span class="i i-plus"></span>Build a set</a>
+      </div>
+
+      <section class="grid-3" data-testid="qs-builtin">
+        <article class="card" data-testid="qs-card-monthly-goals">
+          <div class="card-header row"><div><div class="card-title">Monthly Goals</div><div class="card-description">5 questions · 1st of each month</div></div><span class="badge badge-secondary" data-testid="qs-builtin-badge">Built-in</span></div>
+          <div class="card-content small muted">What you want from the month ahead, and how last month went.</div>
+          <div class="card-footer row between"><a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-monthly-goals">Start</a><a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-monthly-goals">Compare answers</a></div>
+        </article>
+        <article class="card" data-testid="qs-card-yearly-review">
+          <div class="card-header row"><div><div class="card-title">Yearly Review</div><div class="card-description">8 questions · 31 December</div></div><span class="badge badge-secondary">Built-in</span></div>
+          <div class="card-content small muted">The big picture: highs, lows and what comes next.</div>
+          <div class="card-footer row between"><a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-yearly-review">Start</a><a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-yearly-review">Compare answers</a></div>
+        </article>
+        <article class="card" data-testid="qs-card-health">
+          <div class="card-header row"><div><div class="card-title">Health</div><div class="card-description">6 questions · 1st of each month</div></div><span class="badge badge-secondary">Built-in</span></div>
+          <div class="card-content small muted">Sleep, food, energy and how your body feels.</div>
+          <div class="card-footer row between"><a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-health">Start</a><a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-health">Compare answers</a></div>
+        </article>
+        <article class="card" data-testid="qs-card-fitness">
+          <div class="card-header row"><div><div class="card-title">Fitness</div><div class="card-description">5 questions · Every Sunday</div></div><span class="badge badge-secondary">Built-in</span></div>
+          <div class="card-content small muted">Runs, workouts and what is getting easier.</div>
+          <div class="card-footer row between"><a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-fitness">Start</a><a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-fitness">Compare answers</a></div>
+        </article>
+        <article class="card" data-testid="qs-card-weekly-retro" style="border-color:var(--primary)">
+          <div class="card-header row"><div><div class="card-title">Weekly Retro</div><div class="card-description">5 questions · Every Sunday</div></div><div class="stack" style="gap:.3rem;align-items:flex-end"><span class="badge badge-secondary">Built-in</span><span class="badge badge-warning" data-testid="qs-due-badge">Due today</span></div></div>
+          <div class="card-content small muted">What went well, what did not, and what to change.</div>
+          <div class="card-footer row between"><a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-weekly-retro">Start</a><a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-weekly-retro">Compare answers</a></div>
+        </article>
+        <article class="card" data-testid="qs-card-project-retro">
+          <div class="card-header row"><div><div class="card-title">Project Retro</div><div class="card-description">6 questions · Any time</div></div><span class="badge badge-secondary">Built-in</span></div>
+          <div class="card-content small muted">Look back on a project once it ends, or at a milestone.</div>
+          <div class="card-footer row between"><a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-project-retro">Start</a><a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-project-retro">Compare answers</a></div>
+        </article>
+        <article class="card" data-testid="qs-card-gratitude">
+          <div class="card-header row"><div><div class="card-title">Gratitude</div><div class="card-description">3 questions · Any time</div></div><span class="badge badge-secondary">Built-in</span></div>
+          <div class="card-content small muted">Three small things you are thankful for today.</div>
+          <div class="card-footer row between"><a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-gratitude">Start</a><a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-gratitude">Compare answers</a></div>
+        </article>
+      </section>
+
+      <section class="stack" data-testid="qs-mine">
+        <h2 style="font-size:1.125rem">Your sets</h2>
+        <div class="grid-3">
+          <article class="card" data-tf-sample data-testid="qs-card-custom">
+            <div class="card-header row"><div><div class="card-title">Kitchen redo check-in</div><div class="card-description">4 questions · Every Sunday</div></div><span class="badge badge-outline" data-testid="qs-custom-badge">Yours</span></div>
+            <div class="card-content small muted">Budget, progress and the next decision on the kitchen.</div>
+            <div class="card-footer row between">
+              <a href="answer-questions.html" class="btn btn-sm" data-testid="qs-start-custom">Start</a>
+              <div class="row">
+                <a href="compare.html" class="btn btn-ghost btn-sm" data-testid="qs-compare-custom">Compare answers</a>
+                <a href="#dlg-delete-set" class="btn btn-ghost btn-sm" style="color:var(--destructive)" data-testid="qs-delete-custom"><span class="i i-trash"></span>Delete</a>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="empty" data-tf-state="empty" data-testid="qs-mine-empty" hidden>
+          <span class="i i-check i-xl"></span>
+          <div class="title">No sets of your own yet</div>
+          <div>Build a set with your own questions, for a project or a habit.</div>
+          <a href="#dlg-build-set" class="btn btn-sm">Build a set</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Dialog: Build question set -->
+    <div class="dialog-overlay" id="dlg-build-set" data-testid="dlg-build-set">
+      <div class="dialog">
+        <div class="dialog-header">
+          <div class="dialog-title">Build question set</div>
+          <div class="card-description">Your own questions, answered on your own schedule.</div>
+        </div>
+        <div class="dialog-body">
+          <div class="field">
+            <label class="field-label" for="bs-name">Set name</label>
+            <input class="input" id="bs-name" data-testid="bs-name" value="Kitchen redo check-in">
+          </div>
+          <div class="field" data-testid="bs-questions">
+            <span class="field-label">Questions</span>
+            <div class="row" style="flex-wrap:nowrap"><span class="muted small">1</span><input class="input" data-testid="bs-question-1" value="What got done on the kitchen this week?"></div>
+            <div class="row" style="flex-wrap:nowrap"><span class="muted small">2</span><input class="input" data-testid="bs-question-2" value="How much did I spend, and is it still on budget?"></div>
+            <div class="row" style="flex-wrap:nowrap"><span class="muted small">3</span><input class="input" data-testid="bs-question-3" placeholder="Next question"></div>
+            <div><button type="button" class="btn btn-outline btn-sm" data-testid="bs-add-question" onclick="msg('Question added')"><span class="i i-plus"></span>Add question</button></div>
+            <div class="field-error" data-tf-state="error" data-testid="bs-error" hidden>Add a name and at least one question.</div>
+          </div>
+          <div class="field" data-testid="bs-schedule">
+            <span class="field-label">Schedule</span>
+            <div class="toggle-group joined">
+              <button type="button" class="toggle" data-testid="bs-schedule-none" data-msg="No schedule" onclick="return pick(this)">None</button>
+              <button type="button" class="toggle on" data-testid="bs-schedule-weekly" data-msg="Due every Sunday" onclick="return pick(this)">Weekly</button>
+              <button type="button" class="toggle" data-testid="bs-schedule-monthly" data-msg="Due on the 1st of each month" onclick="return pick(this)">Monthly on the 1st</button>
+              <button type="button" class="toggle" data-testid="bs-schedule-yearly" data-msg="Due every 31 December" onclick="return pick(this)">Yearly</button>
+            </div>
+            <div class="field-description">MyDiary suggests the set on Home when it is due.</div>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <a href="question-sets.html" class="btn btn-outline" data-testid="bs-cancel">Cancel</a>
+          <button type="button" class="btn" data-testid="bs-save" onclick="msg('Question set saved')">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AlertDialog: Delete question set -->
+    <div class="dialog-overlay" id="dlg-delete-set" data-testid="dlg-delete-set">
+      <div class="dialog" role="alertdialog">
+        <div class="dialog-header">
+          <div class="dialog-title">Delete "Kitchen redo check-in"?</div>
+          <div class="card-description">The set is removed. Answers you already saved stay in your journal as entries.</div>
+        </div>
+        <div class="dialog-footer">
+          <a href="question-sets.html" class="btn btn-outline" data-testid="ds-cancel">Cancel</a>
+          <a href="question-sets.html" class="btn btn-destructive" data-testid="ds-confirm">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

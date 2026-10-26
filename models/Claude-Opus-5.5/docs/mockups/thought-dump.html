@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thought Dump — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item active"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb"><a href="home.html">Write</a> / <span>Thought Dump</span></div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="thought-dump-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Thought Dump</h1>
+        <p>Ten quick lines. Write what's on your mind, no thinking twice.</p>
+      </div>
+
+      <form action="home.html" class="card" data-testid="dump-form">
+        <div class="card-header row">
+          <div><div class="card-title">Sunday, 18 October 2026</div><div class="card-description" data-testid="dump-time">8:12 am</div></div>
+          <span class="badge badge-secondary" data-testid="dump-count">6 of 10 lines</span>
+        </div>
+        <div class="card-content form">
+          <div class="field" data-testid="dump-lines">
+            <div class="stack" style="gap:.45rem">
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">1</span><input class="input" data-testid="dump-line-1" value="Finish the tax papers before Wednesday" autofocus></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">2</span><input class="input" data-testid="dump-line-2" value="Call Mum about Diwali plans"></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">3</span><input class="input" data-testid="dump-line-3" value=""></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">4</span><input class="input" data-testid="dump-line-4" value="Two coffees again, switch the second one to tea"></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">5</span><input class="input" data-testid="dump-line-5" value="The basil on the balcony needs a bigger pot"></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">6</span><input class="input" data-testid="dump-line-6" value="Kitchen redo: ask about the tiles on Monday"></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">7</span><input class="input" data-testid="dump-line-7" value="Run 5 km tomorrow morning, before work"></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">8</span><input class="input" data-testid="dump-line-8" value=""></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">9</span><input class="input" data-testid="dump-line-9" value=""></div>
+              <div class="row" style="flex-wrap:nowrap"><span class="muted small" style="width:1.5rem;text-align:right">10</span><input class="input" data-testid="dump-line-10" value=""></div>
+            </div>
+            <div class="field-description" data-testid="dump-enter-hint">Press Enter to move to the next line</div>
+          </div>
+
+          <div class="separator"></div>
+
+          <div class="field" data-testid="dump-mood">
+            <span class="field-label">Mood</span>
+            <div class="toggle-group" data-testid="mood-picker">
+              <button type="button" class="toggle" data-testid="mood-great" data-msg="Mood set to Great" onclick="return pick(this)"><span class="mood">😄</span>Great</button>
+              <button type="button" class="toggle on" data-testid="mood-good" data-msg="Mood set to Good" onclick="return pick(this)"><span class="mood">😊</span>Good</button>
+              <button type="button" class="toggle" data-testid="mood-calm" data-msg="Mood set to Calm" onclick="return pick(this)"><span class="mood">😌</span>Calm</button>
+              <button type="button" class="toggle" data-testid="mood-okay" data-msg="Mood set to Okay" onclick="return pick(this)"><span class="mood">😐</span>Okay</button>
+              <button type="button" class="toggle" data-testid="mood-low" data-msg="Mood set to Low" onclick="return pick(this)"><span class="mood">😔</span>Low</button>
+              <button type="button" class="toggle" data-testid="mood-stressed" data-msg="Mood set to Stressed" onclick="return pick(this)"><span class="mood">😣</span>Stressed</button>
+            </div>
+          </div>
+
+          <div class="field" data-testid="dump-tags">
+            <span class="field-label">Tags</span>
+            <div class="input-group" style="flex-wrap:wrap;padding:.3rem .5rem;min-height:2.5rem">
+              <span class="badge badge-secondary" data-testid="tag-chip-work">work <button type="button" style="border:none;background:none;cursor:pointer" aria-label="Remove work" data-testid="tag-remove-work" onclick="return untag(this)"><span class="i i-x" style="width:12px;height:12px"></span></button></span>
+              <span class="badge badge-secondary" data-testid="tag-chip-family">family <button type="button" style="border:none;background:none;cursor:pointer" aria-label="Remove family" data-testid="tag-remove-family" onclick="return untag(this)"><span class="i i-x" style="width:12px;height:12px"></span></button></span>
+              <input class="input" style="flex:1;min-width:8rem;height:2rem" placeholder="Add a tag" data-testid="dump-tag-input">
+            </div>
+          </div>
+
+          <p class="small muted" data-testid="dump-empty-note">Empty lines are dropped when you save.</p>
+
+          <div class="alert alert-danger" data-tf-state="error" data-testid="dump-error" hidden>
+            <span class="i i-alert i-lg"></span>
+            <div><div class="t">Nothing to save</div><div class="d">Write at least one line before saving.</div></div>
+          </div>
+        </div>
+        <div class="card-footer" style="justify-content:flex-end">
+          <a href="home.html" class="btn btn-outline" data-testid="dump-cancel">Cancel</a>
+          <button type="submit" class="btn" data-testid="dump-save">Save</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+</body>
+</html>

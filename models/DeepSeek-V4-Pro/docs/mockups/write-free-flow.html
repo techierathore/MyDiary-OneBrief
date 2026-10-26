@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDiary — Free-Flow</title>
+<link rel="stylesheet" href="mockup.css">
+</head>
+<body class="app">
+<aside class="sidebar" data-testid="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo" data-testid="app-logo">MD</div>
+    <div><div class="sidebar-title">MyDiary</div><div class="sidebar-sub">Free plan</div></div>
+  </div>
+  <nav class="sidebar-nav" data-testid="sidebar-nav">
+    <div class="nav-section">Journal</div>
+    <a class="nav-item active" href="home.html" data-testid="nav-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+    <a class="nav-item" href="entries.html" data-testid="nav-entries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>Entries</a>
+    <a class="nav-item" href="on-this-day.html" data-testid="nav-on-this-day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>On This Day</a>
+    <a class="nav-item" href="ask.html" data-testid="nav-ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>Ask your journal</a>
+    <a class="nav-item" href="questions.html" data-testid="nav-questions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>Question sets</a>
+    <div class="nav-section">Account</div>
+    <a class="nav-item" href="plan.html" data-testid="nav-plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg>Plan and devices</a>
+    <a class="nav-item" href="backup.html" data-testid="nav-backup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 .5-9 6 6 0 0 0-11.9 1A4 4 0 0 0 6 19z"/></svg>Backup and sync</a>
+    <a class="nav-item" href="import-export.html" data-testid="nav-import-export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Import and export</a>
+    <a class="nav-item" href="security.html" data-testid="nav-security"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Lock and reminders</a>
+    <a class="nav-item" href="ai-model.html" data-testid="nav-ai-model"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9z"/></svg>AI model</a>
+    <a class="nav-item" href="account.html" data-testid="nav-account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Account</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a class="nav-item" href="signin.html" data-testid="nav-signout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Sign out</a>
+  </div>
+</aside>
+<main class="content">
+  <header class="topbar" data-testid="topbar"><h1 class="page-title" data-testid="page-title">Free-Flow</h1></header>
+  <div class="page-body stack">
+
+<div class="card" data-testid="freeflow-card">
+  <div class="card-header"><div class="card-title">Free-Flow entry</div></div>
+  <div class="card-content stack">
+    <label class="field">
+      <span class="field-label">Title</span>
+      <input class="input" type="text" placeholder="A slow Sunday morning" data-testid="title-input">
+    </label>
+    <div class="flex" data-testid="formatting-toolbar">
+      <button class="btn btn-ghost btn-sm" onclick="toast('Bold')">B</button>
+      <button class="btn btn-ghost btn-sm" onclick="toast('Italic')">I</button>
+      <button class="btn btn-ghost btn-sm" onclick="toast('Underline')">U</button>
+      <button class="btn btn-ghost btn-sm" onclick="toast('Heading')">H</button>
+    </div>
+    <textarea class="textarea" rows="8" placeholder="Write freely…" data-testid="body-editor">Coffee first, then a walk in the park. The air had that crisp autumn bite.</textarea>
+    <div class="flex wrap" data-testid="photo-list">
+      <span class="badge badge-outline" data-testid="photo-1">photo-park.jpg</span>
+      <span class="badge badge-outline" data-testid="photo-2">photo-coffee.jpg</span>
+      <button class="btn btn-outline btn-sm" onclick="toast('Photo picker opens')" data-testid="add-photo">Add photo</button>
+    </div>
+  </div>
+  <div class="card-footer">
+    <a class="btn btn-outline" href="home.html" data-testid="cancel">Cancel</a>
+    <a class="btn" href="home.html" data-testid="save-freeflow">Save</a>
+  </div>
+</div>
+
+  </div>
+</main>
+<script>function toast(m){var t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}</script>
+</body>
+</html>

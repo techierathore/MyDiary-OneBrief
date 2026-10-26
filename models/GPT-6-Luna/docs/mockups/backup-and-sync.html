@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Backup and sync · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .eyebrow { margin-bottom: 5px; color: var(--primary); font-size: 10px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+    .provider-tabs { margin-bottom: 16px; }
+    .provider-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .provider-name { margin: 0; font-size: 14px; font-weight: 620; }
+    .provider-copy { margin: 4px 0 0; color: var(--muted-foreground); font-size: 11px; }
+    .action-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .action-grid-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .action-grid .button { width: 100%; }
+    .spaced-grid { margin-top: 16px; }
+    .progress-full > span { width: 100%; }
+    .progress-caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+    .progress { width: 100%; }
+    .dialog-preview { margin-top: 16px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--muted); }
+    .dialog-preview h3 { margin: 0; font-size: 13px; }
+    .dialog-preview p { margin: 6px 0 12px; color: var(--muted-foreground); font-size: 11px; }
+    .history-time { color: var(--muted-foreground); font-size: 11px; }
+    @media (max-width: 720px) { .provider-body { align-items: flex-start; flex-direction: column; } .action-grid, .action-grid-two { grid-template-columns: 1fr; } .action-grid .button { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <nav class="sidebar" aria-label="Primary navigation" data-testid="home-nav">
+      <a class="brand" href="home.html" data-testid="nav-brand"><span class="brand-mark" aria-hidden="true">M</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span></a>
+      <div><div class="nav-group-label">Journal</div><div class="nav-list"><a class="nav-link" href="home.html" data-testid="nav-home">Home</a><a class="nav-link" href="journal-browse.html" data-testid="nav-journal">Journal</a></div></div>
+      <div><div class="nav-group-label">Account</div><div class="nav-list">
+        <a class="nav-link" href="profile.html" data-testid="nav-profile">Profile</a><a class="nav-link" href="plan-and-devices.html" data-testid="nav-plan">Plan and devices</a>
+        <a class="nav-link" href="account-data.html" data-testid="nav-account-data">Account data</a><a class="nav-link" href="ai-preferences.html" data-testid="nav-ai">AI preferences</a>
+        <a class="nav-link current" href="backup-and-sync.html" aria-current="page" data-testid="nav-backup">Backup and sync</a><a class="nav-link" href="import-and-export.html" data-testid="nav-transfer">Import and export</a>
+        <a class="nav-link" href="privacy-and-reminders.html" data-testid="nav-privacy">Privacy and reminders</a>
+      </div></div>
+      <div class="sidebar-bottom nav-list"><a class="nav-link" href="problem-report.html" data-testid="nav-support">Problem report</a></div>
+    </nav>
+    <div class="workspace">
+      <header class="topbar" data-testid="page-header"><div class="crumb"><a href="home.html" data-testid="breadcrumb-home">Home</a> <span aria-hidden="true">/</span> <a href="profile.html" data-testid="breadcrumb-profile">Profile</a> <span aria-hidden="true">/</span> Backup and sync</div><div class="top-actions"><a class="button button-outline button-small" href="profile.html" data-testid="return-to-profile">Back to profile</a></div></header>
+      <nav class="mobile-nav" aria-label="Compact navigation" data-testid="responsive-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a><a href="profile.html" data-testid="mobile-profile">Profile</a><a href="account-data.html" data-testid="mobile-account-data">Account data</a><a href="ai-preferences.html" data-testid="mobile-ai">AI</a><a href="backup-and-sync.html" class="current" aria-current="page" data-testid="mobile-backup">Backup</a><a href="import-and-export.html" data-testid="mobile-transfer">Transfer</a><a href="privacy-and-reminders.html" data-testid="mobile-privacy">Privacy</a>
+      </nav>
+      <main class="main">
+        <div class="page-heading"><div><div class="eyebrow">Paid feature</div><h1 data-testid="screen-title">Backup and sync</h1><p data-testid="screen-intro">Keep a private backup in your own cloud account and move journal changes between signed-in devices.</p></div><span class="badge badge-outline" data-testid="backup-plan-badge" data-tf-sample="true">Paid plan</span></div>
+
+        <section class="card" aria-labelledby="provider-title" data-testid="backup-provider">
+          <div class="card-header"><div><h2 class="card-title" id="provider-title">Choose a cloud provider</h2><p class="card-description">Backups are stored in your own Google Drive or OneDrive.</p></div></div>
+          <div class="card-content">
+            <div class="tabs provider-tabs" role="tablist" aria-label="Cloud provider">
+              <button class="tab active" type="button" role="tab" aria-selected="true" data-testid="backup-tab-google" data-tf-sample="true" onclick="showStatus('Google Drive selected for this mockup.')">Google Drive</button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-testid="backup-tab-onedrive" onclick="showStatus('OneDrive selected for this mockup.')">OneDrive</button>
+            </div>
+            <div class="provider-body card" data-testid="backup-provider-card">
+              <div class="card-content">
+                <div class="provider-name" data-testid="backup-provider-name" data-tf-sample="true">Google Drive</div>
+                <p class="provider-copy">Your journal backup stays in the cloud account you connect.</p>
+              </div>
+              <div class="card-content"><span class="badge badge-success" data-testid="backup-provider-state" data-tf-sample="true">Connected</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="grid grid-2 spaced-grid">
+          <section class="card" aria-labelledby="actions-title" data-testid="backup-actions">
+            <div class="card-header"><div><h2 class="card-title" id="actions-title">Journal actions</h2><p class="card-description">Choose what to do with the selected cloud account.</p></div></div>
+            <div class="card-content">
+              <div class="action-grid">
+                <button class="button" type="button" data-testid="backup-now" onclick="showStatus('Backup started in this mockup. Transfer progress will appear below.')">Back up now</button>
+                <button class="button button-secondary" type="button" data-testid="sync-now" onclick="showStatus('Sync started in this mockup. Your other signed-in devices would receive the changes.')">Sync now</button>
+                <button class="button button-outline" type="button" data-testid="restore-backup" onclick="showStatus('Review the restore confirmation below before replacing local content.')">Restore backup</button>
+              </div>
+              <div class="dialog-preview" role="alertdialog" aria-modal="false" aria-labelledby="restore-title" aria-describedby="restore-copy" data-testid="backup-restore-confirmation" data-tf-state="restore-confirmation-open">
+                <h3 id="restore-title">Restore a backup on this device?</h3>
+                <p id="restore-copy">Restoring replaces local journal content with the backup, including its attachments. Make sure you want to replace the current local journal.</p>
+                <div class="action-grid action-grid-two">
+                  <button class="button button-outline" type="button" data-testid="restore-cancel" onclick="showStatus('Restore canceled. Local journal content was not changed.')">Cancel</button>
+                  <button class="button button-danger" type="button" data-testid="restore-confirm" onclick="showStatus('Restore confirmed in this mockup. The selected backup would replace local content.')">Restore journal</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="grid">
+            <section class="card" aria-labelledby="progress-title" data-testid="backup-progress">
+              <div class="card-header"><div><h2 class="card-title" id="progress-title">Transfer status</h2><p class="card-description">The current backup, sync, or restore status appears here.</p></div></div>
+              <div class="card-content">
+                <div class="progress-caption"><span class="small" data-testid="backup-progress-label" data-tf-sample="true">Latest backup complete</span><span class="badge badge-success" data-testid="backup-progress-badge" data-tf-sample="true">Complete</span></div>
+                <div class="progress progress-full" role="progressbar" aria-label="Latest backup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" data-testid="backup-transfer-progress"><span></span></div>
+                <div class="status-message" role="status" aria-live="polite" id="action-status" data-testid="backup-action-status">Ready for your next transfer.</div>
+              </div>
+            </section>
+            <section class="card" aria-labelledby="history-title">
+              <div class="card-header"><div><h2 class="card-title" id="history-title">Recent transfer</h2><p class="card-description">Most recent backup or restore on this device.</p></div></div>
+              <div class="card-content">
+                <div class="list-row" data-testid="backup-history">
+                  <div class="avatar-small" aria-hidden="true">↗</div>
+                  <div class="list-row-main"><div class="list-row-title" data-testid="backup-history-title" data-tf-sample="true">Backup to Google Drive</div><div class="history-time" data-testid="backup-history-time" data-tf-sample="true">October 25, 2026 · 9:42 AM</div></div>
+                  <span class="badge badge-success" data-testid="backup-history-state" data-tf-sample="true">Success</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      document.getElementById('action-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

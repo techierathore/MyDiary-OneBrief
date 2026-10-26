@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account data · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .status-panel { margin-top: 18px; }
+    .dialog-preview { margin-top: 16px; padding: 15px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--muted); }
+    .dialog-preview h3 { margin: 0; font-size: 14px; }
+    .dialog-preview p { margin: 7px 0 13px; color: var(--muted-foreground); font-size: 12px; }
+    .action-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .eyebrow { margin-bottom: 5px; color: var(--primary); font-size: 10px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+    @media (max-width: 720px) { .action-row { align-items: stretch; flex-direction: column; } .action-row .button { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <nav class="sidebar" aria-label="Primary navigation" data-testid="home-nav">
+      <a class="brand" href="home.html" data-testid="nav-brand">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span>
+      </a>
+      <div>
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="nav-home">Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="nav-journal">Journal</a>
+        </div>
+      </div>
+      <div>
+        <div class="nav-group-label">Account</div>
+        <div class="nav-list">
+          <a class="nav-link" href="profile.html" data-testid="nav-profile">Profile</a>
+          <a class="nav-link" href="plan-and-devices.html" data-testid="nav-plan">Plan and devices</a>
+          <a class="nav-link current" href="account-data.html" aria-current="page" data-testid="nav-account-data">Account data</a>
+          <a class="nav-link" href="ai-preferences.html" data-testid="nav-ai">AI preferences</a>
+          <a class="nav-link" href="backup-and-sync.html" data-testid="nav-backup">Backup and sync</a>
+          <a class="nav-link" href="import-and-export.html" data-testid="nav-transfer">Import and export</a>
+          <a class="nav-link" href="privacy-and-reminders.html" data-testid="nav-privacy">Privacy and reminders</a>
+        </div>
+      </div>
+      <div class="sidebar-bottom nav-list">
+        <a class="nav-link" href="problem-report.html" data-testid="nav-support">Problem report</a>
+      </div>
+    </nav>
+
+    <div class="workspace">
+      <header class="topbar" data-testid="page-header">
+        <div class="crumb"><a href="home.html" data-testid="breadcrumb-home">Home</a> <span aria-hidden="true">/</span> <a href="profile.html" data-testid="breadcrumb-profile">Profile</a> <span aria-hidden="true">/</span> Account data</div>
+        <div class="top-actions"><a class="button button-outline button-small" href="profile.html" data-testid="return-to-profile">Back to profile</a></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Compact navigation" data-testid="responsive-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a>
+        <a href="profile.html" data-testid="mobile-profile">Profile</a>
+        <a href="account-data.html" class="current" aria-current="page" data-testid="mobile-account-data">Account data</a>
+        <a href="ai-preferences.html" data-testid="mobile-ai">AI</a>
+        <a href="backup-and-sync.html" data-testid="mobile-backup">Backup</a>
+        <a href="import-and-export.html" data-testid="mobile-transfer">Transfer</a>
+        <a href="privacy-and-reminders.html" data-testid="mobile-privacy">Privacy</a>
+      </nav>
+
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow">Account controls</div>
+            <h1 data-testid="screen-title">Account data</h1>
+            <p data-testid="screen-intro">Request a copy of account details or ask AppManager to delete them. Your journal stays private on this device.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <section class="card" aria-labelledby="copy-title" data-testid="data-copy-request">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title" id="copy-title">Get a copy of your account data</h2>
+                <p class="card-description">Ask AppManager for a copy of the account information associated with MyDiary.</p>
+              </div>
+              <span class="badge badge-info" aria-label="Request type">Copy</span>
+            </div>
+            <div class="card-content">
+              <p class="muted small">This request covers account data only. Journal entries and attachments are not sent to AppManager.</p>
+              <div class="action-row">
+                <button class="button" type="button" data-testid="data-copy-button" onclick="showStatus('Copy request prepared in this mockup. AppManager would return the request status here.')">Request a copy</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="delete-title" data-testid="data-delete-request">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title" id="delete-title">Delete account data</h2>
+                <p class="card-description">Request deletion of the account data held by AppManager.</p>
+              </div>
+              <span class="badge badge-warning">Review first</span>
+            </div>
+            <div class="card-content">
+              <p class="muted small">Deleting account data does not erase the journal stored locally on this device. Review the confirmation before sending a request.</p>
+              <div class="action-row">
+                <button class="button button-danger" type="button" data-testid="data-delete-button" onclick="showStatus('Review the deletion confirmation below. No request has been sent.')">Review deletion request</button>
+              </div>
+              <div class="dialog-preview" role="alertdialog" aria-modal="false" aria-labelledby="delete-confirm-title" aria-describedby="delete-confirm-copy" data-testid="data-delete-confirmation" data-tf-state="deletion-confirmation-open">
+                <h3 id="delete-confirm-title">Confirm account-data deletion</h3>
+                <p id="delete-confirm-copy">This sends a deletion request to AppManager. Your local journal remains on this device. Do you want to continue?</p>
+                <div class="action-row">
+                  <button class="button button-outline" type="button" data-testid="data-delete-cancel" onclick="showStatus('Deletion request canceled. Your account data was not changed.')">Cancel</button>
+                  <button class="button button-danger" type="button" data-testid="data-delete-confirm" onclick="showStatus('Deletion request submitted in this mockup. AppManager would provide the result here.')">Confirm deletion request</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="alert status-panel" role="status" aria-live="polite" data-testid="data-result">
+          <span aria-hidden="true">i</span>
+          <div><strong>Request status</strong><div class="small" id="action-status">No account-data request has been made.</div></div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      document.getElementById('action-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

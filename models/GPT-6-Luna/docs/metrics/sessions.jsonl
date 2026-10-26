@@ -1,0 +1,1 @@
+{"kind":"session","session_id":"ses_e8d5d7f2bffellEncs7FX35xtc","model":"opencode-go/gpt-6-luna","duration_s":10043,"input_tokens":930,"output_tokens":148602,"cache_read_tokens":54727856,"cache_creation_tokens":1281776,"cost_usd":1.327342,"children_sessions":7,"v":1,"ts":"2026-10-25T13:24:20Z","project_type":"app","harness":"opencode","app":"MyDiary-Luna"}

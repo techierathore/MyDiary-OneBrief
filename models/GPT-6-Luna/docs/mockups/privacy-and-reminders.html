@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy and reminders · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .eyebrow { margin-bottom: 5px; color: var(--primary); font-size: 10px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+    .setting-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 4px 0 16px; border-bottom: 1px solid var(--border); }
+    .setting-row + .setting-row { padding-top: 16px; }
+    .setting-row:last-child { padding-bottom: 0; border-bottom: 0; }
+    .setting-copy { min-width: 0; }
+    .setting-title { display: block; font-size: 12px; font-weight: 600; }
+    .setting-description { display: block; margin-top: 3px; color: var(--muted-foreground); font-size: 11px; }
+    .switch-control { appearance: none; position: relative; flex: 0 0 auto; width: 38px; height: 22px; margin: 0; border: 1px solid var(--input); border-radius: 999px; background: var(--muted); cursor: pointer; }
+    .switch-control::before { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--card); box-shadow: 0 1px 2px rgb(0 0 0 / .18); transition: transform .15s ease; }
+    .switch-control:checked { border-color: var(--primary); background: var(--primary); }
+    .switch-control:checked::before { transform: translateX(16px); background: var(--primary-foreground); }
+    .switch-control:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+     .pin-fields { display: grid; gap: 8px; margin-top: 12px; max-width: 260px; }
+    .time-field { max-width: 220px; margin-top: 14px; }
+    .form-actions { display: flex; justify-content: flex-end; margin-top: 18px; }
+    @media (max-width: 720px) { .setting-row { gap: 10px; } .form-actions .button { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <nav class="sidebar" aria-label="Primary navigation" data-testid="home-nav">
+      <a class="brand" href="home.html" data-testid="nav-brand"><span class="brand-mark" aria-hidden="true">M</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span></a>
+      <div><div class="nav-group-label">Journal</div><div class="nav-list"><a class="nav-link" href="home.html" data-testid="nav-home">Home</a><a class="nav-link" href="journal-browse.html" data-testid="nav-journal">Journal</a></div></div>
+      <div><div class="nav-group-label">Account</div><div class="nav-list">
+        <a class="nav-link" href="profile.html" data-testid="nav-profile">Profile</a><a class="nav-link" href="plan-and-devices.html" data-testid="nav-plan">Plan and devices</a>
+        <a class="nav-link" href="account-data.html" data-testid="nav-account-data">Account data</a><a class="nav-link" href="ai-preferences.html" data-testid="nav-ai">AI preferences</a>
+        <a class="nav-link" href="backup-and-sync.html" data-testid="nav-backup">Backup and sync</a><a class="nav-link" href="import-and-export.html" data-testid="nav-transfer">Import and export</a>
+        <a class="nav-link current" href="privacy-and-reminders.html" aria-current="page" data-testid="nav-privacy">Privacy and reminders</a>
+      </div></div>
+      <div class="sidebar-bottom nav-list"><a class="nav-link" href="problem-report.html" data-testid="nav-support">Problem report</a></div>
+    </nav>
+    <div class="workspace">
+      <header class="topbar" data-testid="page-header"><div class="crumb"><a href="home.html" data-testid="breadcrumb-home">Home</a> <span aria-hidden="true">/</span> <a href="profile.html" data-testid="breadcrumb-profile">Profile</a> <span aria-hidden="true">/</span> Privacy and reminders</div><div class="top-actions"><a class="button button-outline button-small" href="profile.html" data-testid="return-to-profile">Back to profile</a></div></header>
+      <nav class="mobile-nav" aria-label="Compact navigation" data-testid="responsive-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a><a href="profile.html" data-testid="mobile-profile">Profile</a><a href="account-data.html" data-testid="mobile-account-data">Account data</a><a href="ai-preferences.html" data-testid="mobile-ai">AI</a><a href="backup-and-sync.html" data-testid="mobile-backup">Backup</a><a href="import-and-export.html" data-testid="mobile-transfer">Transfer</a><a href="privacy-and-reminders.html" class="current" aria-current="page" data-testid="mobile-privacy">Privacy</a>
+      </nav>
+      <main class="main">
+        <div class="page-heading"><div><div class="eyebrow">On this device</div><h1 data-testid="screen-title">Privacy and reminders</h1><p data-testid="screen-intro">Add an extra lock to your journal and choose when MyDiary should remind you to write.</p></div></div>
+
+        <div class="grid grid-2">
+          <section class="card" aria-labelledby="privacy-title">
+            <div class="card-header"><div><h2 class="card-title" id="privacy-title">Protect app access</h2><p class="card-description">Choose a PIN, device biometrics, or both.</p></div></div>
+            <div class="card-content">
+              <div class="setting-row" data-testid="privacy-pin">
+                <div class="setting-copy"><label class="setting-title" for="pin-lock">PIN lock</label><span class="setting-description">Ask for a PIN before showing your journal.</span></div>
+                <input class="switch-control" id="pin-lock" type="checkbox" role="switch" aria-label="Enable PIN lock" data-testid="privacy-pin-switch">
+              </div>
+              <div class="pin-fields" aria-label="PIN code" data-testid="privacy-pin-code">
+                <label class="label" for="pin-code">PIN</label>
+                <input class="input" id="pin-code" type="password" inputmode="numeric" autocomplete="new-password" placeholder="Enter a PIN" aria-label="PIN" data-testid="privacy-pin-input">
+              </div>
+              <p class="hint">Set a PIN to add a lock before opening your journal.</p>
+              <div class="setting-row" data-testid="privacy-biometric">
+                <div class="setting-copy"><label class="setting-title" for="biometric-lock">Biometric unlock</label><span class="setting-description">Use fingerprint or face unlock when supported by your device.</span></div>
+                <input class="switch-control" id="biometric-lock" type="checkbox" role="switch" aria-label="Enable biometric unlock" data-testid="privacy-biometric-switch">
+              </div>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="reminders-title" data-testid="reminder-settings">
+            <div class="card-header"><div><h2 class="card-title" id="reminders-title">Journaling reminders</h2><p class="card-description">Set a gentle reminder at a time that works for you.</p></div></div>
+            <div class="card-content">
+              <div class="setting-row">
+                <div class="setting-copy"><label class="setting-title" for="reminder-enabled">Daily reminder</label><span class="setting-description">Send a reminder to make time for a journal entry.</span></div>
+                <input class="switch-control" id="reminder-enabled" type="checkbox" role="switch" checked aria-label="Enable journaling reminders" data-testid="reminder-switch" data-tf-sample="true">
+              </div>
+              <div class="field time-field">
+                <label class="label" for="reminder-time">Reminder time</label>
+                <input class="input" id="reminder-time" type="time" value="20:30" data-testid="reminder-time" data-tf-sample="true">
+                <span class="hint">Time is shown in your device's local time zone.</span>
+              </div>
+              <div class="form-actions"><button class="button" type="button" data-testid="privacy-save" onclick="showStatus('Privacy and reminder settings saved in this mockup.')">Save settings</button></div>
+              <div class="status-message" id="action-status" role="status" aria-live="polite" data-testid="privacy-status"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(message) {
+      document.getElementById('action-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

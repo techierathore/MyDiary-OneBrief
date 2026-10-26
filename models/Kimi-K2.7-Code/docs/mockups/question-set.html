@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Targeted Questioning</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="question-set-app-bar">
+      <a href="home.html" class="icon-btn" data-testid="question-set-back" aria-label="Back">←</a>
+      <div class="app-bar-title">Question Set</div>
+      <a href="home.html" class="btn btn-sm btn-primary" data-testid="question-set-save" style="padding: 8px 16px;">Save</a>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="question-set-picker-card">
+        <label class="field-label">Choose a set</label>
+        <select class="select" data-testid="question-set-select">
+          <option>Monthly Goals</option>
+          <option>Yearly Review</option>
+          <option>Health</option>
+          <option>Fitness</option>
+          <option>Weekly Retro</option>
+          <option>Project Retro</option>
+          <option>Gratitude</option>
+          <option data-tf-sample="sample">My custom set</option>
+        </select>
+        <div class="badge badge-primary" data-testid="question-set-progress">Question 1 of 3</div>
+      </div>
+
+      <div class="section">
+        <div class="card" data-testid="question-set-answer-card">
+          <div class="card-title mb-2" data-testid="question-set-question">What is the most important goal for this month?</div>
+          <textarea class="textarea" placeholder="Type your answer..." data-testid="question-set-answer" style="min-height: 80px;"></textarea>
+        </div>
+        <div class="card" data-testid="question-set-answer-card">
+          <div class="card-title mb-2" data-testid="question-set-question">What could stop you?</div>
+          <textarea class="textarea" placeholder="Type your answer..." data-testid="question-set-answer" style="min-height: 80px;"></textarea>
+        </div>
+        <div class="card" data-testid="question-set-answer-card">
+          <div class="card-title mb-2" data-testid="question-set-question">How will you know you succeeded?</div>
+          <textarea class="textarea" placeholder="Type your answer..." data-testid="question-set-answer" style="min-height: 80px;"></textarea>
+        </div>
+      </div>
+
+      <a href="question-set-builder.html" class="btn btn-secondary btn-block" data-testid="question-set-new">+ Build your own set</a>
+    </div>
+  </div>
+</body>
+</html>

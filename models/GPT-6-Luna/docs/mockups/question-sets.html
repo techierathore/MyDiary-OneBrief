@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Question sets · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .question-main { max-width: 1120px; }
+    .write-nav-label { margin-top: 18px; }
+    .sets-heading { margin-bottom: 13px; }
+    .question-set-list-card { margin-top: 2px; }
+    .question-set-list-card .card-content { padding-top: 0; }
+    .set-name { margin: 0; font-size: 13px; font-weight: 600; }
+    .set-description { margin: 3px 0 0; color: var(--muted-foreground); font-size: 11px; }
+    .set-open { white-space: nowrap; }
+    .question-set-alert { margin: 0 0 17px; background: var(--accent); border-color: var(--border); align-items: center; }
+    .question-set-alert-copy { min-width: 0; flex: 1; }
+    .question-set-alert-copy strong { display: block; margin-bottom: 2px; }
+    .custom-empty { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px 18px; }
+    .custom-empty-card { margin-top: 16px; }
+    .custom-empty h2 { margin: 0; font-size: 13px; }
+    .custom-empty p { margin: 4px 0 0; color: var(--muted-foreground); font-size: 11px; }
+    .bottom-links { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 16px; }
+    @media (max-width: 480px) {
+      .question-set-list-card .list-row { flex-wrap: wrap; }
+      .question-set-list-card .list-row-main { flex-basis: calc(100% - 12px); }
+      .set-open { margin-left: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" data-testid="app-navigation">
+      <a class="brand" href="home.html" data-testid="nav-brand"><span class="brand-mark" aria-hidden="true">m</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little room to reflect</span></span></a>
+      <nav aria-label="Main navigation">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="nav-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="nav-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link current" href="question-sets.html" aria-current="page" data-testid="nav-question-sets"><span class="nav-icon" aria-hidden="true">☷</span>Question sets</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="nav-ask"><span class="nav-icon" aria-hidden="true">⌕</span>Ask my journal</a>
+        </div>
+        <div class="nav-group-label write-nav-label">Write</div>
+        <div class="nav-list">
+          <a class="nav-link" href="thought-dump.html" data-testid="nav-thought-dump"><span class="nav-icon" aria-hidden="true">01</span>10-Thought Dump</a>
+          <a class="nav-link" href="free-flow-entry.html" data-testid="nav-free-flow"><span class="nav-icon" aria-hidden="true">✎</span>Free-Flow entry</a>
+        </div>
+      </nav>
+      <div class="sidebar-bottom"><a class="nav-link" href="profile.html" data-testid="nav-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb"><a href="home.html">Home</a> <span aria-hidden="true">/</span> Reflect</div>
+        <div class="top-actions"><a class="button button-outline button-small" href="journal-browse.html" data-testid="question-sets-open-journal">Open journal</a><span class="avatar" aria-label="Journal user" data-testid="app-user-avatar" data-tf-sample>JD</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Quick navigation">
+        <a href="home.html" data-testid="mobile-nav-home">Home</a><a href="journal-browse.html" data-testid="mobile-nav-journal">Journal</a>
+        <a href="thought-dump.html" data-testid="mobile-nav-thought-dump">Thought Dump</a><a href="free-flow-entry.html" data-testid="mobile-nav-free-flow">Free-Flow</a>
+        <a href="question-sets.html" class="current" aria-current="page" data-testid="mobile-nav-question-sets">Questions</a><a href="ask-my-journal.html" data-testid="mobile-nav-ask">Ask</a>
+      </nav>
+      <main class="main question-main">
+        <div class="page-heading">
+          <div><h1 data-testid="question-sets-page-title">Question sets</h1><p>Guided prompts for a check-in, a look back, or a fresh start.</p></div>
+          <a class="button" href="custom-question-set.html" data-testid="question-set-create">＋ Create a custom set</a>
+        </div>
+
+        <section class="alert question-set-alert" aria-label="Question set due today" data-testid="question-set-due">
+          <span aria-hidden="true">✦</span>
+          <div class="question-set-alert-copy">
+            <strong data-testid="question-set-due-title">Ready when you are</strong>
+            <div class="small" data-testid="question-set-due-description" data-tf-sample>Weekly Retro is due today. You can answer it now or choose another set.</div>
+          </div>
+          <span class="badge badge-warning" data-testid="question-set-due-badge" data-tf-sample>Due today</span>
+        </section>
+
+        <div class="page-heading sets-heading">
+          <div><h2 class="card-title" data-testid="question-set-list-heading">Built-in question sets</h2><p class="card-description">Seven sets to help you reflect in different ways.</p></div>
+          <span class="badge badge-outline" data-testid="question-set-count">7 built-in</span>
+        </div>
+        <section class="card question-set-list-card" aria-label="Built-in question set list" data-testid="question-set-list">
+          <div class="card-content">
+            <div class="list">
+              <div class="list-row" data-testid="question-set-item-monthly-goals">
+                <div class="list-row-main"><div class="list-row-title set-name" data-testid="question-set-name-monthly-goals">Monthly Goals</div><div class="set-description" data-testid="question-set-cadence-monthly-goals">Built-in set · Monthly</div></div>
+                <a class="button button-outline button-small set-open" href="answer-question-set.html" data-testid="question-set-open-monthly-goals">Open set</a>
+              </div>
+              <div class="list-row" data-testid="question-set-item-yearly-review">
+                <div class="list-row-main"><div class="list-row-title set-name" data-testid="question-set-name-yearly-review">Yearly Review</div><div class="set-description" data-testid="question-set-cadence-yearly-review">Built-in set · Yearly</div></div>
+                <a class="button button-outline button-small set-open" href="answer-question-set.html" data-testid="question-set-open-yearly-review">Open set</a>
+              </div>
+              <div class="list-row" data-testid="question-set-item-health">
+                <div class="list-row-main"><div class="list-row-title set-name" data-testid="question-set-name-health">Health</div><div class="set-description" data-testid="question-set-cadence-health">Built-in set</div></div>
+                <a class="button button-outline button-small set-open" href="answer-question-set.html" data-testid="question-set-open-health">Open set</a>
+              </div>
+              <div class="list-row" data-testid="question-set-item-fitness">
+                <div class="list-row-main"><div class="list-row-title set-name" data-testid="question-set-name-fitness">Fitness</div><div class="set-description" data-testid="question-set-cadence-fitness">Built-in set</div></div>
+                <a class="button button-outline button-small set-open" href="answer-question-set.html" data-testid="question-set-open-fitness">Open set</a>
+              </div>
+              <div class="list-row" data-testid="question-set-item-weekly-retro">
+                <div class="list-row-main"><div class="list-row-title set-name" data-testid="question-set-name-weekly-retro">Weekly Retro</div><div class="set-description" data-testid="question-set-cadence-weekly-retro">Built-in set · Weekly</div></div>
+                <span class="badge badge-warning" data-testid="question-set-weekly-due" data-tf-sample>Due today</span>
+                <a class="button button-outline button-small set-open" href="answer-question-set.html" data-testid="question-set-open-weekly-retro">Open set</a>
+              </div>
+              <div class="list-row" data-testid="question-set-item-project-retro">
+                <div class="list-row-main"><div class="list-row-title set-name" data-testid="question-set-name-project-retro">Project Retro</div><div class="set-description" data-testid="question-set-cadence-project-retro">Built-in set</div></div>
+                <a class="button button-outline button-small set-open" href="answer-question-set.html" data-testid="question-set-open-project-retro">Open set</a>
+              </div>
+                <div class="list-row" data-testid="question-set-item-gratitude">
+                 <div class="list-row-main"><div class="list-row-title set-name" data-testid="question-set-name-gratitude">Gratitude</div><div class="set-description" data-testid="question-set-cadence-gratitude">Built-in set</div></div>
+                <a class="button button-outline button-small set-open" href="answer-question-set.html" data-testid="question-set-open-gratitude">Open set</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card custom-empty custom-empty-card" aria-label="Your custom question sets" data-testid="question-set-custom-list">
+          <div><h2>Your custom sets</h2><p data-testid="question-set-custom-empty">Your own question sets will appear here after you create one.</p></div>
+          <a class="button button-outline" href="custom-question-set.html" data-testid="question-set-create-secondary">Create a custom set</a>
+        </section>
+        <div class="bottom-links" aria-label="Related screens">
+          <a class="button button-ghost button-small" href="thought-dump.html" data-testid="question-sets-new-thought-dump">＋ 10-Thought Dump</a>
+          <a class="button button-ghost button-small" href="free-flow-entry.html" data-testid="question-sets-new-free-flow">＋ Free-Flow entry</a>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Answer a question set · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .answer-main { max-width: 900px; }
+    .write-nav-label { margin-top: 18px; }
+    .answer-set-card { margin-bottom: 16px; }
+    .answer-set-details { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .answer-progress { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; margin: 0 0 16px; }
+    .answer-progress .progress { grid-column: 1 / -1; height: 8px; }
+    .answer-progress-bar > span { width: 0; }
+    .answer-questions { display: grid; gap: 16px; }
+    .answer-question { padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+    .answer-question:last-child { padding-bottom: 0; border-bottom: 0; }
+    .question-prompt { margin: 0 0 8px; font-size: 13px; font-weight: 600; }
+    .answer-question .textarea { min-height: 86px; font-size: 12px; }
+    .answer-footer { justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .footer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-message { flex-basis: 100%; }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" data-testid="app-navigation">
+      <a class="brand" href="home.html" data-testid="nav-brand"><span class="brand-mark" aria-hidden="true">m</span><span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little room to reflect</span></span></a>
+      <nav aria-label="Main navigation">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="nav-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="nav-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link current" href="question-sets.html" aria-current="page" data-testid="nav-question-sets"><span class="nav-icon" aria-hidden="true">☷</span>Question sets</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="nav-ask"><span class="nav-icon" aria-hidden="true">⌕</span>Ask my journal</a>
+        </div>
+        <div class="nav-group-label write-nav-label">Write</div>
+        <div class="nav-list">
+          <a class="nav-link" href="thought-dump.html" data-testid="nav-thought-dump"><span class="nav-icon" aria-hidden="true">01</span>10-Thought Dump</a>
+          <a class="nav-link" href="free-flow-entry.html" data-testid="nav-free-flow"><span class="nav-icon" aria-hidden="true">✎</span>Free-Flow entry</a>
+        </div>
+      </nav>
+      <div class="sidebar-bottom"><a class="nav-link" href="profile.html" data-testid="nav-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb"><a href="home.html">Home</a> <span aria-hidden="true">/</span> <a href="question-sets.html">Question sets</a> <span aria-hidden="true">/</span> Answer</div>
+        <div class="top-actions"><a class="button button-outline button-small" href="journal-browse.html" data-testid="answer-set-open-journal">Open journal</a><span class="avatar" aria-label="Journal user" data-testid="app-user-avatar" data-tf-sample>JD</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Quick navigation">
+        <a href="home.html" data-testid="mobile-nav-home">Home</a><a href="journal-browse.html" data-testid="mobile-nav-journal">Journal</a>
+        <a href="thought-dump.html" data-testid="mobile-nav-thought-dump">Thought Dump</a><a href="free-flow-entry.html" data-testid="mobile-nav-free-flow">Free-Flow</a>
+        <a href="question-sets.html" class="current" aria-current="page" data-testid="mobile-nav-question-sets">Questions</a><a href="ask-my-journal.html" data-testid="mobile-nav-ask">Ask</a>
+      </nav>
+      <main class="main answer-main">
+        <div class="page-heading">
+          <div><h1 data-testid="answer-set-page-title">Answer a question set</h1><p>Take a quiet moment with this week's prompts.</p></div>
+          <a class="button button-outline" href="question-sets.html" data-testid="answer-set-back">← All question sets</a>
+        </div>
+
+        <section class="card answer-set-card" aria-label="Selected question set" data-testid="answer-set-title">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" data-testid="answer-set-name">Weekly Retro</h2>
+              <p class="card-description">A short check-in on the week that just passed.</p>
+            </div>
+            <span class="badge badge-warning" data-testid="answer-set-due-state" data-tf-sample>Due today</span>
+          </div>
+          <div class="card-content answer-set-details">
+            <span class="small muted">Due date</span>
+            <strong class="small" data-testid="answer-set-due-date" data-tf-sample>Sunday, October 25</strong>
+          </div>
+        </section>
+
+        <section class="answer-progress" aria-label="Question set progress" data-testid="answer-set-progress">
+          <span class="small muted">Progress</span>
+          <strong class="small" data-testid="answer-set-progress-value" data-tf-sample>0 of 3 answered</strong>
+          <div class="progress answer-progress-bar" role="progressbar" aria-label="Questions answered" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0" data-testid="answer-set-progress-bar"><span></span></div>
+        </section>
+
+        <section class="card" aria-label="Answers to Weekly Retro" data-testid="answer-set-questions">
+          <div class="card-header">
+            <div><h2 class="card-title">Your reflections</h2><p class="card-description">Your answers are saved in the journal under Weekly Retro.</p></div>
+          </div>
+          <div class="card-content">
+            <div class="answer-questions">
+              <div class="answer-question">
+                <label class="question-prompt" for="answer-1" data-testid="answer-set-question-1" data-tf-sample>What felt like a win this week?</label>
+                <textarea class="textarea" id="answer-1" rows="3" placeholder="Write whatever comes to mind…" data-testid="answer-set-answer-1" data-tf-sample></textarea>
+              </div>
+              <div class="answer-question">
+                <label class="question-prompt" for="answer-2" data-testid="answer-set-question-2" data-tf-sample>What felt harder than expected?</label>
+                <textarea class="textarea" id="answer-2" rows="3" placeholder="It's okay to keep this brief…" data-testid="answer-set-answer-2" data-tf-sample></textarea>
+              </div>
+              <div class="answer-question">
+                <label class="question-prompt" for="answer-3" data-testid="answer-set-question-3" data-tf-sample>What will you carry into next week?</label>
+                <textarea class="textarea" id="answer-3" rows="3" placeholder="A thought, a lesson, or a small intention…" data-testid="answer-set-answer-3" data-tf-sample></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer answer-footer">
+            <a class="button button-secondary" href="question-sets.html" data-testid="answer-set-cancel">Back to question sets</a>
+            <div class="footer-actions">
+              <a class="button button-outline" href="thought-dump.html" data-testid="answer-set-new-thought-dump">＋ 10-Thought Dump</a>
+              <button class="button" type="button" onclick="showAnswerStatus('Your Weekly Retro answers were saved to the journal.')" data-testid="answer-set-save">Save answers</button>
+            </div>
+            <p class="status-message" id="answer-set-status" role="status" aria-live="polite" data-testid="answer-set-status"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showAnswerStatus(message) {
+      document.getElementById('answer-set-status').textContent = message;
+    }
+  </script>
+</body>
+</html>

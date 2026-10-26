@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Search</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="search-app-bar">
+      <a href="home.html" class="icon-btn" data-testid="search-back" aria-label="Back">←</a>
+      <input type="search" class="input" placeholder="Search journal..." data-testid="search-input" style="flex: 1; margin: 0 8px;">
+      <button class="btn btn-sm btn-primary" data-testid="search-button" onclick="alert('Search running');" style="padding: 8px 14px;">Search</button>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="search-filters-card">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <label class="field-label">From</label>
+            <input type="date" class="input" data-testid="search-date-from">
+          </div>
+          <div>
+            <label class="field-label">To</label>
+            <input type="date" class="input" data-testid="search-date-to">
+          </div>
+          <div>
+            <label class="field-label">Tags</label>
+            <select class="select" data-testid="search-tag-select"><option>All</option><option>morning</option></select>
+          </div>
+          <div>
+            <label class="field-label">Question set</label>
+            <select class="select" data-testid="search-set-select"><option>All</option><option>Monthly Goals</option></select>
+          </div>
+        </div>
+        <div class="chips mt-3">
+          <span class="chip chip-outline" data-testid="search-photo-toggle">📷 Photo</span>
+          <span class="chip chip-outline" data-testid="search-star-toggle">⭐ Starred</span>
+          <span class="chip chip-outline" data-testid="search-mood-toggle">😊 Mood</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">2 results</div>
+        <a href="entry.html" class="list-item" data-testid="search-result" data-tf-sample="sample">
+          <div class="list-item-content">
+            <div class="list-item-title">Morning <span style="background: #fef08a; padding: 0 2px; border-radius: 2px;">reflection</span></div>
+            <div class="list-item-subtitle">18 Oct 2026 · Free-Flow · ⭐</div>
+          </div>
+          <span class="list-item-arrow">›</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="bottom-nav" data-testid="search-bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+      <a href="timeline.html" class="nav-item"><span class="nav-icon">📜</span>Timeline</a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span>Calendar</a>
+      <a href="ask.html" class="nav-item"><span class="nav-icon">✨</span>Ask</a>
+      <a href="account.html" class="nav-item"><span class="nav-icon">👤</span>Account</a>
+    </div>
+  </div>
+</body>
+</html>

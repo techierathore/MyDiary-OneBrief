@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — 10-Thought Dump</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="dump-app-bar">
+      <a href="home.html" class="icon-btn" data-testid="dump-back" aria-label="Back">←</a>
+      <div class="app-bar-title">10-Thought Dump</div>
+      <a href="home.html" class="btn btn-sm btn-primary" data-testid="dump-save" style="padding: 8px 16px;">Save</a>
+    </div>
+
+    <div class="content">
+      <div class="card card-flat" data-testid="dump-hint" style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 1.5rem;">💡</span>
+        <p style="font-size: 0.875rem; color: var(--slate-600);">Empty lines are dropped automatically when you save.</p>
+      </div>
+
+      <div class="card" data-testid="dump-lines">
+        <div class="question-row"><span class="question-number">1</span><input type="text" class="input" data-testid="dump-line-1" placeholder="First thought..."></div>
+        <div class="question-row"><span class="question-number">2</span><input type="text" class="input" data-testid="dump-line-2" placeholder="Second thought..."></div>
+        <div class="question-row"><span class="question-number">3</span><input type="text" class="input" data-testid="dump-line-3" placeholder="Third thought..."></div>
+        <div class="question-row"><span class="question-number">4</span><input type="text" class="input" data-testid="dump-line-4" placeholder="Fourth thought..."></div>
+        <div class="question-row"><span class="question-number">5</span><input type="text" class="input" data-testid="dump-line-5" placeholder="Fifth thought..."></div>
+        <div class="question-row"><span class="question-number">6</span><input type="text" class="input" data-testid="dump-line-6" placeholder="Sixth thought..."></div>
+        <div class="question-row"><span class="question-number">7</span><input type="text" class="input" data-testid="dump-line-7" placeholder="Seventh thought..."></div>
+        <div class="question-row"><span class="question-number">8</span><input type="text" class="input" data-testid="dump-line-8" placeholder="Eighth thought..."></div>
+        <div class="question-row"><span class="question-number">9</span><input type="text" class="input" data-testid="dump-line-9" placeholder="Ninth thought..."></div>
+        <div class="question-row"><span class="question-number">10</span><input type="text" class="input" data-testid="dump-line-10" placeholder="Tenth thought..."></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

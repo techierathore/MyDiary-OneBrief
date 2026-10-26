@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDiary — Settings</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-frame">
+    <div class="app-bar" data-testid="settings-app-bar">
+      <a href="account.html" class="icon-btn" data-testid="settings-back" aria-label="Back">←</a>
+      <div class="app-bar-title">Settings</div>
+    </div>
+
+    <div class="content">
+      <div class="card" data-testid="settings-security-card">
+        <div class="section-title">Security</div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-info-title">PIN lock</div>
+            <div class="toggle-info-subtitle">Require a PIN to open the app</div>
+          </div>
+          <a href="#pin" data-testid="settings-pin-toggle"><div class="toggle on"></div></a>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-info-title">Biometric lock</div>
+            <div class="toggle-info-subtitle">Use fingerprint or face</div>
+          </div>
+          <div class="toggle" data-testid="settings-biometric-toggle" onclick="alert('Biometric toggled');"></div>
+        </div>
+      </div>
+
+      <div class="card" data-testid="settings-reminders-card">
+        <div class="section-title">Reminders</div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-info-title">Daily reminder</div>
+          </div>
+          <div class="toggle on" data-testid="settings-reminder-toggle" onclick="alert('Reminder toggled');"></div>
+        </div>
+        <div class="field mt-2">
+          <label class="field-label">Time</label>
+          <select class="select" data-testid="settings-reminder-time"><option>20:00</option><option>21:00</option></select>
+        </div>
+      </div>
+
+      <div class="card" data-testid="settings-ai-card">
+        <div class="section-title">AI model</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+          <div>
+            <div class="toggle-info-title">Current model</div>
+            <div class="toggle-info-subtitle">Built-in local model</div>
+          </div>
+          <span class="badge badge-primary" data-testid="settings-current-model">Local</span>
+        </div>
+        <a href="#model" class="btn btn-secondary btn-block mt-3" data-testid="settings-model-picker">Choose model</a>
+        <div class="warning" data-testid="settings-ai-warning">Online AI services will receive your journal text. Only use your own key.</div>
+      </div>
+
+      <div class="card" data-testid="settings-about-card">
+        <div class="section-title">About</div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--slate-100);">
+          <span style="font-size: 0.9375rem;">Version</span>
+          <span style="font-weight: 600;" data-testid="settings-version">1.0</span>
+        </div>
+        <a href="#" class="btn btn-ghost btn-block mt-3" data-testid="settings-privacy-link" onclick="alert('Privacy policy opened');">Privacy policy</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="pin" data-tf-state="popup-open" data-testid="settings-pin-dialog">
+      <div class="dialog">
+        <div class="dialog-title">Set PIN</div>
+        <div class="field"><input type="password" class="input" maxlength="6" placeholder="4–6 digits" data-testid="settings-pin-input"></div>
+        <div class="field"><input type="password" class="input" maxlength="6" placeholder="Confirm PIN" data-testid="settings-pin-confirm"></div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="settings-pin-save" onclick="alert('PIN saved');">Save PIN</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="settings-pin-cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="dialog-overlay" id="model" data-tf-state="popup-open" data-testid="settings-model-dialog">
+      <div class="sheet">
+        <div class="sheet-title">Choose AI model</div>
+        <a href="#" class="sheet-option" data-testid="settings-model-local" onclick="alert('Local model selected');">
+          <span class="sheet-option-icon">🔒</span><span>Built-in local model</span>
+        </a>
+        <a href="#" class="sheet-option" data-testid="settings-model-option" data-tf-sample="sample" onclick="alert('Larger model selected');">
+          <span class="sheet-option-icon">📱</span><span>Larger on-device model</span>
+        </a>
+        <a href="#" class="sheet-option" data-testid="settings-model-online" data-tf-sample="sample" onclick="alert('Online model selected');">
+          <span class="sheet-option-icon">🌐</span><span>Online AI service</span>
+        </a>
+        <div class="field mt-3">
+          <label class="field-label">Your API key</label>
+          <input type="password" class="input" placeholder="OpenAI key" data-testid="settings-ai-key-input">
+        </div>
+        <a href="#" class="btn btn-primary btn-block" data-testid="settings-model-save" onclick="alert('Model saved');">Confirm and save</a>
+        <a href="#" class="btn btn-ghost btn-block mt-2" data-testid="settings-model-cancel">Cancel</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

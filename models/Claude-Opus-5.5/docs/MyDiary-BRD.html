@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyDiary — Business Requirements</title>
+<script>
+/* Resolve the theme BEFORE first paint (no flash). Saved choice wins; otherwise
+   pick by time of day — light 07:00–19:00 local, softened dark at night. */
+(function(){
+  try{
+    var t = localStorage.getItem('tf-theme');
+    if(t!=='light' && t!=='dark'){ var h = new Date().getHours(); t = (h>=7 && h<19) ? 'light' : 'dark'; }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){ document.documentElement.setAttribute('data-theme','light'); }
+})();
+</script>
+<style>
+/* LIGHT is the default theme — a warm off-white, easy on the eyes (never bright white). */
+:root{
+  --bg:#f4f1e9; --panel:#efe9db; --panel2:#e7e0cd; --line:#d8cfb6;
+  --ink:#2e2a22; --muted:#6f6857; --accent:#2f6f9f; --accent2:#3f7d54;
+  --warn:#9a6b15; --danger:#b03a52; --ok:#3f7d54;
+  --code-bg:#ece5d3; --code-ink:#332f26; --row-alt:#eae2cf;
+  --h3:#3a352b; --h4:#2f6f9f; --quote:#4a4537; --cta-bg:#e6eef5;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+/* DARK — softened near-black (warmer / less harsh than pure #0f1115). */
+html[data-theme="dark"]{
+  --bg:#11141a; --panel:#171b23; --panel2:#1e2430; --line:#2b3240;
+  --ink:#dfe3ea; --muted:#99a2b1; --accent:#7cc4ff; --accent2:#a6e3a1;
+  --warn:#f9c74f; --danger:#f38ba8; --ok:#a6e3a1;
+  --code-bg:#0c1016; --code-ink:#d8dde8; --row-alt:#141821;
+  --h3:#cfd5e3; --h4:#7cc4ff; --quote:#cfd5e3; --cta-bg:#0d2030;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:13px;background:var(--code-bg);color:var(--code-ink);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+pre{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;color:var(--code-ink);position:relative}
+pre code{background:none;border:none;padding:0}
+.copy{position:absolute;top:8px;right:8px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;font-family:var(--sans);cursor:pointer}
+.copy:hover{color:var(--accent);border-color:var(--accent)}
+/* floating light/dark toggle (top-right) */
+.theme-toggle{position:fixed;top:12px;right:14px;z-index:10000;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:12.5px;font-family:var(--sans);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.theme-toggle:hover{color:var(--accent);border-color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.layout.no-toc{grid-template-columns:1fr}
+nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding:18px 14px}
+nav.side h1{font-size:14px;margin:0 0 4px;letter-spacing:.5px;color:var(--ink)}
+nav.side .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+nav.side ol,nav.side ul{list-style:none;padding:0;margin:0}
+nav.side li{font-size:13px;margin:2px 0}
+nav.side li a{display:block;padding:5px 8px;color:var(--ink);border-radius:6px}
+nav.side li a:hover{background:var(--panel2);text-decoration:none}
+nav.side li.h3 a{padding-left:22px;font-size:12.5px;color:var(--h3)}
+nav.side .group{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:14px 8px 4px}
+
+main{padding:28px 40px 80px;max-width:1100px}
+.layout.no-toc main{margin:0 auto}
+
+h1{font-size:28px;margin:0 0 6px}
+h2{font-size:22px;margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+h3{font-size:17px;margin:22px 0 6px;color:var(--h3);scroll-margin-top:16px}
+h4{font-size:14px;margin:14px 0 4px;color:var(--h4);scroll-margin-top:16px}
+.subtitle{color:var(--muted);font-size:14px;margin-top:-4px;margin-bottom:18px}
+p{margin:6px 0 10px}
+blockquote{border-left:3px solid var(--accent);background:var(--panel);margin:8px 0;padding:8px 14px;color:var(--quote)}
+ul,ol{padding-left:22px}
+li{margin:2px 0}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--panel2);color:var(--h3);font-weight:600}
+tr:nth-child(even) td{background:var(--row-alt)}
+
+hr{border:none;border-top:1px solid var(--line);margin:24px 0}
+.anchor-link{color:var(--muted);font-weight:400;font-size:0.85em;margin-left:8px;opacity:0;transition:opacity .15s;text-decoration:none}
+h2:hover .anchor-link,h3:hover .anchor-link,h4:hover .anchor-link{opacity:1}
+
+/* inline TOC at top of main content */
+.toc-inline{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:14px 0 24px}
+.toc-inline > div{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.toc-inline ol,.toc-inline ul{margin:4px 0;padding-left:18px}
+.toc-inline li{font-size:13px;margin:1px 0}
+.toc-inline a{color:var(--h3)}
+
+/* mermaid diagram wrapper + toolbar */
+.diagram{position:relative;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);margin:14px 0;overflow:hidden}
+.diagram .mermaid{padding:14px;margin:0;background:transparent;border:none;overflow:auto}
+.diagram .dt{display:flex;gap:6px;justify-content:flex-end;padding:6px 8px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.diagram .dt button{background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 10px;font-size:12px;font-family:var(--sans);cursor:pointer;min-width:30px}
+.diagram .dt button:hover{color:var(--accent);border-color:var(--accent)}
+.diagram .dt .zlabel{padding:3px 6px;font-size:11px;color:var(--muted);font-family:var(--mono);align-self:center}
+.diagram.fs{position:fixed;inset:0;z-index:9999;border-radius:0;border:none}
+.diagram.fs .mermaid{height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.side{position:static;height:auto}}
+</style>
+</head>
+<body>
+<button id="themeToggle" class="theme-toggle" title="Toggle light / dark">&#9790; Dark</button>
+<div class="layout">
+  <nav class="side">
+    <h1>MyDiary — Business Requirements</h1>
+    <div class="sub">Last rendered: 2026-10-18</div>
+    <div class="group">Contents</div>
+    <ol>
+        <li><a href="#summary">1. Summary</a></li>
+        <li><a href="#scope">2. Scope</a></li>
+        <li><a href="#users-and-roles">3. Users and roles</a></li>
+        <li><a href="#screens-and-flow">4. Screens and flow</a></li>
+        <li><a href="#requirements">5. Requirements</a></li>
+        <li class="h3"><a href="#sign-in">Sign in</a></li>
+        <li class="h3"><a href="#create-account">Create account</a></li>
+        <li class="h3"><a href="#reset-password">Reset password</a></li>
+        <li class="h3"><a href="#access-stopped">Access stopped</a></li>
+        <li class="h3"><a href="#unlock">Unlock</a></li>
+        <li class="h3"><a href="#home">Home</a></li>
+        <li class="h3"><a href="#on-this-day">On This Day</a></li>
+        <li class="h3"><a href="#thought-dump">Thought Dump</a></li>
+        <li class="h3"><a href="#free-flow">Free-Flow</a></li>
+        <li class="h3"><a href="#question-sets">Question sets</a></li>
+        <li class="h3"><a href="#answer-questions">Answer questions</a></li>
+        <li class="h3"><a href="#browse">Browse</a></li>
+        <li class="h3"><a href="#entry">Entry</a></li>
+        <li class="h3"><a href="#search">Search</a></li>
+        <li class="h3"><a href="#ask">Ask</a></li>
+        <li class="h3"><a href="#compare-answers">Compare answers</a></li>
+        <li class="h3"><a href="#account">Account</a></li>
+        <li class="h3"><a href="#plan-and-devices">Plan and devices</a></li>
+        <li class="h3"><a href="#settings">Settings</a></li>
+        <li class="h3"><a href="#backup-and-data">Backup and data</a></li>
+        <li><a href="#non-functional-requirements">6. Non-functional requirements</a></li>
+        <li><a href="#development-status">7. Development status</a></li>
+        <li><a href="#context-diagram">8. Context diagram</a></li>
+        <li><a href="#constraints-and-assumptions">9. Constraints and assumptions</a></li>
+        <li><a href="#risks">10. Risks</a></li>
+    </ol>
+  </nav>
+  <main>
+    <h1>MyDiary — Business Requirements</h1>
+    <div class="subtitle">Rendered 2026-10-18 &middot; source <code>MyDiary-BRD.md</code></div>
+
+    <div class="toc-inline">
+      <div>Contents</div>
+      <ol>
+        <li><a href="#summary">1. Summary</a></li>
+        <li><a href="#scope">2. Scope</a></li>
+        <li><a href="#users-and-roles">3. Users and roles</a></li>
+        <li><a href="#screens-and-flow">4. Screens and flow</a></li>
+        <li><a href="#requirements">5. Requirements</a></li>
+        <li class="h3"><a href="#sign-in">Sign in</a></li>
+        <li class="h3"><a href="#create-account">Create account</a></li>
+        <li class="h3"><a href="#reset-password">Reset password</a></li>
+        <li class="h3"><a href="#access-stopped">Access stopped</a></li>
+        <li class="h3"><a href="#unlock">Unlock</a></li>
+        <li class="h3"><a href="#home">Home</a></li>
+        <li class="h3"><a href="#on-this-day">On This Day</a></li>
+        <li class="h3"><a href="#thought-dump">Thought Dump</a></li>
+        <li class="h3"><a href="#free-flow">Free-Flow</a></li>
+        <li class="h3"><a href="#question-sets">Question sets</a></li>
+        <li class="h3"><a href="#answer-questions">Answer questions</a></li>
+        <li class="h3"><a href="#browse">Browse</a></li>
+        <li class="h3"><a href="#entry">Entry</a></li>
+        <li class="h3"><a href="#search">Search</a></li>
+        <li class="h3"><a href="#ask">Ask</a></li>
+        <li class="h3"><a href="#compare-answers">Compare answers</a></li>
+        <li class="h3"><a href="#account">Account</a></li>
+        <li class="h3"><a href="#plan-and-devices">Plan and devices</a></li>
+        <li class="h3"><a href="#settings">Settings</a></li>
+        <li class="h3"><a href="#backup-and-data">Backup and data</a></li>
+        <li><a href="#non-functional-requirements">6. Non-functional requirements</a></li>
+        <li><a href="#development-status">7. Development status</a></li>
+        <li><a href="#context-diagram">8. Context diagram</a></li>
+        <li><a href="#constraints-and-assumptions">9. Constraints and assumptions</a></li>
+        <li><a href="#risks">10. Risks</a></li>
+      </ol>
+    </div>
+<table>
+<thead><tr><th></th><th></th></tr></thead>
+<tbody>
+<tr><td>App</td><td>MyDiary</td></tr>
+<tr><td>Kind</td><td>app</td></tr>
+<tr><td>Size</td><td>Medium</td></tr>
+<tr><td>Stack answer set</td><td>dotnet (<code>.tfcore/templates/stack-defaults/dotnet.md</code>)</td></tr>
+<tr><td>Status</td><td>Draft</td></tr>
+<tr><td>Date</td><td>2026-10-18</td></tr>
+</tbody>
+</table>
+<p>Source: the owner's brief, <code>docs/MyDiary-Brief.md</code> (2026-10-18), read in full. Every "Must do" line, every user, every fixed choice and every out-of-scope line of the brief is carried below. Items the brief does not state outright are marked as inferred for the owner to check.</p>
+<h2 id="summary"><a id="1-summary"></a>1. Summary<a class="anchor-link" href="#summary">#</a></h2>
+<p>MyDiary is a private journaling app for phone, tablet and computer (Android, iPhone, iPad, Windows and Mac). Each person keeps one journal and has three ways to write in it: a 10-Thought Dump, a Free-Flow entry with formatting and photos, and Targeted Questioning sets such as Monthly Goals or a Yearly Review.</p>
+<p>Opening the app shows a short, warm story of what the person wrote on this date in past years. They can ask plain questions about their past ("how many coffee bottles did I open last year?") and get a counted answer that lists the entries it used. They can also put one question's answers side by side across months or years.</p>
+<p>It is free on one device, with a small AI model that runs on the device. A paid licence adds backup, sync between several devices, and a choice of AI model or online AI service.</p>
+<p>Accounts, sign-in, devices, licences, problem reports and account-data requests use AppManager. AI features use TechieRag. Screens use TrBlazeUI. MyDiary has no server of its own, and journal text never reaches AppManager.</p>
+<h2 id="scope"><a id="2-scope"></a>2. Scope<a class="anchor-link" href="#scope">#</a></h2>
+<p><strong>In:</strong></p>
+<ul>
+<li>Creating a MyDiary account, signing in, resetting a forgotten password, editing the profile and changing the password, all inside the app through AppManager (brief, Must do 1 and 3).
+</li>
+<li>Working offline for up to 30 days, then checking the licence online again (Must do 2).
+</li>
+<li>Device limits: a free account on one device; a paid account on as many devices as its licence allows; refusing a device over the limit with a message that says what to do (Must do 4, 5).
+</li>
+<li>Showing the plan, its end date and every signed-in device with the count in use, and forgetting or blocking a device (Must do 6).
+</li>
+<li>Deciding paid or free from the licence key and licence name returned by AppManager's licence check: "Pro" allows 2 devices, "Pro-Plus" allows the number set on the licence, no paid licence means free (Must do 7).
+</li>
+<li>Keeping every free feature and the whole journal on the current device when a paid licence ends (Must do 8).
+</li>
+<li>Sending a problem report and asking for a copy or deletion of account data from inside the app (Must do 3).
+</li>
+<li>One journal per person, with no journal picker (Must do 9).
+</li>
+<li>Three ways to write: 10-Thought Dump, Free-Flow with formatting and photos, Targeted Questioning sets (built-in and the user's own), with a suggestion when a set is due (Must do 10, 11, 12).
+</li>
+<li>A home screen with today's entries, a streak and the On This Day card; On This Day as a short story per past year (Must do 13, 15).
+</li>
+<li>Browsing by timeline or calendar, tags, stars and moods; keyword search with filters (Must do 14, 16).
+</li>
+<li>Asking plain questions and getting counted answers with their source entries, never an invented answer; comparing one question's answers across months or years (Must do 17, 18).
+</li>
+<li>The smallest built-in AI model for free users; a choice of model, or the user's own key for an online AI service TechieRag supports, for paid users, with a warning that journal text will be sent (Must do 19, 20).
+</li>
+<li>Backup to the user's own Google Drive or OneDrive, sync between devices and restore on a new device for paid users (Must do 21).
+</li>
+<li>Export to a JSON file and import one, including a Day One export, for every user (Must do 22).
+</li>
+<li>App lock with a PIN or fingerprint/face, and journaling reminders (Must do 23).
+</li>
+<li>The same screens on Android, iPhone, iPad, Windows and Mac (Must do 24).
+</li>
+</ul>
+<p><strong>Out:</strong></p>
+<ul>
+<li>The purchase and landing page. It is a separate MyDiary web app in phase 2, which buys licences through AppManager. Until then the admin assigns paid licences in AppManager, and MyDiary has no "Buy" button.
+</li>
+<li>Taking payment inside the app, and app-store purchases.
+</li>
+<li>More than one journal, shared journals, and family groups sharing one licence.
+</li>
+<li>Sending journal text anywhere for a free user. Online AI only happens when a paid user enters their own key.
+</li>
+<li>iCloud, Dropbox and any other sync service.
+</li>
+<li>Map view, voice transcription, widgets, handwriting, sharing an entry as an image.
+</li>
+<li>A server of MyDiary's own. AppManager never sees journal text.
+</li>
+<li>AI code written inside MyDiary. Every AI feature, built-in or online, goes through TechieRag.
+</li>
+</ul>
+<h2 id="users-and-roles"><a id="3-users-and-roles"></a>3. Users and roles<a class="anchor-link" href="#users-and-roles">#</a></h2>
+<p>The app has one kind of signed-in user. Free and paid are states of that user's licence, not separate logins. A goal reviewer is a free or paid user doing reviews. The owner works only on the AppManager site.</p>
+<table>
+<thead><tr><th>Role</th><th>Who they are</th><th>What they need</th></tr></thead>
+<tbody>
+<tr><td>Free user</td><td>Anyone with a MyDiary account and no paid licence. Writes on one device; everything stays on that device.</td><td>All writing, browsing, search, On This Day, plain-question answers and comparisons, using the built-in on-device AI model; export and import; lock and reminders.</td></tr>
+<tr><td>Paid user</td><td>A user whose AppManager licence is "Pro" (2 devices) or "Pro-Plus" (the number set on the licence).</td><td>Everything a free user has, plus several devices, backup and restore to their own Google Drive or OneDrive, sync between devices, and a choice of AI model or their own online AI key.</td></tr>
+<tr><td>Goal reviewer</td><td>A free or paid user who runs monthly, yearly, health, fitness or project reviews.</td><td>Question sets suggested when due, and the same question's answers side by side over months or years.</td></tr>
+<tr><td>Owner (admin)</td><td>The person who runs MyDiary. Works on the AppManager site and does nothing inside MyDiary.</td><td>Assigns paid licences and reads problem reports on AppManager. No screen in MyDiary.</td></tr>
+</tbody>
+</table>
+<h2 id="screens-and-flow"><a id="4-screens-and-flow"></a>4. Screens and flow<a class="anchor-link" href="#screens-and-flow">#</a></h2>
+<p>One row per routed page. A dialog is a row under its parent screen with <code>on /route</code> in the Route column; it is not counted as a screen. 20 screens, one signed-in role. Tabs and dialogs are regions of their page.</p>
+<table>
+<thead><tr><th>Screen</th><th>Route</th><th>Role</th><th>Mockup</th><th>Fields</th></tr></thead>
+<tbody>
+<tr><td>Sign in</td><td><code>/signin</code></td><td>Free user, Paid user</td><td><a href="mockups/signin.html">mockup</a></td><td>email, password</td></tr>
+<tr><td>Create account</td><td><code>/register</code></td><td>Free user</td><td><a href="mockups/register.html">mockup</a></td><td>name, email, password, confirm password</td></tr>
+<tr><td>Reset password</td><td><code>/reset-password</code></td><td>Free user, Paid user</td><td><a href="mockups/reset-password.html">mockup</a></td><td>email, reset code, new password</td></tr>
+<tr><td>Access stopped</td><td><code>/access-stopped</code></td><td>Free user, Paid user</td><td><a href="mockups/access-stopped.html">mockup</a></td><td>reason (device limit free, device limit paid, licence check due), devices in use, allowed devices</td></tr>
+<tr><td>Unlock</td><td><code>/unlock</code></td><td>Free user, Paid user</td><td><a href="mockups/unlock.html">mockup</a></td><td>PIN, fingerprint/face button</td></tr>
+<tr><td>Home</td><td><code>/</code></td><td>Free user, Paid user, Goal reviewer</td><td><a href="mockups/home.html">mockup</a></td><td>today's entries, streak, On This Day card, due question set</td></tr>
+<tr><td>On This Day</td><td><code>/on-this-day</code></td><td>Free user, Paid user</td><td><a href="mockups/on-this-day.html">mockup</a></td><td>date, one story per past year, source entries</td></tr>
+<tr><td>Thought Dump</td><td><code>/write/dump</code></td><td>Free user, Paid user</td><td><a href="mockups/thought-dump.html">mockup</a></td><td>lines 1 to 10, mood, tags</td></tr>
+<tr><td>Free-Flow</td><td><code>/write/free</code></td><td>Free user, Paid user</td><td><a href="mockups/free-flow.html">mockup</a></td><td>title, formatted body, photos, mood, tags</td></tr>
+<tr><td>Question sets</td><td><code>/questions</code></td><td>Free user, Paid user, Goal reviewer</td><td><a href="mockups/question-sets.html">mockup</a></td><td>set name, questions count, due badge, schedule</td></tr>
+<tr><td>Build question set (dialog)</td><td>on <code>/questions</code></td><td>Free user, Paid user, Goal reviewer</td><td><a href="mockups/question-sets.html">mockup</a></td><td>set name, questions, schedule</td></tr>
+<tr><td>Answer questions</td><td><code>/questions/answer</code></td><td>Free user, Paid user, Goal reviewer</td><td><a href="mockups/answer-questions.html">mockup</a></td><td>set name, period, one answer per question, mood</td></tr>
+<tr><td>Browse</td><td><code>/browse</code></td><td>Free user, Paid user</td><td><a href="mockups/browse.html">mockup</a></td><td>timeline tab, calendar tab, entry type, mood, star, tags</td></tr>
+<tr><td>Entry</td><td><code>/entry</code></td><td>Free user, Paid user</td><td><a href="mockups/entry.html">mockup</a></td><td>date, type, body, photos, mood, tags, star</td></tr>
+<tr><td>Delete entry (dialog)</td><td>on <code>/entry</code></td><td>Free user, Paid user</td><td><a href="mockups/entry.html">mockup</a></td><td>confirmation</td></tr>
+<tr><td>Search</td><td><code>/search</code></td><td>Free user, Paid user</td><td><a href="mockups/search.html">mockup</a></td><td>keyword, date range, tag, question set, has photo, starred, mood</td></tr>
+<tr><td>Ask</td><td><code>/ask</code></td><td>Free user, Paid user, Goal reviewer</td><td><a href="mockups/ask.html">mockup</a></td><td>question, counted answer, source entries, AI model used</td></tr>
+<tr><td>Compare answers</td><td><code>/compare</code></td><td>Goal reviewer</td><td><a href="mockups/compare.html">mockup</a></td><td>question set, question, by month or by year, period columns</td></tr>
+<tr><td>Account</td><td><code>/account</code></td><td>Free user, Paid user</td><td><a href="mockups/account.html">mockup</a></td><td>name, email, current password, new password</td></tr>
+<tr><td>Report a problem (dialog)</td><td>on <code>/account</code></td><td>Free user, Paid user</td><td><a href="mockups/account.html">mockup</a></td><td>subject, description</td></tr>
+<tr><td>My account data (dialog)</td><td>on <code>/account</code></td><td>Free user, Paid user</td><td><a href="mockups/account.html">mockup</a></td><td>request type (copy, deletion), confirmation</td></tr>
+<tr><td>Plan and devices</td><td><code>/account/devices</code></td><td>Free user, Paid user</td><td><a href="mockups/plan-devices.html">mockup</a></td><td>plan name, end date, devices in use, allowed devices, device list</td></tr>
+<tr><td>Forget or block device (dialog)</td><td>on <code>/account/devices</code></td><td>Paid user</td><td><a href="mockups/plan-devices.html">mockup</a></td><td>device name, action</td></tr>
+<tr><td>Settings</td><td><code>/settings</code></td><td>Free user, Paid user</td><td><a href="mockups/settings.html">mockup</a></td><td>AI model, online AI service, API key, PIN, fingerprint/face, reminder days and time</td></tr>
+<tr><td>Online AI warning (dialog)</td><td>on <code>/settings</code></td><td>Paid user</td><td><a href="mockups/settings.html">mockup</a></td><td>service name, acknowledgement</td></tr>
+<tr><td>Backup and data</td><td><code>/backup</code></td><td>Free user, Paid user</td><td><a href="mockups/backup.html">mockup</a></td><td>backup service, last backup, sync status, export file, import file, import source</td></tr>
+<tr><td>Restore journal (dialog)</td><td>on <code>/backup</code></td><td>Paid user</td><td><a href="mockups/backup.html">mockup</a></td><td>backup to restore, confirmation</td></tr>
+</tbody>
+</table>
+<p><strong>Primary journey:</strong></p>
+<ol>
+<li>On first launch the user creates a MyDiary account or signs in; the app registers this device with AppManager and checks the licence.
+</li>
+<li>If the device is over the account's limit, Access stopped explains why and what to do. Otherwise Home opens (after Unlock, when a lock is set).
+</li>
+<li>Home shows today's entries, the streak, the On This Day card and any question set that is due.
+</li>
+<li>The user writes a Thought Dump, a Free-Flow entry or answers a question set; the entry appears on Home and in Browse.
+</li>
+<li>Later the user browses, searches, asks a plain question on Ask, or compares answers over time on Compare answers.
+</li>
+<li>From the menu the user manages their Account, Plan and devices, Settings (AI model, lock, reminders) and Backup and data.
+</li>
+</ol>
+<h2 id="requirements"><a id="5-requirements"></a>5. Requirements<a class="anchor-link" href="#requirements">#</a></h2>
+<p>One item per thing the verifier will test. Each names its screen, links its mockup, and carries one acceptance line. "Must do N" points at the line of the brief it comes from.</p>
+<h3 id="sign-in">Sign in<a class="anchor-link" href="#sign-in">#</a></h3>
+<p>Sign in lets a returning user open their journal with their MyDiary account.</p>
+<ul>
+<li><strong>BRD-1</strong> — Sign in opens the journal (Must do 1). <em>Screen:</em> Sign in · <em>Mockup:</em> <a href="mockups/signin.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user enters a correct email and password on Sign in and presses Sign in, then Home opens.
+</li>
+</ul>
+</li>
+<li><strong>BRD-2</strong> — A wrong password is refused (Must do 1). <em>Screen:</em> Sign in · <em>Mockup:</em> <a href="mockups/signin.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user enters a wrong password on Sign in, then "Email or password is wrong" shows and Sign in stays open.
+</li>
+</ul>
+</li>
+<li><strong>BRD-3</strong> — First launch asks to sign in or create an account (Must do 1). <em>Screen:</em> Sign in · <em>Mockup:</em> <a href="mockups/signin.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens MyDiary for the first time on a device, then Sign in shows with a Create an account link.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="create-account">Create account<a class="anchor-link" href="#create-account">#</a></h3>
+<p>Create account makes a new MyDiary account through AppManager and opens an empty journal.</p>
+<ul>
+<li><strong>BRD-4</strong> — A new account opens an empty journal (Must do 1). <em>Screen:</em> Create account · <em>Mockup:</em> <a href="mockups/register.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user enters name, email and a valid password on Create account and presses Create account, then Home opens with an empty journal.
+</li>
+</ul>
+</li>
+<li><strong>BRD-5</strong> — An email that already has an account is refused (Must do 1). <em>Screen:</em> Create account · <em>Mockup:</em> <a href="mockups/register.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user enters an email that already has an account on Create account, then a message says so and links to Sign in.
+</li>
+</ul>
+</li>
+<li><strong>BRD-6</strong> — The password rule is shown (Must do 1; AppManager's rule). <em>Screen:</em> Create account · <em>Mockup:</em> <a href="mockups/register.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user types a password without 8 characters, an uppercase letter, a digit and a symbol, then Create account says which is missing.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="reset-password">Reset password<a class="anchor-link" href="#reset-password">#</a></h3>
+<p>Reset password lets a user who forgot their password set a new one with a code sent by email.</p>
+<ul>
+<li><strong>BRD-7</strong> — A reset code is sent (Must do 3). <em>Screen:</em> Reset password · <em>Mockup:</em> <a href="mockups/reset-password.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user enters their email on Reset password and presses Send code, then a message says a reset code is on its way.
+</li>
+</ul>
+</li>
+<li><strong>BRD-8</strong> — The new password works (Must do 3). <em>Screen:</em> Reset password · <em>Mockup:</em> <a href="mockups/reset-password.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user enters the emailed code and a new password on Reset password, then Sign in opens and the new password signs them in.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="access-stopped">Access stopped<a class="anchor-link" href="#access-stopped">#</a></h3>
+<p>Access stopped is shown instead of Home when this device may not open the journal, and says what to do.</p>
+<ul>
+<li><strong>BRD-9</strong> — A free account is refused on a second device (Must do 4). <em>Screen:</em> Access stopped · <em>Mockup:</em> <a href="mockups/access-stopped.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a free user signs in on a second device, then Access stopped says a free account works on one device and a paid licence allows more.
+</li>
+</ul>
+</li>
+<li><strong>BRD-10</strong> — A paid account is refused over its device limit (Must do 5). <em>Screen:</em> Access stopped · <em>Mockup:</em> <a href="mockups/access-stopped.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid user signs in on one device more than the licence allows, then Access stopped shows the devices in use and how to free a slot.
+</li>
+</ul>
+</li>
+<li><strong>BRD-11</strong> — The licence is checked again after 30 days (Must do 2). <em>Screen:</em> Access stopped · <em>Mockup:</em> <a href="mockups/access-stopped.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the last licence check is over 30 days old and the device is offline, then Access stopped asks the user to connect and check again.
+</li>
+</ul>
+</li>
+<li><strong>BRD-12</strong> — The app works offline within 30 days (Must do 2). <em>Screen:</em> Home · <em>Mockup:</em> <a href="mockups/home.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the device is offline and the last licence check is under 30 days old, then Home opens and every journal screen works.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="unlock">Unlock<a class="anchor-link" href="#unlock">#</a></h3>
+<p>Unlock keeps the journal closed until the user enters their PIN or passes the fingerprint or face check.</p>
+<ul>
+<li><strong>BRD-13</strong> — A locked app asks first (Must do 23). <em>Screen:</em> Unlock · <em>Mockup:</em> <a href="mockups/unlock.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user who has set a PIN opens MyDiary, then Unlock shows before any journal content.
+</li>
+</ul>
+</li>
+<li><strong>BRD-14</strong> — The right PIN opens the journal (Must do 23). <em>Screen:</em> Unlock · <em>Mockup:</em> <a href="mockups/unlock.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user enters the correct PIN on Unlock, then Home opens.
+</li>
+</ul>
+</li>
+<li><strong>BRD-15</strong> — A wrong PIN is refused (Must do 23). <em>Screen:</em> Unlock · <em>Mockup:</em> <a href="mockups/unlock.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user enters a wrong PIN on Unlock, then "Wrong PIN" shows and the PIN boxes clear.
+</li>
+</ul>
+</li>
+<li><strong>BRD-16</strong> — Fingerprint or face opens the journal (Must do 23). <em>Screen:</em> Unlock · <em>Mockup:</em> <a href="mockups/unlock.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user with fingerprint or face unlock turned on passes the device check on Unlock, then Home opens.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="home">Home<a class="anchor-link" href="#home">#</a></h3>
+<p>Home shows today's entries, the streak, the On This Day card and any question set that is due.</p>
+<ul>
+<li><strong>BRD-17</strong> — Today's entries are listed (Must do 13). <em>Screen:</em> Home · <em>Mockup:</em> <a href="mockups/home.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user has written two entries today, then Home lists both under Today, each with its time, type and mood.
+</li>
+</ul>
+</li>
+<li><strong>BRD-18</strong> — The streak is shown (Must do 13). <em>Screen:</em> Home · <em>Mockup:</em> <a href="mockups/home.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user has written on each of the last 12 days, then the Streak tile on Home shows 12 days.
+</li>
+</ul>
+</li>
+<li><strong>BRD-19</strong> — The On This Day card is shown (Must do 13, 15). <em>Screen:</em> Home · <em>Mockup:</em> <a href="mockups/home.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When entries exist on today's date in past years, then the On This Day card on Home shows the start of a story and the years.
+</li>
+</ul>
+</li>
+<li><strong>BRD-20</strong> — A due question set is suggested (Must do 12). <em>Screen:</em> Home · <em>Mockup:</em> <a href="mockups/home.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens Home on the 1st of a month, then Home shows "Monthly Goals is due" with a Start button.
+</li>
+</ul>
+</li>
+<li><strong>BRD-21</strong> — A new journal says how to start. <em>Screen:</em> Home · <em>Mockup:</em> <a href="mockups/home.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When a new user opens Home, then it shows "Your journal is empty" with a Start writing button.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="on-this-day">On This Day<a class="anchor-link" href="#on-this-day">#</a></h3>
+<p>On This Day tells, for each past year, a short warm story of what was written on this date.</p>
+<ul>
+<li><strong>BRD-22</strong> — One story per past year (Must do 15). <em>Screen:</em> On This Day · <em>Mockup:</em> <a href="mockups/on-this-day.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When entries exist on today's date in three past years, then On This Day shows three stories, one per year, newest first.
+</li>
+</ul>
+</li>
+<li><strong>BRD-23</strong> — A story, not a list (Must do 15). <em>Screen:</em> On This Day · <em>Mockup:</em> <a href="mockups/on-this-day.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens On This Day, then each year shows a paragraph of prose, not a list of entries.
+</li>
+</ul>
+</li>
+<li><strong>BRD-24</strong> — Entries around the date count (Must do 15). <em>Screen:</em> On This Day · <em>Mockup:</em> <a href="mockups/on-this-day.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a past year has no entry on this date but one within three days, then its story uses it and says "Around this date". &lt;!-- inferred — please verify: the three-day window --&gt;
+</li>
+</ul>
+</li>
+<li><strong>BRD-25</strong> — The story's entries can be opened. <em>Screen:</em> On This Day · <em>Mockup:</em> <a href="mockups/on-this-day.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When the user presses "Based on 2 entries" under a story, then those entries are listed and each opens on Entry.
+</li>
+</ul>
+</li>
+<li><strong>BRD-26</strong> — No past entries, no story (Must do 15). <em>Screen:</em> On This Day · <em>Mockup:</em> <a href="mockups/on-this-day.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When no entry exists on or around today's date in any past year, then On This Day says so and shows no story.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="thought-dump">Thought Dump<a class="anchor-link" href="#thought-dump">#</a></h3>
+<p>Thought Dump takes ten quick numbered lines and saves the filled ones as one entry.</p>
+<ul>
+<li><strong>BRD-27</strong> — Ten numbered lines (Must do 10). <em>Screen:</em> Thought Dump · <em>Mockup:</em> <a href="mockups/thought-dump.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens Thought Dump, then ten numbered empty lines show with the cursor on line 1.
+</li>
+</ul>
+</li>
+<li><strong>BRD-28</strong> — Enter moves to the next line. <em>Screen:</em> Thought Dump · <em>Mockup:</em> <a href="mockups/thought-dump.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When the user presses Enter on a line of Thought Dump, then the cursor moves to the next line.
+</li>
+</ul>
+</li>
+<li><strong>BRD-29</strong> — Empty lines are dropped on save (Must do 10). <em>Screen:</em> Thought Dump · <em>Mockup:</em> <a href="mockups/thought-dump.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user saves a Thought Dump with lines 3 and 8 to 10 empty, then the saved entry shows only the six filled lines.
+</li>
+</ul>
+</li>
+<li><strong>BRD-30</strong> — The saved dump shows on Home (Must do 10, 13). <em>Screen:</em> Thought Dump · <em>Mockup:</em> <a href="mockups/thought-dump.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user saves a Thought Dump, then Home opens and lists it under Today.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="free-flow">Free-Flow<a class="anchor-link" href="#free-flow">#</a></h3>
+<p>Free-Flow is a free-form entry with formatting, photos, a mood and tags.</p>
+<ul>
+<li><strong>BRD-31</strong> — Formatting is kept (Must do 10). <em>Screen:</em> Free-Flow · <em>Mockup:</em> <a href="mockups/free-flow.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user writes bold text, italic text and a bulleted list on Free-Flow and saves, then Entry shows the same formatting.
+</li>
+</ul>
+</li>
+<li><strong>BRD-32</strong> — Photos are added (Must do 10). <em>Screen:</em> Free-Flow · <em>Mockup:</em> <a href="mockups/free-flow.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user adds two photos from the device on Free-Flow and saves, then Entry shows both photos.
+</li>
+</ul>
+</li>
+<li><strong>BRD-33</strong> — A mood is picked (Must do 14). <em>Screen:</em> Free-Flow · <em>Mockup:</em> <a href="mockups/free-flow.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user picks the mood "Calm" on Free-Flow and saves, then Entry shows the Calm mood.
+</li>
+</ul>
+</li>
+<li><strong>BRD-34</strong> — Tags are added (Must do 14). <em>Screen:</em> Free-Flow · <em>Mockup:</em> <a href="mockups/free-flow.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user adds the tags "health" and "family" on Free-Flow and saves, then Entry shows both tags.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="question-sets">Question sets<a class="anchor-link" href="#question-sets">#</a></h3>
+<p>Question sets lists the built-in and the user's own sets, marks the ones that are due, and builds new ones.</p>
+<ul>
+<li><strong>BRD-35</strong> — Seven built-in sets (Must do 11). <em>Screen:</em> Question sets · <em>Mockup:</em> <a href="mockups/question-sets.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens Question sets, then Monthly Goals, Yearly Review, Health, Fitness, Weekly Retro, Project Retro and Gratitude show.
+</li>
+</ul>
+</li>
+<li><strong>BRD-36</strong> — A due set is marked (Must do 12). <em>Screen:</em> Question sets · <em>Mockup:</em> <a href="mockups/question-sets.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a set's schedule falls on today, then its card on Question sets shows a "Due today" badge.
+</li>
+</ul>
+</li>
+<li><strong>BRD-37</strong> — A user builds their own set (Must do 11). <em>Screen:</em> Question sets · <em>Mockup:</em> <a href="mockups/question-sets.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user names a set, adds three questions and a schedule in Build question set and saves, then the set shows on Question sets.
+</li>
+</ul>
+</li>
+<li><strong>BRD-38</strong> — Only the user's own sets can be deleted. <em>Screen:</em> Question sets · <em>Mockup:</em> <a href="mockups/question-sets.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When a user deletes their own set on Question sets, then it leaves the list; built-in sets show no Delete button.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="answer-questions">Answer questions<a class="anchor-link" href="#answer-questions">#</a></h3>
+<p>Answer questions shows each question of a set with its own answer box and saves the answers as one entry.</p>
+<ul>
+<li><strong>BRD-39</strong> — One box per question (Must do 11). <em>Screen:</em> Answer questions · <em>Mockup:</em> <a href="mockups/answer-questions.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user starts Weekly Retro, then Answer questions shows the set name, the week, and each question with its own answer box.
+</li>
+</ul>
+</li>
+<li><strong>BRD-40</strong> — Answers are saved as one entry (Must do 11). <em>Screen:</em> Answer questions · <em>Mockup:</em> <a href="mockups/answer-questions.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user saves Answer questions, then one entry holding every answer, marked with the set name, shows on Home and Browse.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="browse">Browse<a class="anchor-link" href="#browse">#</a></h3>
+<p>Browse lists every entry on a timeline or a month calendar.</p>
+<ul>
+<li><strong>BRD-41</strong> — The timeline lists entries newest first (Must do 14). <em>Screen:</em> Browse · <em>Mockup:</em> <a href="mockups/browse.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens Browse, then the Timeline lists entries newest first, grouped by day, each with its type, mood, star and tags.
+</li>
+</ul>
+</li>
+<li><strong>BRD-42</strong> — The calendar marks days with entries (Must do 14). <em>Screen:</em> Browse · <em>Mockup:</em> <a href="mockups/browse.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user opens the Calendar tab on Browse, then each day of the month that has an entry is marked.
+</li>
+</ul>
+</li>
+<li><strong>BRD-43</strong> — A day opens its entries (Must do 14). <em>Screen:</em> Browse · <em>Mockup:</em> <a href="mockups/browse.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user picks a marked day on the Browse calendar, then that day's entries are listed below it.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="entry">Entry<a class="anchor-link" href="#entry">#</a></h3>
+<p>Entry shows one entry in full and lets the user star it, change its mood and tags, edit it or delete it.</p>
+<ul>
+<li><strong>BRD-44</strong> — The whole entry is shown (Must do 10). <em>Screen:</em> Entry · <em>Mockup:</em> <a href="mockups/entry.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens an entry, then Entry shows its date, type, formatted text, photos, mood and tags.
+</li>
+</ul>
+</li>
+<li><strong>BRD-45</strong> — An entry is starred (Must do 14). <em>Screen:</em> Entry · <em>Mockup:</em> <a href="mockups/entry.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user presses the star on Entry, then the star fills and the entry shows under the Starred filter on Search.
+</li>
+</ul>
+</li>
+<li><strong>BRD-46</strong> — The mood is changed (Must do 14). <em>Screen:</em> Entry · <em>Mockup:</em> <a href="mockups/entry.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user picks another mood on Entry, then the new mood shows on Entry and on Browse.
+</li>
+</ul>
+</li>
+<li><strong>BRD-47</strong> — Tags are changed (Must do 14). <em>Screen:</em> Entry · <em>Mockup:</em> <a href="mockups/entry.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user removes the tag "family" on Entry, then the tag no longer shows on that entry.
+</li>
+</ul>
+</li>
+<li><strong>BRD-48</strong> — An entry is edited. <em>Screen:</em> Entry · <em>Mockup:</em> <a href="mockups/entry.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When the user presses Edit on a Free-Flow entry, then Free-Flow opens holding its text, photos, mood and tags.
+</li>
+</ul>
+</li>
+<li><strong>BRD-49</strong> — An entry is deleted. <em>Screen:</em> Entry · <em>Mockup:</em> <a href="mockups/entry.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When the user confirms Delete entry, then the entry no longer shows on Browse or Home.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="search">Search<a class="anchor-link" href="#search">#</a></h3>
+<p>Search finds entries by keyword and narrows them with filters.</p>
+<ul>
+<li><strong>BRD-50</strong> — Keyword search (Must do 16). <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user searches "coffee" on Search, then only entries containing "coffee" are listed, with the word highlighted.
+</li>
+</ul>
+</li>
+<li><strong>BRD-51</strong> — Filter by date (Must do 16). <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user sets the dates 1 January to 31 December 2025 on Search, then only entries from 2025 are listed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-52</strong> — Filter by tag (Must do 16). <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user picks the tag "health" on Search, then only entries tagged "health" are listed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-53</strong> — Filter by question set (Must do 16). <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user picks Weekly Retro on Search, then only Weekly Retro entries are listed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-54</strong> — Filter by photo (Must do 16). <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user turns on "Has photos" on Search, then only entries with at least one photo are listed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-55</strong> — Filter by star (Must do 16). <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user turns on "Starred only" on Search, then only starred entries are listed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-56</strong> — Filter by mood (Must do 16). <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user picks the moods Low and Stressed on Search, then only entries with one of those moods are listed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-57</strong> — No results says so. <em>Screen:</em> Search · <em>Mockup:</em> <a href="mockups/search.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When no entry matches on Search, then "No entries match" shows with a Clear filters button.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="ask">Ask<a class="anchor-link" href="#ask">#</a></h3>
+<p>Ask answers plain questions about the journal with a count and the entries it used, and never makes one up.</p>
+<ul>
+<li><strong>BRD-58</strong> — A counted answer (Must do 17). <em>Screen:</em> Ask · <em>Mockup:</em> <a href="mockups/ask.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user asks "How many coffee bottles did I open last year?" on Ask, then the answer states a number.
+</li>
+</ul>
+</li>
+<li><strong>BRD-59</strong> — The entries used are listed (Must do 17). <em>Screen:</em> Ask · <em>Mockup:</em> <a href="mockups/ask.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When Ask gives an answer, then every entry it counted is listed with its date, and each opens on Entry.
+</li>
+</ul>
+</li>
+<li><strong>BRD-60</strong> — No match, no invented answer (Must do 17). <em>Screen:</em> Ask · <em>Mockup:</em> <a href="mockups/ask.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When no entry matches the question on Ask, then it says no entries match and shows no number.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="compare-answers">Compare answers<a class="anchor-link" href="#compare-answers">#</a></h3>
+<p>Compare answers puts one question's answers side by side across months or years.</p>
+<ul>
+<li><strong>BRD-61</strong> — Answers side by side by month (Must do 18). <em>Screen:</em> Compare answers · <em>Mockup:</em> <a href="mockups/compare.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a goal reviewer picks Monthly Goals, a question and "By month" on Compare answers, then each month's answer shows in its own column.
+</li>
+</ul>
+</li>
+<li><strong>BRD-62</strong> — Answers side by side by year (Must do 18). <em>Screen:</em> Compare answers · <em>Mockup:</em> <a href="mockups/compare.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the reviewer picks Yearly Review and "By year" on Compare answers, then each year's answer shows in its own column.
+</li>
+</ul>
+</li>
+<li><strong>BRD-63</strong> — A period with no answer is marked. <em>Screen:</em> Compare answers · <em>Mockup:</em> <a href="mockups/compare.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When a month in the range has no answer, then its column on Compare answers shows "No answer".
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="account">Account<a class="anchor-link" href="#account">#</a></h3>
+<p>Account holds the profile, the password, problem reports, account-data requests and sign-out.</p>
+<ul>
+<li><strong>BRD-64</strong> — The profile is edited (Must do 3). <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user changes their first name on Account and saves, then the new name shows on Account and in the menu.
+</li>
+</ul>
+</li>
+<li><strong>BRD-65</strong> — The password is changed (Must do 3). <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user enters the current password and a valid new one on Account and saves, then Sign in opens and the new password works.
+</li>
+</ul>
+</li>
+<li><strong>BRD-66</strong> — A wrong current password is refused (Must do 3). <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the current password entered on Account is wrong, then "Current password is wrong" shows and nothing changes.
+</li>
+</ul>
+</li>
+<li><strong>BRD-67</strong> — A problem report is sent (Must do 3). <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user sends a subject and description in Report a problem, then "Report sent" shows with the report's number.
+</li>
+</ul>
+</li>
+<li><strong>BRD-68</strong> — A problem report carries no journal text (brief: AppManager never sees journal text). <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user opens Report a problem, then the dialog lists what is sent, and no journal text is among it.
+</li>
+</ul>
+</li>
+<li><strong>BRD-69</strong> — A copy of account data is requested (Must do 3). <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user presses Ask for a copy on Account, then a message says the copy will be emailed within 24 hours.
+</li>
+</ul>
+</li>
+<li><strong>BRD-70</strong> — Deletion of account data is requested (Must do 3). <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user types their email in My account data and confirms deletion, then a message says deletion takes about 7 days.
+</li>
+</ul>
+</li>
+<li><strong>BRD-71</strong> — Sign out. <em>Screen:</em> Account · <em>Mockup:</em> <a href="mockups/account.html">mockup</a> &lt;!-- inferred — please verify --&gt;
+<ul>
+<li><em>Acceptance:</em> When the user presses Sign out, then Sign in opens and the journal is not shown until they sign in again.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="plan-and-devices">Plan and devices<a class="anchor-link" href="#plan-and-devices">#</a></h3>
+<p>Plan and devices shows the plan, when it ends, and every signed-in device, and lets the user forget or block one.</p>
+<ul>
+<li><strong>BRD-72</strong> — The plan and its end date are shown (Must do 6). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid user opens Plan and devices, then the plan name and its end date show.
+</li>
+</ul>
+</li>
+<li><strong>BRD-73</strong> — A free plan is shown without a Buy button (Must do 6, 7; Out of scope). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a free user opens Plan and devices, then the plan reads "Free — one device" and no Buy button shows.
+</li>
+</ul>
+</li>
+<li><strong>BRD-74</strong> — Every signed-in device and the count in use (Must do 6). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user with two signed-in devices opens Plan and devices, then both are listed and "2 of 2 devices in use" shows.
+</li>
+</ul>
+</li>
+<li><strong>BRD-75</strong> — "Pro" allows 2 devices (Must do 7). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When AppManager's licence check returns the licence name "Pro", then Plan and devices shows 2 devices allowed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-76</strong> — "Pro-Plus" allows the number set on the licence (Must do 7). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the licence check returns "Pro-Plus" with 5 devices allowed, then Plan and devices shows 5 devices allowed.
+</li>
+</ul>
+</li>
+<li><strong>BRD-77</strong> — A device is forgotten (Must do 5, 6). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user forgets a device and confirms on Plan and devices, then it leaves the list and the in-use count drops by one.
+</li>
+</ul>
+</li>
+<li><strong>BRD-78</strong> — A device is blocked (Must do 6). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When the user blocks a device and confirms on Plan and devices, then it shows Blocked and its next sign-in is refused.
+</li>
+</ul>
+</li>
+<li><strong>BRD-79</strong> — An ended paid licence keeps the journal (Must do 8). <em>Screen:</em> Plan and devices · <em>Mockup:</em> <a href="mockups/plan-devices.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid licence ends, then Plan and devices reads Free and every entry is still on this device.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="settings">Settings<a class="anchor-link" href="#settings">#</a></h3>
+<p>Settings holds the AI model choice, the app lock and journaling reminders.</p>
+<ul>
+<li><strong>BRD-80</strong> — Free users get the built-in model (Must do 19). <em>Screen:</em> Settings · <em>Mockup:</em> <a href="mockups/settings.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a free user opens Settings, then the built-in on-device model is chosen and other choices show "Needs a paid licence".
+</li>
+</ul>
+</li>
+<li><strong>BRD-81</strong> — A paid user chooses another model (Must do 20). <em>Screen:</em> Settings · <em>Mockup:</em> <a href="mockups/settings.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid user picks another model on Settings and saves, then the next answer on Ask names that model.
+</li>
+</ul>
+</li>
+<li><strong>BRD-82</strong> — An online AI key needs the user's agreement (Must do 20). <em>Screen:</em> Settings · <em>Mockup:</em> <a href="mockups/settings.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid user enters a key for an online AI service on Settings, then a warning says journal text will be sent, and saving needs agreement.
+</li>
+</ul>
+</li>
+<li><strong>BRD-83</strong> — A PIN lock is set (Must do 23). <em>Screen:</em> Settings · <em>Mockup:</em> <a href="mockups/settings.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user turns on the PIN lock and enters the same PIN twice on Settings, then the next app start shows Unlock.
+</li>
+</ul>
+</li>
+<li><strong>BRD-84</strong> — Fingerprint or face unlock is turned on (Must do 23). <em>Screen:</em> Settings · <em>Mockup:</em> <a href="mockups/settings.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user turns on fingerprint or face unlock on Settings, then the next app start offers it on Unlock.
+</li>
+</ul>
+</li>
+<li><strong>BRD-85</strong> — A journaling reminder is set (Must do 23). <em>Screen:</em> Settings · <em>Mockup:</em> <a href="mockups/settings.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user sets a reminder for 9 pm on weekdays on Settings, then a "Time to write" notification arrives at 9 pm on those days.
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="backup-and-data">Backup and data<a class="anchor-link" href="#backup-and-data">#</a></h3>
+<p>Backup and data backs up, syncs and restores the journal for paid users, and exports and imports it for everyone.</p>
+<ul>
+<li><strong>BRD-86</strong> — Back up to the user's own drive (Must do 21). <em>Screen:</em> Backup and data · <em>Mockup:</em> <a href="mockups/backup.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid user connects Google Drive or OneDrive and presses Back up now, then "Last backup" shows the current time.
+</li>
+</ul>
+</li>
+<li><strong>BRD-87</strong> — Sync between devices (Must do 21). <em>Screen:</em> Backup and data · <em>Mockup:</em> <a href="mockups/backup.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid user with sync on writes an entry on one device, then it shows on their other device after that device syncs.
+</li>
+</ul>
+</li>
+<li><strong>BRD-88</strong> — Restore on a new device (Must do 21). <em>Screen:</em> Backup and data · <em>Mockup:</em> <a href="mockups/backup.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a paid user picks a backup in Restore journal on a new device and confirms, then every backed-up entry shows on Browse.
+</li>
+</ul>
+</li>
+<li><strong>BRD-89</strong> — Backup and sync are paid only (Must do 21; Out of scope). <em>Screen:</em> Backup and data · <em>Mockup:</em> <a href="mockups/backup.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a free user opens Backup and data, then backup and sync say "Needs a paid licence" and export and import still work.
+</li>
+</ul>
+</li>
+<li><strong>BRD-90</strong> — Export to a JSON file (Must do 22). <em>Screen:</em> Backup and data · <em>Mockup:</em> <a href="mockups/backup.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user presses Export on Backup and data, then a JSON file holding every entry is saved where they choose.
+</li>
+</ul>
+</li>
+<li><strong>BRD-91</strong> — Import a MyDiary file (Must do 22). <em>Screen:</em> Backup and data · <em>Mockup:</em> <a href="mockups/backup.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user imports a MyDiary JSON file twice, then its entries show on Browse once each.
+</li>
+</ul>
+</li>
+<li><strong>BRD-92</strong> — Import a Day One export (Must do 22). <em>Screen:</em> Backup and data · <em>Mockup:</em> <a href="mockups/backup.html">mockup</a>
+<ul>
+<li><em>Acceptance:</em> When a user imports a Day One JSON export, then its entries show on Browse with their dates, text and photos.
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="non-functional-requirements"><a id="6-non-functional-requirements"></a>6. Non-functional requirements<a class="anchor-link" href="#non-functional-requirements">#</a></h2>
+<table>
+<thead><tr><th>Id</th><th>Area</th><th>Requirement</th><th>Measure</th></tr></thead>
+<tbody>
+<tr><td>BRD-93</td><td>Privacy</td><td>A free user's journal text never leaves the device, and AppManager never receives journal text from any user (brief: fixed choices, Out of scope).</td><td>A network capture during sign-in, writing, Ask and a problem report shows no journal text in any request.</td></tr>
+<tr><td>BRD-94</td><td>Offline</td><td>Every screen except Sign in, Create account and Reset password works with no connection while the last licence check is under 30 days old (Must do 2).</td><td>Each screen opens and saves in airplane mode.</td></tr>
+<tr><td>BRD-95</td><td>Platforms</td><td>The same screens work on Android, iPhone, iPad, Windows and Mac (Must do 24).</td><td>Each screen opens on each of the five platforms.</td></tr>
+<tr><td>BRD-96</td><td>Logging</td><td>Serilog writes a daily rolling log file under the app data folder from the first line of startup; no journal text, PIN, password, token or AI key is ever logged (answer set Q5).</td><td>The log file exists after first launch and holds none of the listed values.</td></tr>
+<tr><td>BRD-97</td><td>Zoom (a desktop head drawn in a web view)</td><td>Cmd/Ctrl+=, - and 0 zoom 50% to 300% in 10% steps; the level is kept across restarts</td><td>zoom-check: keys · zoom-check: kept</td></tr>
+</tbody>
+</table>
+<p>No <code>perf-budget:</code> is set: the brief gives no speed figure.</p>
+<h2 id="development-status"><a id="7-development-status"></a>7. Development status<a class="anchor-link" href="#development-status">#</a></h2>
+<p>Written by the status gate after every build, verify and handoff; not by hand.</p>
+<p><strong>Snapshot as of 2026-10-18.</strong> Live per-requirement status: <code>PROJECT-STATUS.md</code> and the Requirements Status table in <code>docs/MyDiary-Checklist.md</code>.</p>
+<table>
+<thead><tr><th>Screen</th><th>Requirements</th><th>Verified</th><th>Open</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Sign in</td><td>3</td><td>0</td><td>3</td><td>Planned</td></tr>
+<tr><td>Create account</td><td>3</td><td>0</td><td>3</td><td>Planned</td></tr>
+<tr><td>Reset password</td><td>2</td><td>0</td><td>2</td><td>Planned</td></tr>
+<tr><td>Access stopped</td><td>3</td><td>0</td><td>3</td><td>Planned</td></tr>
+<tr><td>Unlock</td><td>4</td><td>0</td><td>4</td><td>Planned</td></tr>
+<tr><td>Home</td><td>6</td><td>0</td><td>6</td><td>Planned</td></tr>
+<tr><td>On This Day</td><td>5</td><td>0</td><td>5</td><td>Planned</td></tr>
+<tr><td>Thought Dump</td><td>4</td><td>0</td><td>4</td><td>Planned</td></tr>
+<tr><td>Free-Flow</td><td>4</td><td>0</td><td>4</td><td>Planned</td></tr>
+<tr><td>Question sets</td><td>4</td><td>0</td><td>4</td><td>Planned</td></tr>
+<tr><td>Answer questions</td><td>2</td><td>0</td><td>2</td><td>Planned</td></tr>
+<tr><td>Browse</td><td>3</td><td>0</td><td>3</td><td>Planned</td></tr>
+<tr><td>Entry</td><td>6</td><td>0</td><td>6</td><td>Planned</td></tr>
+<tr><td>Search</td><td>8</td><td>0</td><td>8</td><td>Planned</td></tr>
+<tr><td>Ask</td><td>3</td><td>0</td><td>3</td><td>Planned</td></tr>
+<tr><td>Compare answers</td><td>3</td><td>0</td><td>3</td><td>Planned</td></tr>
+<tr><td>Account</td><td>8</td><td>0</td><td>8</td><td>Planned</td></tr>
+<tr><td>Plan and devices</td><td>8</td><td>0</td><td>8</td><td>Planned</td></tr>
+<tr><td>Settings</td><td>6</td><td>0</td><td>6</td><td>Planned</td></tr>
+<tr><td>Backup and data</td><td>7</td><td>0</td><td>7</td><td>Planned</td></tr>
+</tbody>
+</table>
+<h2 id="context-diagram"><a id="8-context-diagram"></a>8. Context diagram<a class="anchor-link" href="#context-diagram">#</a></h2>
+<div class="diagram">
+  <div class="dt">
+    <button data-zout title="Zoom out">&minus;</button>
+    <span class="zlabel">100%</span>
+    <button data-zin title="Zoom in">+</button>
+    <button data-fit title="Fit to width">Fit</button>
+    <button data-one title="Actual size">1:1</button>
+    <button data-fs title="Fullscreen">&#9166;</button>
+    <button data-pop title="Open in new tab">&#8599;</button>
+  </div>
+  <pre class="mermaid">flowchart LR
+  User(["Free or paid user"]) --&gt; App["MyDiary on phone, tablet or computer"]
+  App --&gt; DB[("Journal on the device")]
+  App --&gt;|"account, devices, licence, problem reports"| AM["AppManager"]
+  Owner(["Owner (admin)"]) --&gt; AM
+  App --&gt;|"paid: backup and sync"| Drive["User's Google Drive or OneDrive"]
+  App --&gt;|"paid, own key: online AI"| AI["Online AI service"]</pre>
+</div>
+<h2 id="constraints-and-assumptions"><a id="9-constraints-and-assumptions"></a>9. Constraints and assumptions<a class="anchor-link" href="#constraints-and-assumptions">#</a></h2>
+<ul>
+<li>Accounts, sign-in, devices, licences, problem reports and account-data requests use the AppManager API with its installed-app key; MyDiary has no server of its own and AppManager never sees journal text (brief).
+</li>
+<li>Screens are built with TrBlazeUI, and the mockups use TrBlazeUI's components and look (brief).
+</li>
+<li>Every AI feature, built-in or online, goes through TechieRag; MyDiary writes no AI code of its own (brief).
+</li>
+<li>Licences are assigned by the owner in AppManager. The licence types must be named exactly "Pro" and "Pro-Plus" (brief, Must do 7).
+</li>
+<li>AppManager reports a device over a licence's limit but does not refuse it, and gives no limit for a user without a licence; MyDiary enforces both limits itself (AppManager guide; AM-002).
+</li>
+<li>The installed-app key cannot call AppManager's data-copy and data-deletion endpoints today. BRD-69 and BRD-70 wait for AppManager (AM-001). The copy covers account data only; the journal is copied through Export (BRD-90).
+</li>
+<li>TechieRag cannot yet count across every matching entry, limit a search to dates, promise a "no match" answer, or ship its model inside the app. BRD-58 to BRD-60 and BRD-22 to BRD-26 wait for TechieRag (TR-RAG-001, 002, 004). Until TR-RAG-003 is fixed, the built-in model is downloaded on first launch.
+</li>
+<li>TrBlazeUI's Calendar cannot mark the days that have entries; BRD-42 waits for TrBlazeUI (TR-001).
+</li>
+<li>When the brief is silent, the stack answer set's default was taken and recorded in the Architecture's Stack decisions (owner's instruction, 2026-10-18).
+</li>
+</ul>
+<h2 id="risks"><a id="10-risks"></a>10. Risks<a class="anchor-link" href="#risks">#</a></h2>
+<table>
+<thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>The smallest on-device model writes weak stories or miscounts</td><td>High</td><td>Free users judge On This Day and Ask by it</td><td>Keep stories short; Ask lists every source entry so a count can be checked; paid users can choose a larger model</td></tr>
+<tr><td>The model download (about 420 MB) fails or is refused on a phone</td><td>Medium</td><td>No stories or answers until it completes</td><td>Writing, browsing and search work without it; TR-RAG-003 asks to ship it inside the app</td></tr>
+<tr><td>Upstream gaps hold Ask, On This Day, the calendar marks and data requests</td><td>Medium</td><td>Those requirements cannot be built until fixed</td><td>Seven feedback entries filed on day-1; the rest of the app is built first</td></tr>
+<tr><td>Sync conflicts when the same entry is edited on two devices offline</td><td>Medium</td><td>An edit is lost</td><td>Newest change wins, by entry and time; covered by the sync tests</td></tr>
+<tr><td>A device clock set back extends the 30-day offline period</td><td>Low</td><td>A licence is used past its end</td><td>Keep the newest time seen with the licence cache</td></tr>
+</tbody>
+</table>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+<script>
+// Light/dark toggle. The initial theme was already applied flash-free by the
+// <head> script (saved choice, else time-of-day). Clicking flips it, saves the
+// choice, and reloads so Mermaid re-renders in the matching theme.
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  var relabel = function(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '☀ Light' : '☾ Dark';
+  };
+  relabel();
+  btn.addEventListener('click', function(){
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try{ localStorage.setItem('tf-theme', next); }catch(e){}
+    location.reload();
+  });
+})();
+
+// Copy buttons on every code <pre> — but NEVER on a `pre.mermaid`:
+// mermaid reads the <pre>'s textContent as the diagram source, so a button
+// appended here glues "copy" onto the last line and breaks the parse
+// (flowcharts → "Syntax error"; sequence diagrams silently absorb it).
+// Mermaid blocks get copy/export from their own .diagram toolbar instead.
+document.querySelectorAll('pre:not(.mermaid)').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy';
+  btn.textContent = 'copy';
+  btn.addEventListener('click', () => {
+    const text = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => { btn.textContent = 'copy'; }, 1200);
+    });
+  });
+  pre.appendChild(btn);
+});
+
+// Mermaid init — theme follows the resolved light/dark theme
+if (window.mermaid) {
+  var mermaidTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+  mermaid.initialize({ startOnLoad: true, theme: mermaidTheme, securityLevel: 'loose' });
+}
+
+// Mermaid toolbar wiring — run after mermaid renders
+function wireMermaidToolbars() {
+  document.querySelectorAll('.diagram').forEach(dia => {
+    if (dia.dataset.wired) return;
+    const merm = dia.querySelector('.mermaid');
+    const svg = merm && merm.querySelector('svg');
+    if (!svg) return;
+    dia.dataset.wired = '1';
+    let scale = 1;
+    const label = dia.querySelector('.zlabel');
+    const apply = () => {
+      svg.style.transform = `scale(${scale})`;
+      svg.style.transformOrigin = 'top left';
+      if (label) label.textContent = Math.round(scale * 100) + '%';
+    };
+    const setScale = (s) => { scale = Math.max(0.25, Math.min(4, s)); apply(); };
+    dia.querySelector('[data-zin]').onclick = () => setScale(scale * 1.2);
+    dia.querySelector('[data-zout]').onclick = () => setScale(scale / 1.2);
+    dia.querySelector('[data-fit]').onclick = () => {
+      svg.style.transform = '';
+      svg.removeAttribute('width');
+      svg.style.maxWidth = '100%';
+      svg.style.height = 'auto';
+      scale = 1;
+      if (label) label.textContent = 'Fit';
+    };
+    dia.querySelector('[data-one]').onclick = () => {
+      svg.style.transform = '';
+      svg.style.maxWidth = 'none';
+      svg.style.width = '';
+      svg.style.height = '';
+      scale = 1;
+      if (label) label.textContent = '100%';
+    };
+    dia.querySelector('[data-fs]').onclick = () => {
+      dia.classList.toggle('fs');
+      if (dia.classList.contains('fs')) {
+        document.addEventListener('keydown', escFs);
+      } else {
+        document.removeEventListener('keydown', escFs);
+      }
+    };
+    function escFs(e) { if (e.key === 'Escape') { dia.classList.remove('fs'); document.removeEventListener('keydown', escFs); } }
+    dia.querySelector('[data-pop]').onclick = () => openInNewTab(svg);
+    // Ctrl+wheel zoom
+    merm.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      setScale(scale * (e.deltaY < 0 ? 1.1 : 1/1.1));
+    }, { passive: false });
+  });
+}
+
+function openInNewTab(svg) {
+  const svgSource = new XMLSerializer().serializeToString(svg);
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Diagram</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1115;color:#e6e8ee;font-family:system-ui,sans-serif}
+  .bar{position:fixed;top:0;left:0;right:0;padding:8px 12px;background:#161a22;border-bottom:1px solid #2a3142;display:flex;gap:8px;z-index:10}
+  .bar button{background:#1c2230;color:#9aa3b2;border:1px solid #2a3142;border-radius:6px;padding:5px 12px;font-size:13px;cursor:pointer}
+  .bar button:hover{color:#7cc4ff;border-color:#7cc4ff}
+  .bar .hint{margin-left:auto;color:#9aa3b2;font-size:11.5px;align-self:center}
+  #stage{position:absolute;top:42px;bottom:0;left:0;right:0;overflow:hidden}
+  #stage svg{width:100%;height:100%}
+</style>
+</head><body>
+<div class="bar">
+  <button onclick="zpz.zoomIn()">+</button>
+  <button onclick="zpz.zoomOut()">−</button>
+  <button onclick="zpz.fit();zpz.center()">Fit</button>
+  <button onclick="zpz.resetZoom();zpz.center()">1:1</button>
+  <button onclick="window.print()">Print</button>
+  <button onclick="dlPng()">PNG</button>
+  <button onclick="dlSvg()">SVG</button>
+  <span class="hint">Drag to pan · Ctrl+wheel to zoom · + / − keys</span>
+</div>
+<div id="stage">${svgSource}</div>
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"><\/script>
+<script>
+  const el = document.querySelector('#stage svg');
+  const zpz = svgPanZoom(el, { zoomScaleSensitivity: .3, minZoom: .2, maxZoom: 10, controlIconsEnabled: false, fit: true, center: true });
+  document.addEventListener('keydown', e => {
+    if (e.key === '+' || e.key === '=') zpz.zoomIn();
+    if (e.key === '-' || e.key === '_') zpz.zoomOut();
+    if (e.key === '0') { zpz.resetZoom(); zpz.center(); }
+  });
+  function dlSvg() {
+    const blob = new Blob([new XMLSerializer().serializeToString(el)], { type: 'image/svg+xml' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'diagram.svg'; a.click();
+  }
+  function dlPng() {
+    const src = new XMLSerializer().serializeToString(el);
+    const img = new Image();
+    const url = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(src)));
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = el.clientWidth * 2; c.height = el.clientHeight * 2;
+      const ctx = c.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img, 0, 0);
+      c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'diagram.png'; a.click(); });
+    };
+    img.src = url;
+  }
+<\/script>
+</body></html>`;
+  const w = window.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+// Run wiring after mermaid finishes (it renders async)
+if (window.mermaid) {
+  setTimeout(wireMermaidToolbars, 400);
+  setTimeout(wireMermaidToolbars, 1200);  // safety re-run for slow renders
+}
+</script>
+</body>
+</html>

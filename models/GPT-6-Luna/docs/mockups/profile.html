@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profile · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .main { max-width: 1120px; }
+    .profile-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr); gap: 16px; align-items: start; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+    .field-grid .field + .field { margin-top: 0; }
+    .password-strength { display: grid; gap: 7px; margin-top: 10px; }
+    .strength-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .strength-bars span { height: 5px; border-radius: 999px; background: var(--muted); }
+    .password-panel { margin-top: 16px; }
+    .profile-help { margin: 9px 0 15px; }
+    .inner-card-footer { margin: 18px -20px -20px; }
+    @media (max-width: 900px) { .profile-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) { .field-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="home.html" data-testid="brand-home">
+        <span class="brand-mark" aria-hidden="true">m</span>
+        <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span>
+      </a>
+      <nav aria-label="Journal" data-testid="sidebar-nav">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="sidebar-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="sidebar-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="sidebar-ask"><span class="nav-icon" aria-hidden="true">✧</span>Ask my journal</a>
+          <a class="nav-link" href="compare-answers.html" data-testid="sidebar-compare"><span class="nav-icon" aria-hidden="true">↔</span>Compare answers</a>
+        </div>
+      </nav>
+      <nav class="sidebar-bottom" aria-label="Account" data-testid="account-nav">
+        <a class="nav-link current" href="profile.html" aria-current="page" data-testid="sidebar-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a>
+        <a class="nav-link" href="plan-and-devices.html" data-testid="sidebar-plan"><span class="nav-icon" aria-hidden="true">▣</span>Plan and devices</a>
+        <a class="nav-link" href="problem-report.html" data-testid="sidebar-support"><span class="nav-icon" aria-hidden="true">?</span>Problem report</a>
+      </nav>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb">Account <span aria-hidden="true">/</span> Profile</div>
+        <div class="top-actions"><span class="muted small">Account settings</span><span class="avatar" aria-label="Profile" data-testid="avatar-initials" data-tf-sample="true">AS</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Screens" data-testid="mobile-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a>
+        <a href="journal-browse.html" data-testid="mobile-journal">Journal</a>
+        <a href="ask-my-journal.html" data-testid="mobile-ask">Ask</a>
+        <a href="compare-answers.html" data-testid="mobile-compare">Compare</a>
+        <a class="current" href="profile.html" aria-current="page" data-testid="mobile-profile">Profile</a>
+        <a href="plan-and-devices.html" data-testid="mobile-plan">Plan</a>
+        <a href="problem-report.html" data-testid="mobile-support">Support</a>
+      </nav>
+
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <h1>Profile</h1>
+            <p>Update the account details and password associated with your MyDiary sign-in.</p>
+          </div>
+          <div class="heading-actions"><a class="button button-outline" href="plan-and-devices.html" data-testid="plan-link">Plan and devices</a></div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Profile settings" data-testid="profile-tabs">
+          <button class="tab active" type="button" role="tab" aria-selected="true" data-testid="profile-tab-details" onclick="showStatus('profile-status', 'Static preview: profile tabs do not switch or save data.')">Profile details</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-testid="profile-tab-password" onclick="showStatus('profile-status', 'Static preview: profile tabs do not switch or save data.')">Password</button>
+        </div>
+        <p class="small muted profile-help">Both panels are shown below in this static preview. Field availability follows the AppManager account contract.</p>
+
+        <div class="profile-layout">
+          <section class="card" aria-label="Profile details" data-testid="profile-fields">
+            <div class="card-header">
+              <div><h2 class="card-title">Account details</h2><p class="card-description">These example values are placeholders.</p></div>
+            </div>
+            <div class="card-content">
+              <div class="field-grid">
+                <div class="field">
+                  <label class="label" for="profile-name">Name</label>
+                  <input class="input" id="profile-name" type="text" value="Avery Stone" autocomplete="name" data-testid="profile-name" data-tf-sample="true">
+                </div>
+                <div class="field">
+                  <label class="label" for="profile-email">Email</label>
+                  <input class="input" id="profile-email" type="email" value="avery.stone@example.com" autocomplete="email" data-testid="profile-email" data-tf-sample="true">
+                </div>
+              </div>
+              <div class="card-footer inner-card-footer">
+                <button class="button" type="button" data-testid="profile-save" onclick="showStatus('profile-status', 'Static preview only. Profile details were not saved.')">Save profile</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="card" aria-label="Change password" data-testid="profile-password">
+            <div class="card-header">
+              <div><h2 class="card-title">Change password</h2><p class="card-description">Enter your current password and choose a new one.</p></div>
+            </div>
+            <div class="card-content">
+              <div class="field">
+                <label class="label" for="current-password">Current password</label>
+                <input class="input" id="current-password" type="password" autocomplete="current-password" placeholder="Current password" data-testid="profile-current-password">
+              </div>
+              <div class="field">
+                <label class="label" for="new-password">New password</label>
+                <input class="input" id="new-password" type="password" autocomplete="new-password" placeholder="New password" data-testid="profile-new-password">
+              </div>
+              <div class="field">
+                <label class="label" for="confirm-password">Confirm new password</label>
+                <input class="input" id="confirm-password" type="password" autocomplete="new-password" placeholder="Confirm new password" data-testid="profile-confirm-password">
+              </div>
+              <div class="password-strength" aria-label="Password strength indicator" data-testid="profile-password-strength">
+                <span class="small muted">Password strength appears when you enter a new password.</span>
+                <div class="strength-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+              </div>
+              <div class="card-footer inner-card-footer">
+                <button class="button" type="button" data-testid="profile-save-password" onclick="showStatus('profile-status', 'Static preview only. Your password was not changed.')">Update password</button>
+              </div>
+            </div>
+          </section>
+        </div>
+        <p class="status-message" id="profile-status" role="status" aria-live="polite" data-testid="profile-status"></p>
+
+        <div class="screen-links" aria-label="Continue to another screen">
+          <a href="plan-and-devices.html" data-testid="continue-plan-link">Plan and devices</a>
+          <a href="problem-report.html" data-testid="support-link">Problem report</a>
+          <a href="home.html" data-testid="return-home-link">Home</a>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    function showStatus(id, message) {
+      const status = document.getElementById(id);
+      if (status) status.textContent = message;
+    }
+  </script>
+</body>
+</html>

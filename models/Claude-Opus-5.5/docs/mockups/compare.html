@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare answers — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar (TrBlazeUI SidebarProvider + Sidebar Collapsible); a slide-out sheet below 768px -->
+  <aside class="sidebar" id="nav" data-testid="app-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo"><span class="i i-book"></span></span>
+      <span>MyDiary</span>
+    </div>
+    <nav class="sidebar-content" data-testid="app-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Journal</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="home.html" data-testid="nav-home"><span class="i i-home"></span>Home</a></li>
+          <li class="sidebar-menu-item"><a href="on-this-day.html" data-testid="nav-on-this-day"><span class="i i-sun"></span>On This Day</a></li>
+          <li class="sidebar-menu-item"><a href="browse.html" data-testid="nav-browse"><span class="i i-calendar"></span>Browse</a></li>
+          <li class="sidebar-menu-item"><a href="search.html" data-testid="nav-search"><span class="i i-search"></span>Search</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Write</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="thought-dump.html" data-testid="nav-thought-dump"><span class="i i-list"></span>Thought Dump</a></li>
+          <li class="sidebar-menu-item"><a href="free-flow.html" data-testid="nav-free-flow"><span class="i i-pen"></span>Free-Flow</a></li>
+          <li class="sidebar-menu-item"><a href="question-sets.html" data-testid="nav-question-sets"><span class="i i-check"></span>Question sets</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Insights</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="ask.html" data-testid="nav-ask"><span class="i i-ask"></span>Ask</a></li>
+          <li class="sidebar-menu-item active"><a href="compare.html" data-testid="nav-compare"><span class="i i-columns"></span>Compare answers</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">You</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item"><a href="account.html" data-testid="nav-account"><span class="i i-user"></span>Account</a></li>
+          <li class="sidebar-menu-item"><a href="plan-devices.html" data-testid="nav-plan-devices"><span class="i i-phone"></span>Plan and devices</a></li>
+          <li class="sidebar-menu-item"><a href="settings.html" data-testid="nav-settings"><span class="i i-settings"></span>Settings</a></li>
+          <li class="sidebar-menu-item"><a href="backup.html" data-testid="nav-backup"><span class="i i-cloud"></span>Backup and data</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item"><a href="unlock.html" data-testid="nav-lock-now"><span class="i i-lock"></span>Lock now</a></li>
+        <li class="sidebar-menu-item"><a href="signin.html" data-testid="nav-sign-out"><span class="i i-logout"></span>Sign out</a></li>
+      </ul>
+      <div class="row small muted" style="padding:.4rem .5rem" data-testid="sidebar-user"><span class="i i-user"></span>Asha Verma · <span class="badge badge-secondary" data-testid="sidebar-plan-badge">Pro</span></div>
+    </div>
+  </aside>
+
+  <div class="inset">
+    <header class="topbar" data-testid="top-bar">
+      <a href="#nav" class="btn btn-ghost btn-icon sidebar-trigger" data-testid="sidebar-trigger" aria-label="Open menu"><span class="i i-menu"></span></a>
+      <div class="breadcrumb" data-testid="breadcrumb">Insights / Compare answers</div>
+      <div class="grow"></div>
+      <a href="search.html" class="btn btn-ghost btn-icon" data-testid="top-search" aria-label="Search"><span class="i i-search"></span></a>
+      <a href="free-flow.html" class="btn btn-sm" data-testid="top-new-entry"><span class="i i-plus"></span><span class="hide-sm">New entry</span></a>
+    </header>
+
+    <main class="page" data-testid="compare-page">
+      <div class="page-head">
+        <h1 data-testid="page-title">Compare answers</h1>
+        <p>One question, side by side across months or years.</p>
+      </div>
+
+      <!-- Controls (BRD-61, BRD-62) -->
+      <section class="card" data-testid="compare-controls">
+        <div class="card-content form" style="padding-top:1.5rem">
+          <div class="field" data-testid="compare-set">
+            <label class="field-label">Question set</label>
+            <div class="toggle-group">
+              <button class="toggle on" data-msg="Showing Monthly Goals questions" onclick="return pick(this)">Monthly Goals</button>
+              <button class="toggle" data-msg="Showing Weekly Retro questions" onclick="return pick(this)">Weekly Retro</button>
+              <button class="toggle" data-msg="Showing Health questions" onclick="return pick(this)">Health</button>
+              <button class="toggle" data-msg="Showing Fitness questions" onclick="return pick(this)">Fitness</button>
+              <button class="toggle" data-msg="Showing Yearly Review questions" onclick="return pick(this)">Yearly Review</button>
+              <button class="toggle" data-msg="Showing Project Retro questions" onclick="return pick(this)">Project Retro</button>
+            </div>
+          </div>
+
+          <div class="field" data-testid="compare-question-field" style="margin-bottom:11rem">
+            <label class="field-label">Question</label>
+            <div class="select" data-testid="compare-question">
+              <div class="select-trigger" data-testid="compare-question-trigger">What is my one big goal this month?</div>
+              <div class="select-content" data-tf-state="popup-open" data-testid="compare-question-options">
+                <div class="select-item selected">What is my one big goal this month?</div>
+                <div class="select-item">What will I stop doing?</div>
+                <div class="select-item">How will I know I did it?</div>
+                <div class="select-item">What did I learn last month?</div>
+                <div class="select-item">Who can help me?</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field" data-testid="compare-by">
+              <label class="field-label">Show</label>
+              <div class="toggle-group joined">
+                <button class="toggle on" data-msg="Showing answers by month" onclick="return pick(this)">By month</button>
+                <button class="toggle" data-msg="Showing Yearly Review answers by year" onclick="return pick(this)">By year</button>
+              </div>
+            </div>
+            <div class="field" data-testid="compare-period">
+              <label class="field-label">Period</label>
+              <div class="row" style="flex-wrap:nowrap">
+                <input class="input" type="text" value="May 2026" aria-label="From month" data-testid="compare-period-from">
+                <span class="muted">–</span>
+                <input class="input" type="text" value="Oct 2026" aria-label="To month" data-testid="compare-period-to">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comparison table: scrolls sideways on phones -->
+      <section class="stack" data-testid="compare-results">
+        <h2 class="card-title">What is my one big goal this month?</h2>
+        <div class="table-wrap" data-testid="compare-table-wrap">
+          <table class="table" data-testid="compare-table" style="min-width:56rem">
+            <thead>
+              <tr>
+                <th><a href="entry.html" class="btn-link" data-testid="compare-col-head">May 2026</a></th>
+                <th><a href="entry.html" class="btn-link">Jun 2026</a></th>
+                <th><a href="entry.html" class="btn-link">Jul 2026</a></th>
+                <th><a href="entry.html" class="btn-link">Aug 2026</a></th>
+                <th><a href="entry.html" class="btn-link">Sep 2026</a></th>
+                <th><a href="entry.html" class="btn-link">Oct 2026</a></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-testid="compare-row">
+                <td data-testid="compare-cell">Run 5 km without stopping.</td>
+                <td>Plan the Kitchen redo and get three quotes.</td>
+                <td class="muted" data-testid="compare-no-answer">No answer</td>
+                <td>Book the Pune trip and actually take the days off.</td>
+                <td>Start the Kitchen redo. Pick tiles this week.</td>
+                <td>Run 10 km by the end of the month. One coffee a day.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="tiny muted">Tap a month to open that entry.</p>
+      </section>
+
+      <!-- By year variant (state: by-year) -->
+      <section class="stack" data-tf-state="by-year" data-testid="compare-by-year">
+        <div class="mock-note" style="align-self:flex-start">By year: Yearly Review, “What am I proudest of this year?”</div>
+        <div class="table-wrap">
+          <table class="table small" data-testid="compare-year-table">
+            <thead>
+              <tr>
+                <th><a href="entry.html" class="btn-link">2024</a></th>
+                <th><a href="entry.html" class="btn-link">2025</a></th>
+                <th><a href="entry.html" class="btn-link">2026</a></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Moving into the new flat on my own.</td>
+                <td>The balcony herb garden, and running through the monsoon.</td>
+                <td class="muted">Not answered yet (due 31 Dec)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Loading (state: loading) -->
+      <div class="skeleton" data-tf-state="loading" data-testid="compare-loading" style="height:6rem" hidden></div>
+
+      <!-- Not enough answers (state: empty) -->
+      <div class="empty" data-tf-state="empty" data-testid="compare-empty" hidden>
+        <span class="i i-columns i-xl"></span>
+        <div class="title">Answer this set at least twice to compare.</div>
+        <a href="question-sets.html" class="btn btn-sm">Open question sets</a>
+      </div>
+
+      <!-- Error (state: error) -->
+      <div class="alert alert-danger" data-tf-state="error" data-testid="compare-error" hidden>
+        <span class="i i-alert i-lg"></span>
+        <div><div class="t">Could not load the answers</div><div class="d">Try again in a moment.</div></div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

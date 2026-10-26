@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plan and devices · MyDiary</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .main { max-width: 1240px; }
+    .plan-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .75fr); gap: 16px; align-items: stretch; }
+    .plan-value { margin-top: 5px; font-size: 21px; line-height: 1.25; font-weight: 650; letter-spacing: -.025em; }
+    .usage-row { display: flex; align-items: end; justify-content: space-between; gap: 14px; }
+    .usage-progress { height: 9px; margin-top: 14px; border-radius: 999px; background: var(--muted); overflow: hidden; }
+    .usage-progress span { display: block; width: 100%; height: 100%; background: var(--primary); border-radius: inherit; }
+    .device-table { min-width: 720px; }
+    .device-table td { white-space: normal; }
+    .device-name { font-weight: 600; }
+    .action-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+    .device-status { white-space: nowrap; }
+    .section-spaced { margin-top: 16px; }
+    .compact-copy { margin: 5px 0 0; }
+    .renewal-label { margin: 4px 0 0; }
+    .dialog-backdrop { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 20px; background: rgb(15 20 16 / .48); }
+    .dialog-backdrop[hidden] { display: none; }
+    .dialog-card { width: min(100%, 440px); padding: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 20px 60px rgb(0 0 0 / .22); }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+    @media (max-width: 900px) { .plan-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) {
+      .device-table { min-width: 100%; width: 100%; }
+      .hide-phone { display: none; }
+      .device-table th, .device-table td { padding-left: 7px; padding-right: 7px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-testid="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="home.html" data-testid="brand-home">
+        <span class="brand-mark" aria-hidden="true">m</span>
+        <span><span class="brand-title">MyDiary</span><br><span class="brand-subtitle">A little space for you</span></span>
+      </a>
+      <nav aria-label="Journal" data-testid="sidebar-nav">
+        <div class="nav-group-label">Journal</div>
+        <div class="nav-list">
+          <a class="nav-link" href="home.html" data-testid="sidebar-home"><span class="nav-icon" aria-hidden="true">⌂</span>Home</a>
+          <a class="nav-link" href="journal-browse.html" data-testid="sidebar-journal"><span class="nav-icon" aria-hidden="true">▤</span>Journal</a>
+          <a class="nav-link" href="ask-my-journal.html" data-testid="sidebar-ask"><span class="nav-icon" aria-hidden="true">✧</span>Ask my journal</a>
+          <a class="nav-link" href="compare-answers.html" data-testid="sidebar-compare"><span class="nav-icon" aria-hidden="true">↔</span>Compare answers</a>
+        </div>
+      </nav>
+      <nav class="sidebar-bottom" aria-label="Account" data-testid="account-nav">
+        <a class="nav-link" href="profile.html" data-testid="sidebar-profile"><span class="nav-icon" aria-hidden="true">◉</span>Profile</a>
+        <a class="nav-link current" href="plan-and-devices.html" aria-current="page" data-testid="sidebar-plan"><span class="nav-icon" aria-hidden="true">▣</span>Plan and devices</a>
+        <a class="nav-link" href="problem-report.html" data-testid="sidebar-support"><span class="nav-icon" aria-hidden="true">?</span>Problem report</a>
+      </nav>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb">Account <span aria-hidden="true">/</span> Plan and devices</div>
+        <div class="top-actions"><span class="muted small">Licence overview</span><span class="avatar" aria-label="Profile" data-testid="avatar-initials" data-tf-sample="true">AS</span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Screens" data-testid="mobile-nav">
+        <a href="home.html" data-testid="mobile-home">Home</a>
+        <a href="journal-browse.html" data-testid="mobile-journal">Journal</a>
+        <a href="ask-my-journal.html" data-testid="mobile-ask">Ask</a>
+        <a href="compare-answers.html" data-testid="mobile-compare">Compare</a>
+        <a href="profile.html" data-testid="mobile-profile">Profile</a>
+        <a class="current" href="plan-and-devices.html" aria-current="page" data-testid="mobile-plan">Plan</a>
+        <a href="problem-report.html" data-testid="mobile-support">Support</a>
+      </nav>
+
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <h1>Plan and devices</h1>
+            <p>Review the licence on this account and the devices currently using it.</p>
+          </div>
+          <div class="heading-actions"><a class="button button-outline" href="profile.html" data-testid="profile-link">Profile</a></div>
+        </div>
+
+        <div class="plan-layout">
+          <section class="card" data-testid="plan-summary">
+            <div class="card-header">
+              <div><h2 class="card-title">Current plan</h2><p class="card-description">Plan details from AppManager · sample values</p></div>
+              <span class="badge badge-success" data-testid="plan-status" data-tf-sample="true">Active</span>
+            </div>
+            <div class="card-content">
+              <div class="usage-row">
+                <div>
+                  <div class="plan-value" data-testid="plan-name" data-tf-sample="true">Pro</div>
+                  <p class="small muted renewal-label">Renewal / end date</p>
+                  <time class="small" datetime="2027-01-31" data-testid="plan-end-date" data-tf-sample="true">31 January 2027</time>
+                </div>
+                <span class="badge" data-testid="plan-license-badge" data-tf-sample="true">2 devices</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card" data-testid="device-use">
+            <div class="card-header">
+              <div><h2 class="card-title">Device slots</h2><p class="card-description">Devices signed in to this licence</p></div>
+            </div>
+            <div class="card-content">
+              <div class="usage-row">
+                <div class="stat-label">In use</div>
+                <div class="stat-value" data-testid="device-count" data-tf-sample="true">2 of 2</div>
+              </div>
+              <div class="usage-progress" role="progressbar" aria-label="Devices in use" aria-valuemin="0" aria-valuemax="2" aria-valuenow="2" data-testid="device-use-progress"><span></span></div>
+              <p class="stat-note" data-testid="device-use-note" data-tf-sample="true">Both device slots are in use in this sample.</p>
+            </div>
+          </section>
+        </div>
+
+        <section class="card section-spaced" data-testid="device-list">
+          <div class="card-header">
+            <div><h2 class="card-title">Signed-in devices</h2><p class="card-description">Device names and activity below are illustrative placeholders.</p></div>
+          </div>
+          <div class="card-content">
+            <div class="table-wrap">
+              <table class="device-table" data-testid="device-table">
+                <thead>
+                  <tr><th scope="col">Device</th><th scope="col">Status</th><th scope="col" class="hide-phone">Last seen</th><th scope="col">Actions</th></tr>
+                </thead>
+                <tbody data-testid="device-actions">
+                  <tr data-testid="device-row-current">
+                    <td><span class="device-name" data-testid="device-name-current" data-tf-sample="true">This Windows PC</span><br><span class="small muted" data-testid="device-platform-current" data-tf-sample="true">Windows · Current device</span></td>
+                    <td class="device-status"><span class="badge badge-success" data-testid="device-status-current" data-tf-sample="true">Active</span></td>
+                    <td class="hide-phone" data-testid="device-last-seen-current" data-tf-sample="true">Just now</td>
+                    <td><div class="action-buttons" data-testid="device-actions-current"><button class="button button-outline button-small" type="button" data-testid="device-forget-current" onclick="openDeviceConfirmation('This Windows PC', 'Forget')">Forget</button><button class="button button-ghost button-small" type="button" data-testid="device-block-current" onclick="openDeviceConfirmation('This Windows PC', 'Block')">Block</button></div></td>
+                  </tr>
+                  <tr data-testid="device-row-phone">
+                    <td><span class="device-name" data-testid="device-name-phone" data-tf-sample="true">Avery’s phone</span><br><span class="small muted" data-testid="device-platform-phone" data-tf-sample="true">iPhone · MyDiary app</span></td>
+                    <td class="device-status"><span class="badge badge-success" data-testid="device-status-phone" data-tf-sample="true">Active</span></td>
+                    <td class="hide-phone" data-testid="device-last-seen-phone" data-tf-sample="true">Today, 8:42 AM</td>
+                    <td><div class="action-buttons" data-testid="device-actions-phone"><button class="button button-outline button-small" type="button" data-testid="device-forget-phone" onclick="openDeviceConfirmation('Avery’s phone', 'Forget')">Forget</button><button class="button button-ghost button-small" type="button" data-testid="device-block-phone" onclick="openDeviceConfirmation('Avery’s phone', 'Block')">Block</button></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <div class="status-message" id="device-action-status" role="status" aria-live="polite" data-testid="device-action-status"></div>
+        <section class="alert alert-info section-spaced" data-testid="purchase-exclusion">
+          <div><strong>Plan changes happen outside MyDiary</strong><p class="small compact-copy">Licences are assigned through AppManager. This screen has no purchase button or in-app payment.</p><p class="small compact-copy">If a paid plan ends, free features and the complete journal remain available on the current device.</p></div>
+        </section>
+
+        <div class="screen-links" aria-label="Continue to another screen">
+          <a href="profile.html" data-testid="return-profile-link">Profile</a>
+          <a href="problem-report.html" data-testid="support-link">Problem report</a>
+          <a href="home.html" data-testid="return-home-link">Home</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="dialog-backdrop" id="device-confirmation" role="alertdialog" aria-modal="true" aria-labelledby="device-confirmation-title" aria-describedby="device-confirmation-copy" data-testid="device-confirmation" data-tf-state="device-confirmation-open" hidden>
+    <section class="dialog-card">
+      <h2 class="card-title" id="device-confirmation-title">Confirm device action</h2>
+      <p id="device-confirmation-copy" class="small muted" data-tf-sample="true">A confirmation is required before a device can be changed.</p>
+      <div class="dialog-actions">
+        <button class="button button-outline" type="button" data-testid="device-confirm-cancel" onclick="closeDeviceConfirmation()">Cancel</button>
+        <button class="button" type="button" data-testid="device-confirm-action" onclick="confirmDeviceAction()">Continue</button>
+      </div>
+    </section>
+  </div>
+  <script>
+    let pendingDeviceAction = '';
+    function showStatus(id, message) {
+      const status = document.getElementById(id);
+      if (status) status.textContent = message;
+    }
+    function openDeviceConfirmation(device, action) {
+      pendingDeviceAction = action + ' ' + device;
+      document.getElementById('device-confirmation-title').textContent = action + ' this device?';
+      document.getElementById('device-confirmation-copy').textContent = action + ' ' + device + ' would send a request to AppManager. This prototype will not change the device.';
+      document.getElementById('device-confirmation').hidden = false;
+      showStatus('device-action-status', 'Confirmation preview opened. No device request has been sent.');
+    }
+    function closeDeviceConfirmation() {
+      document.getElementById('device-confirmation').hidden = true;
+      showStatus('device-action-status', 'No device change was made.');
+      pendingDeviceAction = '';
+    }
+    function confirmDeviceAction() {
+      document.getElementById('device-confirmation').hidden = true;
+      showStatus('device-action-status', 'Static preview only. ' + (pendingDeviceAction || 'The device action') + ' was not performed.');
+      pendingDeviceAction = '';
+    }
+  </script>
+</body>
+</html>

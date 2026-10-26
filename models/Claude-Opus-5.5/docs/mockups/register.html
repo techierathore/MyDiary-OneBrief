@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create account — MyDiary mockup</title>
+<link rel="stylesheet" href="mydiary.css">
+<script src="mydiary.js"></script>
+</head>
+<body>
+<main class="centered" data-testid="register-page">
+  <div class="panel stack">
+    <div class="brand-mark" data-testid="brand">
+      <span class="sidebar-logo"><span class="i i-book i-lg"></span></span>
+      <h1 style="font-size:1.5rem" data-testid="page-title">Create your account</h1>
+      <p class="muted">One account, one private journal.</p>
+    </div>
+
+    <!-- CenteredPanel > Card with the create-account form; success opens Home with an empty journal -->
+    <form class="card" action="home.html" data-testid="register-card">
+      <div class="card-header">
+        <div class="card-title">Create account</div>
+        <div class="card-description">It takes a minute. Free on one device.</div>
+      </div>
+      <div class="card-content form">
+        <!-- BRD-5: email already has an account -->
+        <div class="alert alert-danger" data-tf-state="error" data-testid="register-email-used">
+          <span class="i i-alert"></span>
+          <div>
+            <div class="t">This email already has an account</div>
+            <div class="d">Use another email, or <a href="signin.html" class="btn-link" data-testid="register-email-used-signin">sign in instead</a>.</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label class="field-label" for="first">First name</label>
+            <input class="input" id="first" type="text" value="Asha" data-testid="register-first-name">
+          </div>
+          <div class="field">
+            <label class="field-label" for="last">Last name</label>
+            <input class="input" id="last" type="text" value="Verma" data-testid="register-last-name">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="email">Email</label>
+          <input class="input" id="email" type="email" value="asha.verma@example.com" data-testid="register-email">
+        </div>
+        <div class="field">
+          <label class="field-label" for="pw">Password</label>
+          <input class="input" id="pw" type="password" value="••••••••••" data-testid="register-password">
+          <!-- PasswordStrength -->
+          <div class="row between tiny" data-testid="register-password-strength">
+            <div class="progress" style="flex:1"><span style="width:75%"></span></div>
+            <span class="muted">Strong</span>
+          </div>
+          <div class="field-description" data-testid="register-password-rule">At least 8 characters, with an uppercase letter, a digit and a symbol.</div>
+          <!-- BRD-6: rule not met -->
+          <div class="field-error" data-tf-state="error" data-testid="register-password-error" hidden>Add a symbol, such as ! or #, to make the password strong enough.</div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="pw2">Confirm password</label>
+          <input class="input" id="pw2" type="password" value="••••••••••" data-testid="register-confirm-password">
+          <div class="field-error" data-tf-state="error" data-testid="register-confirm-error" hidden>The two passwords do not match.</div>
+        </div>
+        <button class="btn btn-block" type="submit" data-testid="register-submit">Create account</button>
+      </div>
+      <div class="card-footer small muted" style="justify-content:center">
+        Already have an account?&nbsp;<a href="signin.html" class="btn-link" data-testid="register-signin">Sign in</a>
+      </div>
+    </form>
+
+    <p class="tiny muted" style="text-align:center" data-testid="register-privacy">Your journal never leaves your devices unless you turn on backup. Your account holds only your name, email, devices and plan.</p>
+  </div>
+</main>
+</body>
+</html>
